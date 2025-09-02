@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>신한국손해사정(주)</title>
+  <meta name="description" content="교통사고 손해사정 전문 — 상담 문의 환영" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg:#0b1220;--ink:#0f172a;--muted:#475569;--brand:#f97316;--card:#ffffff;--line:#e2e8f0}
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0}
+    body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,Pretendard,Apple SD Gothic Neo,Malgun Gothic,sans-serif;color:var(--ink);background:#f8fafc}
+    a{color:inherit;text-decoration:none}
+    .container{max-width:1100px;margin:0 auto;padding:0 20px}
+    header{position:sticky;top:0;background:#fff;border-bottom:1px solid var(--line);z-index:40}
+    .nav{display:flex;align-items:center;justify-content:space-between;height:64px}
+    .logo{display:flex;align-items:center;gap:10px;font-weight:800}
+
+    .menu{display:flex;gap:16px;align-items:center}
+    .menu a{padding:10px 12px;border-radius:10px}
+    .menu a:hover{background:#f1f5f9}
+
+    .hero{background:linear-gradient(160deg,#0b1220 0%,#1e293b 60%);color:#fff}
+    .hero-inner{display:grid;grid-template-columns:1.1fr .9fr;gap:20px;align-items:center;padding:64px 0}
+    .badge{display:inline-flex;gap:8px;align-items:center;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.25);padding:6px 10px;border-radius:999px;font-size:12px}
+    .cta{display:flex;gap:12px;margin-top:20px}
+    .btn{display:inline-flex;align-items:center;gap:8px;padding:12px 16px;border-radius:12px;border:1px solid transparent;font-weight:700}
+    .btn.primary{background:var(--brand);color:#fff}
+    .btn.ghost{border-color:rgba(255,255,255,.4);color:#fff}
+
+    .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+    .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px}
+    .card h3{margin:8px 0 6px}
+    .card p{margin:0;color:var(--muted)}
+
+    section{padding:56px 0}
+    h2{margin:0 0 16px}
+    .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+
+    .footer{background:#0f172a;color:#cbd5e1}
+    .footer .cols{display:grid;grid-template-columns:2fr 1fr 1fr;gap:20px}
+    .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace}
+
+    .tag{display:inline-block;border:1px solid var(--line);padding:4px 8px;border-radius:999px;font-size:12px;color:#334155}
+
+    @media (max-width:900px){
+      .hero-inner{grid-template-columns:1fr}
+      .cards{grid-template-columns:1fr}
+      .grid-2{grid-template-columns:1fr}
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container nav">
+      <div class="logo"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="#f97316" stroke-width="2"/><path d="M6 13l3.5 3.5L18 8" stroke="#0f172a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>신한국손해사정(주)</div>
+      <nav class="menu">
+        <a href="#about">회사소개</a>
+        <a href="#what">손해사정이란</a>
+        <a href="#cases">사례보기</a>
+        <a href="#contact">문의하기</a>
+        <a href="#map">오시는 길</a>
+      </nav>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="container hero-inner">
+      <div>
+        <span class="badge">손해사정업 제 B0000468호</span>
+        <h1 style="margin:14px 0 8px;font-size:42px;line-height:1.15">무엇이 불편하신가요?<br />교통사고 손해사정 전문</h1>
+        <p style="opacity:.9">피보험자/피해자 모두에게 공정한 보상을 위해 전문가가 절차부터 증빙까지 함께합니다.</p>
+        <div class="cta">
+          <a class="btn primary" href="#contact">즉시 상담하기</a>
+          <a class="btn ghost" href="#what">손해사정 절차 보기</a>
+        </div>
+        <div style="margin-top:16px;display:flex;gap:8px;flex-wrap:wrap">
+          <span class="tag">교통사고</span>
+          <span class="tag">이륜차/레저</span>
+          <span class="tag">자문</span>
+          <span class="tag">증빙/서류</span>
+        </div>
+      </div>
+      <div>
+        <div class="cards">
+          <div class="card">
+            <h3>피보험자 상담</h3>
+            <p>운전 중 사고, 과실/면책 검토, 합의 전략 자문.</p>
+          </div>
+          <div class="card">
+            <h3>피해자 지원</h3>
+            <p>치료비/휴업손해/간접손해 항목 정리와 증빙 가이드.</p>
+          </div>
+          <div class="card">
+            <h3>절차 대행</h3>
+            <p>보험사 대응, 문서작성, 손해액 산정 보고서 작성.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="container" id="about">
+    <h2>회사소개</h2>
+    <div class="grid-2">
+      <p>신한국손해사정(주)은 교통사고 분야에 특화된 손해사정 법인입니다. 공정성과 투명성을 바탕으로 신속한 보상 해결을 돕습니다.</p>
+      <ul>
+        <li>설립: 2022년</li>
+        <li>업종: 손해사정 (제 B0000468호)</li>
+        <li>주요업무: 자동차/이륜차/레저사고 손해사정</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="container" id="what">
+    <h2>손해사정이란</h2>
+    <div class="grid-2">
+      <div>
+        <h3>손해사정이란?</h3>
+        <p>보험사고 발생 시 손해액과 보험금 지급사유를 조사·평가하여 공정한 보상이 이루어지도록 하는 전문 업무입니다.</p>
+      </div>
+      <div>
+        <h3>업무 절차</h3>
+        <ol>
+          <li>초기 상담 및 자료 수집</li>
+          <li>사고 사실관계 및 과실 검토</li>
+          <li>손해액 산정(직접/간접손해)</li>
+          <li>보고서 작성 및 합의 지원</li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <section class="container" id="cases">
+    <h2>사례보기</h2>
+    <p class="muted">※ 실제 사례/자료는 내부 승인 후 업데이트하세요. 아래는 더미 카드입니다.</p>
+    <div class="cards" style="margin-top:12px">
+      <div class="card"><h3>이륜차 단독사고</h3><p>휴차료/격락손해 인정 범위 정리</p></div>
+      <div class="card"><h3>택시 공제조합</h3><p>정액 교통비 vs 실비 논점</p></div>
+      <div class="card"><h3>수입차 대물</h3><p>감가손해/수리기간 산정</p></div>
+    </div>
+  </section>
+
+  <section class="container" id="contact">
+    <h2>문의하기</h2>
+    <div class="grid-2">
+      <form name="contact" method="POST" data-netlify="true">
+        <input type="hidden" name="form-name" value="contact" />
+        <label>성함<input name="name" required style="width:100%;padding:12px;border:1px solid var(--line);border-radius:10px;margin-top:6px;margin-bottom:12px"/></label>
+        <label>연락처<input name="phone" required style="width:100%;padding:12px;border:1px solid var(--line);border-radius:10px;margin-top:6px;margin-bottom:12px"/></label>
+        <label>문의내용<textarea name="message" rows="5" required style="width:100%;padding:12px;border:1px solid var(--line);border-radius:10px;margin-top:6px"></textarea></label>
+        <div style="margin-top:12px;display:flex;gap:10px">
+          <button class="btn primary" type="submit">보내기</button>
+          <button class="btn" type="reset" style="border:1px solid var(--line)">초기화</button>
+        </div>
+        <p style="font-size:12px;color:#64748b;margin-top:8px">※ Netlify/Cloudflare Pages의 폼 기능 또는 간단한 서버리스 함수로 연결 가능합니다.</p>
+      </form>
+      <div>
+        <h3>고객센터</h3>
+        <p>Tel. 070-7543-5206 / Fax. 0505-527-5206</p>
+        <p>이메일: info@nkmca.net</p>
+        <p>주소: 서울시 광진구 면목로120, 광남타운 306호</p>
+        <p class="mono">사업자등록번호: 462-88-01127</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="map" class="container">
+    <h2>오시는 길</h2>
+    <p>아래 링크로 지도를 연결하세요.</p>
+    <p><a class="btn" style="border:1px solid var(--line)" target="_blank" href="https://map.kakao.com/">카카오맵 열기</a></p>
+  </section>
+
+  <footer class="footer">
+    <div class="container" style="padding:28px 0">
+      <div class="cols">
+        <div>
+          <div style="font-weight:700">신한국손해사정(주)</div>
+          <div style="opacity:.8">© <span id="y"></span> All rights reserved.</div>
+        </div>
+        <div>
+          <div><a href="#">이용약관</a></div>
+          <div><a href="#">개인정보처리방침</a></div>
+        </div>
+        <div>
+          <div class="mono">손해사정업 제 B0000468호</div>
+          <div class="mono">Hosted anywhere you like</div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>document.getElementById('y').textContent=new Date().getFullYear()</script>
+</body>
+</html>
