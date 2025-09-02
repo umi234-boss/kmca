@@ -1,0 +1,44 @@
+<!-- =============================
+     /contact.html (찾아보기_문의하기)
+     ============================= -->
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>문의하기 — 신한국손해사정(주)</title>
+  <link rel="stylesheet" href="assets/style.css" />
+  <script defer src="assets/app.js"></script>
+</head>
+<body>
+  <div id="site-header"></div>
+  <section class="container">
+    <h1>문의하기</h1>
+    <div class="grid-2">
+      <form action="https://formspree.io/f/xxxxxxx" method="POST">
+        <label>성함
+          <input name="name" required style="width:100%;padding:12px;border:1px solid var(--line);border-radius:10px;margin-top:6px;margin-bottom:12px"/>
+        </label>
+        <label>연락처
+          <input name="phone" required style="width:100%;padding:12px;border:1px solid var(--line);border-radius:10px;margin-top:6px;margin-bottom:12px"/>
+        </label>
+        <label>문의내용
+          <textarea name="message" rows="5" required style="width:100%;padding:12px;border:1px solid var(--line);border-radius:10px;margin-top:6px"></textarea>
+        </label>
+        <div style="margin-top:12px;display:flex;gap:10px">
+          <button class="btn primary" type="submit">보내기</button>
+          <button class="btn" type="reset" style="border:1px solid var(--line)">초기화</button>
+        </div>
+        <p style="font-size:12px;color:#64748b;margin-top:8px">※ Formspree/서버리스로 메일 전송 연결 가능.</p>
+      </form>
+      <div>
+        <h3>고객센터</h3>
+        <p>Tel. 070-7543-5206 / Fax. 0505-527-5206</p>
+        <p>이메일: info@nkmca.net</p>
+        <p>주소: 서울시 광진구 면목로120, 광남타운 306호</p>
+        <p class="mono">사업자등록번호: 462-88-01127</p>
+      </div>
+    </div>
+  </section>
+  <div id="site-footer"></div>
+</body>
+</html>
