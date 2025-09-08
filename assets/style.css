@@ -32,7 +32,13 @@ a{color:inherit;text-decoration:none}
 
 /* 좌측: 로고 + 면허문구(좌하단) */
 .kmca-header__left{position:relative; min-height:72px}
-.kmca-header__logo svg{display:block;width:72px;height:72px}
+
+/* ⬇️ 수정: SVG 대신 PNG 사용 */
+.kmca-header__logo{display:inline-flex;align-items:center;justify-content:center}
+.kmca-header__logo img{display:block;width:72px;height:72px;object-fit:contain}
+/* 혹시 남아있는 SVG 마크업이 있다면 숨김 */
+.kmca-header__logo svg{display:none !important}
+
 .kmca-header__license{
   position:absolute; left:0; bottom:-6px;
   font-size:13px; color:#5b6b8a; white-space:nowrap;
@@ -72,9 +78,7 @@ a{color:inherit;text-decoration:none}
 .kmca-nav .submenu a:hover{background:#f6f7fb}
 
 /* 활성 메뉴 표시(선택) */
-.kmca-nav .top-link.is-active{
-  position:relative;
-}
+.kmca-nav .top-link.is-active{position:relative}
 .kmca-nav .top-link.is-active::after{
   content:""; position:absolute; left:0; right:0; bottom:-6px;
   height:2px; background:#0b1f6b;
@@ -131,3 +135,20 @@ h1,h2{margin:0 0 16px}
   .kmca-nav{gap:18px}
   .kmca-nav .has-sub .submenu{right:50%; transform:translateX(50%)} /* 모바일에서 중앙 */
 }
+
+/* 임시 호환: 구 헤더(site/menu)용 */
+header.site .menu{list-style:none;margin:0;padding:0;display:flex;gap:24px;align-items:center}
+header.site .menu li{list-style:none}
+header.site .logo{display:flex;align-items:center;gap:10px;font-weight:800}
+header.site .nav{display:flex;align-items:center;justify-content:space-between;height:72px}
+header.site{position:sticky;top:0;background:#fff;border-bottom:1px solid var(--line);z-index:40}
+header.site .menu a{display:inline-block;padding:10px 0;font-weight:700}
+header.site .has-sub{position:relative}
+header.site .has-sub .submenu{
+  display:none;position:absolute;left:auto;right:0;top:calc(100% + 10px);
+  background:#fff;border:1px solid var(--line);border-radius:12px;min-width:180px;
+  box-shadow:0 8px 24px rgba(0,0,0,.08);padding:8px;
+}
+header.site .has-sub:hover .submenu{display:block}
+header.site .submenu a{display:block;padding:10px 12px;border-radius:8px}
+header.site .submenu a:hover{background:#f6f7fb}
