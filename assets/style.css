@@ -17,7 +17,7 @@ a{color:inherit;text-decoration:none}
 .container{max-width:1100px;margin:0 auto;padding:0 20px}
 
 /* =========================================================
-   [NEW] KMCA HEADER (헤더 전체 교체)
+   [NEW] KMCA HEADER
    ========================================================= */
 .kmca-header{background:#fff}
 .kmca-header__inner{
@@ -33,9 +33,16 @@ a{color:inherit;text-decoration:none}
 /* 좌측: 로고 + 면허문구(좌하단) */
 .kmca-header__left{position:relative; min-height:72px}
 
-/* ⬇️ 수정: SVG 대신 PNG 사용 */
+/* ⬇️ UPDATED: 로고는 높이만 고정, 가로는 자동으로 비율 유지 */
 .kmca-header__logo{display:inline-flex;align-items:center;justify-content:center}
-.kmca-header__logo img{display:block;width:72px;height:72px;object-fit:contain}
+.kmca-header__logo img{
+  display:block;
+  height:56px;           /* 원하시면 48~64px 사이로 조절 */
+  width:auto;            /* 비율 유지 */
+  object-fit:contain;
+  -webkit-user-drag:none;
+  image-rendering:auto;
+}
 /* 혹시 남아있는 SVG 마크업이 있다면 숨김 */
 .kmca-header__logo svg{display:none !important}
 
@@ -48,7 +55,7 @@ a{color:inherit;text-decoration:none}
 .kmca-header__title{
   margin:0; text-align:center;
   font-weight:800; letter-spacing:.02em;
-  color:#0b1f6b;              /* 시안 네이비 느낌 */
+  color:#0b1f6b;
   font-size:42px; line-height:1.1;
 }
 
@@ -77,7 +84,7 @@ a{color:inherit;text-decoration:none}
 }
 .kmca-nav .submenu a:hover{background:#f6f7fb}
 
-/* 활성 메뉴 표시(선택) */
+/* 활성 메뉴 표시 */
 .kmca-nav .top-link.is-active{position:relative}
 .kmca-nav .top-link.is-active::after{
   content:""; position:absolute; left:0; right:0; bottom:-6px;
@@ -88,7 +95,7 @@ a{color:inherit;text-decoration:none}
 .kmca-header__divider{height:1px; background:var(--line); margin:18px 0 10px}
 
 /* =========================================================
-   HERO / COMMON BLOCKS (기존 섹션 유지, 필요 시 조정)
+   HERO / COMMON BLOCKS
    ========================================================= */
 .hero{background:linear-gradient(160deg,#0b1220 0%,#1e293b 60%);color:#fff}
 .hero-inner{display:grid;grid-template-columns:1.1fr .9fr;gap:20px;align-items:center;padding:64px 0}
@@ -106,6 +113,26 @@ section{padding:56px 0}
 h1,h2{margin:0 0 16px}
 .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
 
+/* =========================================================
+   본문 가운데 정렬 유틸 (요청 반영)
+   ========================================================= */
+/* 섹션 타이틀 중앙 */
+.section-title{text-align:center;font-weight:800;margin:0 0 24px}
+
+/* 그리드 안 아이템 자체를 가운데에 */
+.grid-center{display:grid;gap:24px;justify-items:center;align-items:center}
+
+/* 텍스트 패널 중앙 정렬 */
+.panel-center{text-align:center;max-width:560px;width:100%}
+.panel-center .bullets{list-style:none;margin:8px 0 0;padding:0;line-height:1.9;text-align:center}
+
+/* 이미지 카드 폭 제한 */
+.figure{border-radius:14px;overflow:hidden;border:1px solid var(--line);max-width:560px;width:100%}
+.figure img{display:block;width:100%;height:auto}
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
 .footer{background:#0f172a;color:#cbd5e1}
 .footer .cols{display:grid;grid-template-columns:2fr 1fr 1fr;gap:20px}
 

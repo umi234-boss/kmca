@@ -16,27 +16,70 @@
   <link rel="stylesheet" href="assets/style.css" />
   <script defer src="assets/app.js"></script>
 
-  <!-- 페이지 전용(최소 보정) -->
+  <!-- 페이지 전용(보정) -->
   <style>
     :root{ --ink:#0f172a; --muted:#4b5563; --line:#e5e7eb; --brand:#2b55e6; }
-    body{ font-family:"Noto Sans KR",system-ui,-apple-system,Segoe UI,Roboto,"Apple SD Gothic Neo","Noto Sans KR","Malgun Gothic",sans-serif; color:var(--ink); }
+    body{
+      font-family:"Noto Sans KR",system-ui,-apple-system,"Segoe UI",Roboto,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+      color:var(--ink);
+      background:#fff;
+    }
+
+    /* 헤더 로고 깨짐 방지 (헤더 파셜에 로고 img가 있을 때 적용됨) */
+    #site-header img.logo, .kmca-header__logo img{
+      height:56px; width:auto; display:block; object-fit:contain; image-rendering:auto;
+    }
+
+    /* 컨테이너 가운데 정렬 */
     .container{ max-width:1080px; margin:0 auto; padding:0 20px; }
 
     /* 메인 타이틀 */
-    .main-ask{ padding:20px 0 10px; text-align:center; }
+    .main-ask{ padding:24px 0 8px; text-align:center; }
     .main-ask h1{ font-size:36px; letter-spacing:.02em; margin:0 0 8px; font-weight:800; }
 
-    /* 2단 교차 레이아웃 */
-    .grid{ display:grid; grid-template-columns:1fr 1fr; gap:26px; margin:22px 0 12px; }
-    .panel h2{ font-size:28px; margin:0 0 12px; font-weight:800; letter-spacing:.01em; }
-    .panel .bullets{ line-height:1.8; color:#111; padding-left: 0; }
+    /* 2단 레이아웃(가운데 정렬) */
+    .grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:32px;
+      margin:22px 0 12px;
+      align-items:center;       /* 세로 정렬 */
+      justify-items:center;     /* 각 칼럼 아이템 가운데 */
+    }
+
+    /* 패널(텍스트) 전체 가운데 정렬 */
+    .panel{
+      max-width:560px;
+      width:100%;
+      text-align:center;        /* 요청: 본문 가운데 정렬 */
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+    }
+
+    .panel h2{
+      font-size:28px; margin:0 0 12px; font-weight:800; letter-spacing:.01em;
+    }
+
+    /* 리스트도 가운데 정렬 + 점은 안쪽으로 */
+    .panel .bullets{
+      margin:6px 0 0;
+      padding-left:0;
+      list-style-position:inside;
+      line-height:1.9;
+      color:#111;
+      text-align:center;
+    }
     .panel .bullets li{ margin:2px 0; list-style:none; }
+
     .circled{ font-weight:700; margin-right:6px; }
-    .figure{ border-radius:14px; overflow:hidden; border:1px solid var(--line); }
+
+    /* 이미지 카드 */
+    .figure{ border-radius:14px; overflow:hidden; border:1px solid var(--line); max-width:560px; width:100%; }
     .figure img{ display:block; width:100%; height:auto; }
 
     /* 하단 브랜드/내비/회사정보 */
-    .brand-block{ padding:34px 0 46px; text-align:center; }
+    .brand-block{ padding:40px 0 46px; text-align:center; }
     .brand-block .corp{ font-size:28px; font-weight:800; }
     .sub-en{ margin:6px 0 10px; font-size:12px; letter-spacing:.08em; color:#6b7280; }
     .pill-nav{ display:flex; gap:10px; flex-wrap:wrap; justify-content:center; margin:14px 0 18px; }
@@ -48,7 +91,7 @@
     /* 반응형 */
     @media (max-width: 900px){
       .main-ask h1{ font-size:28px; }
-      .grid{ grid-template-columns:1fr; gap:18px; }
+      .grid{ grid-template-columns:1fr; gap:20px; }
       .panel h2{ font-size:22px; }
     }
   </style>
@@ -78,7 +121,7 @@
     </figure>
   </section>
 
-  <!-- 하단 행: 좌(이미지) / 우(텍스트) 교차배치 -->
+  <!-- 하단 행: 좌(이미지) / 우(텍스트) -->
   <section class="container grid" aria-label="교통사고 피해자 정보">
     <figure class="figure">
       <img src="assets/img/main-bike.jpg" alt="도심 속 오토바이" width="1600" height="900" loading="lazy" decoding="async">
