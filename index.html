@@ -15,105 +15,25 @@
   <!-- 전역 스타일 & 앱 스크립트 -->
   <link rel="stylesheet" href="assets/style.css" />
   <script defer src="assets/app.js"></script>
-
-  <!-- 페이지 전용(보정) -->
-  <style>
-    :root{ --ink:#0f172a; --muted:#4b5563; --line:#e5e7eb; --brand:#2b55e6; }
-    body{
-      font-family:"Noto Sans KR",system-ui,-apple-system,"Segoe UI",Roboto,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;
-      color:var(--ink);
-      background:#fff;
-    }
-
-    /* 헤더 로고 깨짐 방지 (헤더 파셜에 로고 img가 있을 때 적용됨) */
-    #site-header img.logo, .kmca-header__logo img{
-      height:56px; width:auto; display:block; object-fit:contain; image-rendering:auto;
-    }
-
-    /* 컨테이너 가운데 정렬 */
-    .container{ max-width:1080px; margin:0 auto; padding:0 20px; }
-
-    /* 메인 타이틀 */
-    .main-ask{ padding:24px 0 8px; text-align:center; }
-    .main-ask h1{ font-size:36px; letter-spacing:.02em; margin:0 0 8px; font-weight:800; }
-
-    /* 2단 레이아웃(가운데 정렬) */
-    .grid{
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:32px;
-      margin:22px 0 12px;
-      align-items:center;       /* 세로 정렬 */
-      justify-items:center;     /* 각 칼럼 아이템 가운데 */
-    }
-
-    /* 패널(텍스트) 전체 가운데 정렬 */
-    .panel{
-      max-width:560px;
-      width:100%;
-      text-align:center;        /* 요청: 본문 가운데 정렬 */
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-    }
-
-    .panel h2{
-      font-size:28px; margin:0 0 12px; font-weight:800; letter-spacing:.01em;
-    }
-
-    /* 리스트도 가운데 정렬 + 점은 안쪽으로 */
-    .panel .bullets{
-      margin:6px 0 0;
-      padding-left:0;
-      list-style-position:inside;
-      line-height:1.9;
-      color:#111;
-      text-align:center;
-    }
-    .panel .bullets li{ margin:2px 0; list-style:none; }
-
-    .circled{ font-weight:700; margin-right:6px; }
-
-    /* 이미지 카드 */
-    .figure{ border-radius:14px; overflow:hidden; border:1px solid var(--line); max-width:560px; width:100%; }
-    .figure img{ display:block; width:100%; height:auto; }
-
-    /* 하단 브랜드/내비/회사정보 */
-    .brand-block{ padding:40px 0 46px; text-align:center; }
-    .brand-block .corp{ font-size:28px; font-weight:800; }
-    .sub-en{ margin:6px 0 10px; font-size:12px; letter-spacing:.08em; color:#6b7280; }
-    .pill-nav{ display:flex; gap:10px; flex-wrap:wrap; justify-content:center; margin:14px 0 18px; }
-    .pill-nav a{ padding:10px 16px; border:1px solid #cbd5e1; border-radius:999px; text-decoration:none; color:#111; font-weight:600; }
-    .pill-nav a:hover{ border-color:#94a3b8; }
-    .company-info{ font-size:12px; color:#6b7280; line-height:1.7; }
-    .copy{ margin-top:10px; font-size:11px; color:#9aa3af; }
-
-    /* 반응형 */
-    @media (max-width: 900px){
-      .main-ask h1{ font-size:28px; }
-      .grid{ grid-template-columns:1fr; gap:20px; }
-      .panel h2{ font-size:22px; }
-    }
-  </style>
 </head>
 <body>
   <!-- 공통 헤더 파셜 주입 -->
   <div id="site-header"></div>
 
   <!-- 메인 질문 타이틀 -->
-  <section class="main-ask container" aria-labelledby="askTitle">
-    <h1 id="askTitle">무엇이 불편하신가요?</h1>
+  <section class="container" aria-labelledby="askTitle">
+    <h1 id="askTitle" class="section-title">무엇이 불편하신가요?</h1>
   </section>
 
   <!-- 상단 행: 좌(텍스트) / 우(이미지) -->
-  <section class="container grid" aria-label="교통사고 피보험자 정보">
-    <article class="panel">
+  <section class="container grid-center" aria-label="교통사고 피보험자 정보">
+    <article class="panel-center">
       <h2>교통사고 피보험자</h2>
       <ul class="bullets">
-        <li><span class="circled">◎</span>전문가의 자문이 필요하신 고객님</li>
-        <li><span class="circled">◎</span>자동차 운전 중 실수로 사고를 내신 고객님</li>
-        <li><span class="circled">◎</span>사고로 인한 자차 수리, 보트 등 레저스포츠 손해</li>
-        <li><span class="circled">◎</span>보상 진행에 이견이 있으신 고객님</li>
+        <li>◎ 전문가의 자문이 필요하신 고객님</li>
+        <li>◎ 자동차 운전 중 실수로 사고를 내신 고객님</li>
+        <li>◎ 사고로 인한 자차 수리, 보트 등 레저스포츠 손해</li>
+        <li>◎ 보상 진행에 이견이 있으신 고객님</li>
       </ul>
     </article>
     <figure class="figure">
@@ -122,22 +42,22 @@
   </section>
 
   <!-- 하단 행: 좌(이미지) / 우(텍스트) -->
-  <section class="container grid" aria-label="교통사고 피해자 정보">
+  <section class="container grid-center" aria-label="교통사고 피해자 정보">
     <figure class="figure">
       <img src="assets/img/main-bike.jpg" alt="도심 속 오토바이" width="1600" height="900" loading="lazy" decoding="async">
     </figure>
-    <article class="panel">
+    <article class="panel-center">
       <h2>교통사고 피해자</h2>
       <ul class="bullets">
-        <li><span class="circled">◎</span>운전 중 불가피하게 사고를 당하신 분</li>
-        <li><span class="circled">◎</span>이륜차·자전거 등 레저스포츠 기종 피해</li>
-        <li><span class="circled">◎</span>피해 보상에 이견이 있으신 고객님</li>
+        <li>◎ 운전 중 불가피하게 사고를 당하신 분</li>
+        <li>◎ 이륜차·자전거 등 레저스포츠 기종 피해</li>
+        <li>◎ 피해 보상에 이견이 있으신 고객님</li>
       </ul>
     </article>
   </section>
 
   <!-- 하단 브랜딩/내비/회사정보 블록 -->
-  <section class="brand-block container" aria-label="브랜드 및 연락">
+  <section class="container" aria-label="브랜드 및 연락">
     <div class="corp">신한국손해사정(주)</div>
     <div class="sub-en">KOREA, MAKE A CLAIM OF ADJUSTER</div>
 
