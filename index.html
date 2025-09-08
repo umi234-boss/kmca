@@ -6,49 +6,122 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>신한국손해사정(주) — 메인</title>
-  <meta name="description" content="교통사고 손해사정 전문 — 상담 문의 환영" />
+  <title>신한국손해사정(주) — 교통사고 손해사정 전문</title>
+  <meta name="description" content="이륜차·자전거·보트/제트스키·기타 대물까지, 공정하고 합리적인 손해평가로 보상 절차를 동행합니다. 즉시 상담 환영." />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/style.css" />
+  <link rel="icon" href="favicon.ico">
+  <!-- 공유 미리보기(OG) -->
+  <meta property="og:title" content="신한국손해사정(주) — 교통사고 손해사정 전문">
+  <meta property="og:description" content="공정하고 합리적인 손해평가. 즉시 상담 환영.">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="assets/img/og-main.jpg">
   <script defer src="assets/app.js"></script>
+  <style>
+    /* 메인 전용 소소한 보정(공통 CSS와 충돌 없음) */
+    .hero-img{width:100%;border-radius:16px;border:1px solid var(--line)}
+    .card img.thumb{width:100%;height:160px;object-fit:cover;border-radius:12px;margin-bottom:10px}
+    .muted{color:#64748b}
+  </style>
 </head>
 <body>
   <div id="site-header"></div>
 
+  <!-- Hero -->
   <section class="hero">
     <div class="container hero-inner">
       <div>
         <span class="badge">손해사정업 제 B0000468호</span>
-        <h1 style="margin:14px 0 8px;font-size:42px;line-height:1.15">무엇이 불편하신가요?<br />교통사고 손해사정 전문</h1>
-        <p style="opacity:.9">피보험자/피해자 모두에게 공정한 보상을 위해 전문가가 절차부터 증빙까지 함께합니다.</p>
+        <h1 style="margin:14px 0 8px;font-size:42px;line-height:1.15">
+          무엇이 불편하신가요?<br/>교통사고 손해사정 전문
+        </h1>
+        <p style="opacity:.9">
+          피보험자/피해자 모두에게 공정한 보상을 위해 절차부터 증빙까지 함께합니다.
+          공정하고 합리적인 손해평가로 해결까지 동행합니다.
+        </p>
         <div class="cta">
           <a class="btn primary" href="contact.html">즉시 상담하기</a>
           <a class="btn ghost" href="claim-process.html">손해사정 절차 보기</a>
         </div>
         <div style="margin-top:16px;display:flex;gap:8px;flex-wrap:wrap">
           <span class="tag">교통사고</span>
-          <span class="tag">이륜차/레저</span>
-          <span class="tag">자문</span>
-          <span class="tag">증빙/서류</span>
+          <span class="tag">이륜차/자전거</span>
+          <span class="tag">보트·제트스키</span>
+          <span class="tag">기타 대물</span>
         </div>
       </div>
       <div>
-        <div class="cards">
-          <div class="card"><h3>피보험자 상담</h3><p>과실/면책 검토, 합의 전략 자문</p></div>
-          <div class="card"><h3>피해자 지원</h3><p>치료비·휴업손해·간접손해 증빙 가이드</p></div>
-          <div class="card"><h3>절차 대행</h3><p>보험사 대응·문서작성·손해액 산정</p></div>
-        </div>
+        <!-- 히어로 이미지(없으면 임시로 비워도 동작) -->
+        <img src="assets/img/hero.jpg" alt="교통사고 손해사정 상담" class="hero-img" loading="eager">
       </div>
     </div>
   </section>
 
+  <!-- 카테고리 서비스(섹션 카드) -->
+  <section class="container" aria-labelledby="svcTitle">
+    <h2 id="svcTitle">공정하고 합리적인 손해평가</h2>
+    <p class="muted">이륜차/자전거/보트·제트스키/기타 대물 분야 전문 손해사정</p>
+
+    <div class="cards" style="margin-top:12px">
+      <a class="card" href="cases.html">
+        <img class="thumb" src="assets/img/cat-motorcycle.jpg" alt="이륜차 손해사정" loading="lazy">
+        <h3>이륜차</h3>
+        <p>휴차료·격락손해 등 주요 쟁점 정리와 증빙</p>
+      </a>
+      <a class="card" href="cases.html">
+        <img class="thumb" src="assets/img/cat-bicycle.jpg" alt="자전거 손해사정" loading="lazy">
+        <h3>자전거</h3>
+        <p>파손 부품 증빙 및 손해액 산정</p>
+      </a>
+      <a class="card" href="cases.html">
+        <img class="thumb" src="assets/img/cat-boat.jpg" alt="보트·제트스키 손해사정" loading="lazy">
+        <h3>보트·제트스키</h3>
+        <p>수리기간·감가손해 논점 정리</p>
+      </a>
+    </div>
+
+    <div class="cards" style="margin-top:12px">
+      <a class="card" href="cases.html">
+        <img class="thumb" src="assets/img/cat-others.jpg" alt="기타 대물(중장비·고가장비·악기 등)" loading="lazy">
+        <h3>기타 대물</h3>
+        <p>중장비·고가 장비·악기 등 특수사례</p>
+      </a>
+      <div class="card">
+        <h3>절차 대행</h3>
+        <p>보험사 대응·문서작성·보고서 제출까지 원스톱</p>
+      </div>
+      <div class="card">
+        <h3>증빙 가이드</h3>
+        <p>치료비·휴업손해·간접손해 항목별 체크리스트</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 빠른 바로가기 -->
   <section class="container">
     <h2>빠른 바로가기</h2>
     <div class="cards" style="margin-top:12px">
       <a class="card" href="about.html"><h3>회사소개</h3><p>우리는 무엇을 하는가</p></a>
       <a class="card" href="claim-what.html"><h3>손해사정이란?</h3><p>개념과 역할</p></a>
+      <a class="card" href="claim-process.html"><h3>업무 절차</h3><p>1~8단계 진행 흐름</p></a>
+      <a class="card" href="claim-authority.html"><h3>수임의 권한</h3><p>위임 범위와 권한</p></a>
       <a class="card" href="cases.html"><h3>사례보기</h3><p>케이스 카드 모음</p></a>
+      <a class="card" href="contact.html"><h3>문의하기</h3><p>간단 폼/연락처</p></a>
+    </div>
+  </section>
+
+  <!-- 하단 콜아웃(CTA) -->
+  <section class="container" style="padding:32px 0">
+    <div class="card" style="display:flex;align-items:center;justify-content:space-between;gap:16px">
+      <div>
+        <h3 style="margin:0 0 6px">상담이 필요하신가요?</h3>
+        <p style="margin:0;color:var(--muted)">전문가가 절차부터 증빙까지 함께합니다. 지금 바로 문의하세요.</p>
+      </div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <a class="btn primary" href="contact.html">문의하기</a>
+        <a class="btn" style="border:1px solid var(--line)" href="map.html">오시는 길</a>
+      </div>
     </div>
   </section>
 
