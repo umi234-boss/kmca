@@ -37,7 +37,7 @@ a{color:inherit;text-decoration:none}
 .kmca-header__logo{display:inline-flex;align-items:center;justify-content:center}
 .kmca-header__logo img{
   display:block;
-  height:56px;           /* 원하시면 48~64px 사이로 조절 */
+  height:80px;           /* 원하시면 48~64px 사이로 조절 */
   width:auto;            /* 비율 유지 */
   object-fit:contain;
   -webkit-user-drag:none;
@@ -59,8 +59,16 @@ a{color:inherit;text-decoration:none}
   font-size:42px; line-height:1.1;
 }
 
-/* 우측: 메뉴(드롭다운) */
-.kmca-header__nav{display:flex;justify-content:flex-end}
+/* 우측: 메뉴(드롭다운) — 2번째 줄 오른쪽 정렬 */
+.kmca-header__nav{
+  display:flex;
+  justify-content:flex-end; /* 내부 항목은 오른쪽으로 */
+  grid-column: 1 / -1;      /* 헤더 그리드 전체 폭 차지 = 2번째 줄로 내려감 */
+  justify-self: end;        /* 그리드 영역 기준 오른쪽 정렬 */
+  margin-top: 6px;          /* 타이틀과 간격 */
+}
+
+/* 나머지는 그대로 유지 */
 .kmca-nav{display:flex;gap:24px;align-items:center;list-style:none;margin:0;padding:0}
 .kmca-nav > li{position:relative}
 .kmca-nav .top-link{
@@ -179,3 +187,6 @@ header.site .has-sub .submenu{
 header.site .has-sub:hover .submenu{display:block}
 header.site .submenu a{display:block;padding:10px 12px;border-radius:8px}
 header.site .submenu a:hover{background:#f6f7fb}
+
+/* 왼쪽 정렬 패널 */
+.panel-left{ max-width:560px; width:100%; text-align:left; }
