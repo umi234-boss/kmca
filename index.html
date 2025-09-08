@@ -5,77 +5,57 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>신한국손해사정(주) — 메인</title>
 
-  <!-- 폰트 (원하시면 Pretendard CDN으로 교체 가능) -->
+  <!-- 폰트 -->
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;600;700;800&display=swap" rel="stylesheet">
 
   <meta name="description" content="교통사고 손해사정 전문 — 이륜차·자전거·보트/제트스키·기타 대물까지, 공정하고 합리적인 손해평가로 보상 절차를 동행합니다." />
   <link rel="icon" href="favicon.ico">
+
+  <!-- 전역 스타일 & 앱 스크립트 -->
   <link rel="stylesheet" href="assets/style.css" />
+  <script defer src="assets/app.js"></script>
+
+  <!-- 페이지 전용(최소 보정) -->
   <style>
-    :root{
-      --ink:#0f172a; --muted:#4b5563; --line:#e5e7eb; --brand:#2b55e6;
-    }
-    body{font-family:"Noto Sans KR",system-ui,-apple-system,Segoe UI,Roboto,Apple SD Gothic Neo,Noto Sans KR,Malgun Gothic,sans-serif;color:var(--ink)}
-    .container{max-width:1080px;margin:0 auto;padding:0 20px}
+    :root{ --ink:#0f172a; --muted:#4b5563; --line:#e5e7eb; --brand:#2b55e6; }
+    body{ font-family:"Noto Sans KR",system-ui,-apple-system,Segoe UI,Roboto,"Apple SD Gothic Neo","Noto Sans KR","Malgun Gothic",sans-serif; color:var(--ink); }
+    .container{ max-width:1080px; margin:0 auto; padding:0 20px; }
 
-    /* ===== 헤더 영역 (시안 상단) ===== */
-    .masthead{padding:28px 0 12px}
-    .masthead-inner{display:flex;align-items:center;gap:16px}
-    .masthead .logo{width:52px;height:52px;object-fit:contain}
-    .masthead .title-wrap{flex:1;text-align:center}
-    .masthead .corp{font-size:34px;font-weight:700;letter-spacing:.02em}
-    .masthead .license{font-size:13px;color:var(--muted);position:absolute;left:20px;top:24px}
-    .divider{height:1px;background:var(--line);margin:18px 0 26px}
+    /* 메인 타이틀 */
+    .main-ask{ padding:20px 0 10px; text-align:center; }
+    .main-ask h1{ font-size:36px; letter-spacing:.02em; margin:0 0 8px; font-weight:800; }
 
-    /* ===== 메인 타이틀 ===== */
-    .main-ask{padding:6px 0 10px;text-align:center}
-    .main-ask h1{font-size:36px;letter-spacing:.02em;margin:0 0 8px;font-weight:800}
+    /* 2단 교차 레이아웃 */
+    .grid{ display:grid; grid-template-columns:1fr 1fr; gap:26px; margin:22px 0 12px; }
+    .panel h2{ font-size:28px; margin:0 0 12px; font-weight:800; letter-spacing:.01em; }
+    .panel .bullets{ line-height:1.8; color:#111; padding-left: 0; }
+    .panel .bullets li{ margin:2px 0; list-style:none; }
+    .circled{ font-weight:700; margin-right:6px; }
+    .figure{ border-radius:14px; overflow:hidden; border:1px solid var(--line); }
+    .figure img{ display:block; width:100%; height:auto; }
 
-    /* ===== 2단 레이아웃(교차 배치) ===== */
-    .grid{display:grid;grid-template-columns:1fr 1fr;gap:26px;margin:22px 0 12px}
-    .panel{background:#fff}
-    .panel h2{font-size:28px;margin:0 0 12px;font-weight:800;letter-spacing:.01em}
-    .panel .bullets{line-height:1.8;color:#111}
-    .panel .bullets li{margin:2px 0}
-    .circled{font-weight:700;margin-right:6px}
-    .figure{border-radius:14px;overflow:hidden;border:1px solid var(--line)}
-    .figure img{display:block;width:100%;height:auto}
-
-    /* ===== 하단 브랜드/네비/회사정보 ===== */
-    .brand-block{padding:34px 0;text-align:center}
-    .brand-block .corp{font-size:28px;font-weight:800}
-    .sub-en{margin:6px 0 10px;font-size:12px;letter-spacing:.08em;color:#6b7280}
-    .pill-nav{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin:14px 0 18px}
-    .pill-nav a{padding:10px 16px;border:1px solid #cbd5e1;border-radius:999px;text-decoration:none;color:#111;font-weight:600}
-    .pill-nav a:hover{border-color:#94a3b8}
-    .company-info{font-size:12px;color:#6b7280;line-height:1.7}
-    .copy{margin-top:10px;font-size:11px;color:#9aa3af}
+    /* 하단 브랜드/내비/회사정보 */
+    .brand-block{ padding:34px 0 46px; text-align:center; }
+    .brand-block .corp{ font-size:28px; font-weight:800; }
+    .sub-en{ margin:6px 0 10px; font-size:12px; letter-spacing:.08em; color:#6b7280; }
+    .pill-nav{ display:flex; gap:10px; flex-wrap:wrap; justify-content:center; margin:14px 0 18px; }
+    .pill-nav a{ padding:10px 16px; border:1px solid #cbd5e1; border-radius:999px; text-decoration:none; color:#111; font-weight:600; }
+    .pill-nav a:hover{ border-color:#94a3b8; }
+    .company-info{ font-size:12px; color:#6b7280; line-height:1.7; }
+    .copy{ margin-top:10px; font-size:11px; color:#9aa3af; }
 
     /* 반응형 */
     @media (max-width: 900px){
-      .masthead .corp{font-size:26px}
-      .grid{grid-template-columns:1fr;gap:18px}
-      .panel h2{font-size:22px}
-      .main-ask h1{font-size:28px}
+      .main-ask h1{ font-size:28px; }
+      .grid{ grid-template-columns:1fr; gap:18px; }
+      .panel h2{ font-size:22px; }
     }
   </style>
 </head>
 <body>
-  <!-- 헤더(사이트 공통 헤더 컴포넌트 쓰시면 아래는 유지하고, 아니면 삭제) -->
+  <!-- 공통 헤더 파셜 주입 -->
   <div id="site-header"></div>
-
-  <!-- 상단 로고/타이틀 -->
-  <header class="masthead container" aria-label="사이트 머리글">
-    <div class="license">손해사정업 제 B0000468호</div>
-    <div class="masthead-inner">
-      <img src="assets/img/logo.png" alt="KMCA 로고" class="logo" loading="eager">
-      <div class="title-wrap">
-        <div class="corp">신한국손해사정(주)</div>
-      </div>
-    </div>
-    <div class="divider"></div>
-  </header>
 
   <!-- 메인 질문 타이틀 -->
   <section class="main-ask container" aria-labelledby="askTitle">
@@ -87,30 +67,28 @@
     <article class="panel">
       <h2>교통사고 피보험자</h2>
       <ul class="bullets">
-        <li><span class="circled">①</span>전문가의 필요한 자문이 필요하신 고객님</li>
-        <li><span class="circled">②</span>자동차 운전 중 실수로 인해 사고를 내신 고객님</li>
-        <li><span class="circled">③</span>사고 내 범죄행위 이혼차, 자차정비, 보트 등 레저스포츠</li>
-        <li><span class="circled">④</span>보상 진행에 이견림이 있으신 고객님</li>
+        <li><span class="circled">①</span>전문가의 자문이 필요하신 고객님</li>
+        <li><span class="circled">②</span>자동차 운전 중 실수로 사고를 내신 고객님</li>
+        <li><span class="circled">③</span>사고로 인한 자차 수리, 보트 등 레저스포츠 손해</li>
+        <li><span class="circled">④</span>보상 진행에 이견이 있으신 고객님</li>
       </ul>
     </article>
     <figure class="figure">
-      <!-- 사용 이미지: 운전 중 전면 도로 사진 -->
-      <img src="assets/img/main-driver.jpg" alt="운전자 시점 도로 풍경">
+      <img src="assets/img/main-driver.jpg" alt="운전자 시점 도로 풍경" width="1600" height="900" loading="lazy" decoding="async">
     </figure>
   </section>
 
   <!-- 하단 행: 좌(이미지) / 우(텍스트) 교차배치 -->
   <section class="container grid" aria-label="교통사고 피해자 정보">
     <figure class="figure">
-      <!-- 사용 이미지: 오토바이 정면/도심 배경 -->
-      <img src="assets/img/main-bike.jpg" alt="도심 속 오토바이">
+      <img src="assets/img/main-bike.jpg" alt="도심 속 오토바이" width="1600" height="900" loading="lazy" decoding="async">
     </figure>
     <article class="panel">
       <h2>교통사고 피해자</h2>
       <ul class="bullets">
         <li><span class="circled">①</span>운전 중 불가피하게 사고를 당하신 분</li>
-        <li><span class="circled">②</span>이혼차, 자전거 등 레저스포츠 기종이 피해보신 분</li>
-        <li><span class="circled">③</span>피해 보상에 이견길이 있으신 고객님</li>
+        <li><span class="circled">②</span>이륜차·자전거 등 레저스포츠 기종 피해</li>
+        <li><span class="circled">③</span>피해 보상에 이견이 있으신 고객님</li>
       </ul>
     </article>
   </section>
@@ -123,10 +101,10 @@
     <nav class="pill-nav" aria-label="빠른 메뉴">
       <a href="about.html">회사소개</a>
       <a href="claim-what.html">손해사정이란</a>
-      <a href="claim-process.html">의뢰받은단순수임거래</a>
+      <a href="claim-process.html">업무 절차</a>
       <a href="cases.html">사례보기</a>
       <a href="contact.html">문의하기</a>
-      <a href="map.html">오시는길</a>
+      <a href="map.html">오시는 길</a>
     </nav>
 
     <div class="company-info">
@@ -135,10 +113,10 @@
       <div><strong>주소:</strong> 서울시 성북구 한천로120, 하나빌딩 320호</div>
       <div><strong>대표번호:</strong> Tel. 070-7513-5206 &nbsp;&nbsp; Fax. 0505-527-5206</div>
     </div>
-    <div class="copy">©Copyright 2027. All Right Reserved.</div>
+    <div class="copy">© Copyright 2027. All Rights Reserved.</div>
   </section>
 
-  <!-- 공통 푸터 컴포넌트 사용 중이면 아래 유지 -->
+  <!-- 공통 푸터 파셜 주입 -->
   <div id="site-footer"></div>
 </body>
 </html>
