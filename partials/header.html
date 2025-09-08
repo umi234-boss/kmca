@@ -1,32 +1,48 @@
 <!-- =============================
      /partials/header.html (공통 헤더)
      ============================= -->
-<header class="site">
-  <div class="container nav">
-    <div class="logo">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="#f97316" stroke-width="2"/><path d="M6 13l3.5 3.5L18 8" stroke="#0f172a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      신한국손해사정(주)
+<header class="kmca-header" role="banner" aria-label="사이트 헤더">
+  <div class="kmca-header__inner container">
+    <!-- 좌측: 로고 + 면허문구(좌하단) -->
+    <div class="kmca-header__left">
+      <!-- 기존 SVG 로고 사용 -->
+      <div class="kmca-header__logo" aria-label="KMCA 로고">
+        <svg width="72" height="72" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="12" cy="12" r="10" stroke="#f97316" stroke-width="2"/>
+          <path d="M6 13l3.5 3.5L18 8" stroke="#0f172a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div class="kmca-header__license">손해사정업 제 B0000468호</div>
     </div>
-    <ul class="menu">
-      <li><a class="top-link" href="index.html" data-href="index.html">메인</a></li>
-      <li><a class="top-link" href="about.html" data-href="about.html">회사소개</a></li>
-      <li class="has-sub">
-        <a class="top-link" href="#">손해사정 ▾</a>
-        <div class="submenu">
-          <a href="claim-what.html" data-href="claim-what.html">손해사정이란?</a>
-          <a href="claim-process.html" data-href="claim-process.html">업무절차</a>
-          <a href="claim-authority.html" data-href="claim-authority.html">수임의 권한</a>
-        </div>
-      </li>
-      <li class="has-sub">
-        <a class="top-link" href="#">찾아보기 ▾</a>
-        <div class="submenu">
-          <a href="cases.html" data-href="cases.html">사례보기</a>
-          <a href="contact.html" data-href="contact.html">문의하기</a>
-          <a href="support.html" data-href="support.html">고객센터</a>
-          <a href="map.html" data-href="map.html">오시는 길</a>
-        </div>
-      </li>
-    </ul>
+
+    <!-- 중앙: 큰 타이틀 -->
+    <h1 class="kmca-header__title">신한국손해사정(주)</h1>
+
+    <!-- 우측: 상단 링크 + 드롭다운 -->
+    <nav class="kmca-header__nav" aria-label="상단 메뉴">
+      <ul class="kmca-nav">
+        <li><a class="top-link" href="about.html" data-href="about.html">회사소개</a></li>
+        <li class="has-sub">
+          <a class="top-link" href="claim-what.html" data-href="claim-what.html">손해사정이란</a>
+          <div class="submenu">
+            <a href="claim-what.html" data-href="claim-what.html">손해사정이란?</a>
+            <a href="claim-process.html" data-href="claim-process.html">업무절차</a>
+            <a href="claim-authority.html" data-href="claim-authority.html">수임의 권한</a>
+          </div>
+        </li>
+        <li class="has-sub">
+          <a class="top-link" href="map.html" data-href="map.html">찾아보기</a>
+          <div class="submenu">
+            <a href="cases.html" data-href="cases.html">사례보기</a>
+            <a href="contact.html" data-href="contact.html">문의하기</a>
+            <a href="support.html" data-href="support.html">고객센터</a>
+            <a href="map.html" data-href="map.html">오시는 길</a>
+          </div>
+        </li>
+      </ul>
+    </nav>
   </div>
+
+  <!-- 얇은 구분선 -->
+  <div class="kmca-header__divider" aria-hidden="true"></div>
 </header>

@@ -1,20 +1,91 @@
-:root{--bg:#0b1220;--ink:#0f172a;--muted:#475569;--brand:#f97316;--card:#ffffff;--line:#e2e8f0}
+:root{
+  --bg:#0b1220;
+  --ink:#0f172a;         /* 본문 텍스트 */
+  --muted:#475569;       /* 보조 텍스트 */
+  --brand:#f97316;       /* 포인트(주황) */
+  --card:#ffffff;
+  --line:#e2e8f0;        /* 경계선 */
+}
+
 *{box-sizing:border-box}
 html,body{margin:0;padding:0}
-body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,Pretendard,Apple SD Gothic Neo,Malgun Gothic,sans-serif;color:var(--ink);background:#f8fafc}
+body{
+  font-family:system-ui,-apple-system,"Segoe UI",Roboto,Pretendard,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  color:var(--ink); background:#f8fafc;
+}
 a{color:inherit;text-decoration:none}
 .container{max-width:1100px;margin:0 auto;padding:0 20px}
-header.site{position:sticky;top:0;background:#fff;border-bottom:1px solid var(--line);z-index:40}
-.nav{display:flex;align-items:center;justify-content:space-between;height:64px}
-.logo{display:flex;align-items:center;gap:10px;font-weight:800}
-.menu{display:flex;gap:8px;align-items:center}
-.menu>li{position:relative;list-style:none}
-.menu a{padding:10px 12px;border-radius:10px;display:inline-block}
-.menu a:hover{background:#f1f5f9}
-.menu .active{background:#fee2e2;border:1px solid #fecaca}
-.has-sub .submenu{display:none;position:absolute;left:0;top:46px;background:#fff;border:1px solid var(--line);border-radius:12px;padding:6px;min-width:180px;box-shadow:0 6px 24px rgba(0,0,0,.08)}
-.has-sub:hover .submenu{display:block}
-.submenu a{display:block}
+
+/* =========================================================
+   [NEW] KMCA HEADER (헤더 전체 교체)
+   ========================================================= */
+.kmca-header{background:#fff}
+.kmca-header__inner{
+  display:grid;
+  grid-template-columns: 220px 1fr 360px; /* 좌/중앙/우 */
+  align-items:center;
+  gap:16px;
+  padding:22px 0 10px;
+  position:sticky; top:0; z-index:40;
+  background:#fff;
+}
+
+/* 좌측: 로고 + 면허문구(좌하단) */
+.kmca-header__left{position:relative; min-height:72px}
+.kmca-header__logo svg{display:block;width:72px;height:72px}
+.kmca-header__license{
+  position:absolute; left:0; bottom:-6px;
+  font-size:13px; color:#5b6b8a; white-space:nowrap;
+}
+
+/* 중앙: 큰 타이틀 */
+.kmca-header__title{
+  margin:0; text-align:center;
+  font-weight:800; letter-spacing:.02em;
+  color:#0b1f6b;              /* 시안 네이비 느낌 */
+  font-size:42px; line-height:1.1;
+}
+
+/* 우측: 메뉴(드롭다운) */
+.kmca-header__nav{display:flex;justify-content:flex-end}
+.kmca-nav{display:flex;gap:24px;align-items:center;list-style:none;margin:0;padding:0}
+.kmca-nav > li{position:relative}
+.kmca-nav .top-link{
+  display:inline-block; padding:10px 0;
+  color:#0b1f6b; font-weight:700; font-size:15px;
+}
+.kmca-nav .top-link:hover{opacity:.9; text-decoration:underline; text-underline-offset:4px}
+
+/* 드롭다운 메뉴 */
+.kmca-nav .has-sub .submenu{
+  position:absolute; right:0; top:calc(100% + 10px);
+  min-width:190px; background:#fff; border:1px solid var(--line);
+  border-radius:12px; padding:8px;
+  box-shadow:0 8px 24px rgba(0,10,40,.08);
+  display:none;
+}
+.kmca-nav .has-sub:hover .submenu{display:block}
+.kmca-nav .submenu a{
+  display:block; padding:10px 12px; border-radius:8px;
+  color:#111; font-weight:600; font-size:14px;
+}
+.kmca-nav .submenu a:hover{background:#f6f7fb}
+
+/* 활성 메뉴 표시(선택) */
+.kmca-nav .top-link.is-active{
+  position:relative;
+}
+.kmca-nav .top-link.is-active::after{
+  content:""; position:absolute; left:0; right:0; bottom:-6px;
+  height:2px; background:#0b1f6b;
+}
+
+/* 헤더 하단 얇은 선 */
+.kmca-header__divider{height:1px; background:var(--line); margin:18px 0 10px}
+
+/* =========================================================
+   HERO / COMMON BLOCKS (기존 섹션 유지, 필요 시 조정)
+   ========================================================= */
 .hero{background:linear-gradient(160deg,#0b1220 0%,#1e293b 60%);color:#fff}
 .hero-inner{display:grid;grid-template-columns:1.1fr .9fr;gap:20px;align-items:center;padding:64px 0}
 .badge{display:inline-flex;gap:8px;align-items:center;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.25);padding:6px 10px;border-radius:999px;font-size:12px}
@@ -22,6 +93,7 @@ header.site{position:sticky;top:0;background:#fff;border-bottom:1px solid var(--
 .btn{display:inline-flex;align-items:center;gap:8px;padding:12px 16px;border-radius:12px;border:1px solid transparent;font-weight:700}
 .btn.primary{background:var(--brand);color:#fff}
 .btn.ghost{border-color:rgba(255,255,255,.4);color:#fff}
+
 .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
 .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px}
 .card h3{margin:8px 0 6px}
@@ -29,12 +101,33 @@ header.site{position:sticky;top:0;background:#fff;border-bottom:1px solid var(--
 section{padding:56px 0}
 h1,h2{margin:0 0 16px}
 .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+
 .footer{background:#0f172a;color:#cbd5e1}
 .footer .cols{display:grid;grid-template-columns:2fr 1fr 1fr;gap:20px}
+
 .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace}
 .tag{display:inline-block;border:1px solid var(--line);padding:4px 8px;border-radius:999px;font-size:12px;color:#334155}
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
 @media (max-width:900px){
   .hero-inner{grid-template-columns:1fr}
   .cards{grid-template-columns:1fr}
   .grid-2{grid-template-columns:1fr}
+}
+@media (max-width:960px){
+  .kmca-header__inner{grid-template-columns:160px 1fr 240px}
+  .kmca-header__title{font-size:34px}
+}
+@media (max-width:780px){
+  .kmca-header__inner{
+    grid-template-columns:1fr; row-gap:10px; text-align:center;
+  }
+  .kmca-header__left{justify-self:center}
+  .kmca-header__license{position:static; display:block; margin-top:6px}
+  .kmca-header__title{order:3; font-size:28px}
+  .kmca-header__nav{order:2; justify-content:center}
+  .kmca-nav{gap:18px}
+  .kmca-nav .has-sub .submenu{right:50%; transform:translateX(50%)} /* 모바일에서 중앙 */
 }
