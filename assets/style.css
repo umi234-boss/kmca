@@ -147,7 +147,7 @@ h1,h2{margin:0 0 16px}
   font-weight:800;
   font-size: var(--ask-title-size); /* 기본 30px */
   line-height:1.25;
-  margin: 0 0 40px;
+  margin: 0 0 43px;
 }
 
 @media (max-width: 780px){
@@ -246,3 +246,36 @@ header.site .submenu a:hover{background:#f6f7fb}
 
 /* 왼쪽 정렬 패널 */
 .panel-left{ max-width:560px; width:100%; text-align:left; }
+
+/* === 섹션 타이틀 중앙 정렬 (h2) === */
+.panel-left h2,
+.panel-center h2{
+  text-align:center;
+  font-weight:800;
+  margin: 0 0 10px;
+}
+
+/* === 리스트: 기본 점 제거 + 좌측 여백 제거 === */
+.panel-left .bullets,
+.panel-center .bullets{
+  list-style: none;     /* • 제거 */
+  padding-left: 0;
+  margin-left: 0;
+  line-height: 1.9;
+}
+
+/* === 리스트 글자 크게 === */
+.panel-left .bullets li,
+.panel-center .bullets li{
+  font-size: 18px;      /* 필요시 17~20px에서 조정 */
+}
+
+/* === 그리드 행에서 텍스트/이미지 세로 가운데 정렬 === */
+/* (이미지 높이는 figure.equal img { height:320px }로 통일되어 있으므로 center가 보기 좋음) */
+.grid-2{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 40px;
+  row-gap: 32px;
+  align-items: center;  /* ← start → center 로 변경 */
+}
