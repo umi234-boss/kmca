@@ -31,7 +31,15 @@ a{color:inherit;text-decoration:none}
 }
 
 /* 좌측: 로고 + 면허문구(좌하단) */
-.kmca-header__left{position:relative; min-height:72px}
+.kmca-header__left{
+  /* 기존: position:relative; min-height:72px */
+  position:relative;
+  min-height:72px;
+  display:flex;                 /* ← 추가 */
+  flex-direction:column;        /* ← 추가 */
+  align-items:center;           /* ← 추가: 가로 중앙 */
+  justify-content:center;       /* 선택: 세로 균형 */
+}
 
 /* ⬇️ UPDATED: 로고는 높이만 고정, 가로는 자동으로 비율 유지 */
 .kmca-header__logo{display:inline-flex;align-items:center;justify-content:center}
@@ -46,9 +54,13 @@ a{color:inherit;text-decoration:none}
 /* 혹시 남아있는 SVG 마크업이 있다면 숨김 */
 .kmca-header__logo svg{display:none !important}
 
+/* 라이선스: 로고 아래 중앙 */
 .kmca-header__license{
-  position:absolute; left:0; bottom:-6px;
-  font-size:13px; color:#5b6b8a; white-space:nowrap;
+  position:static;              /* ← absolute 해제 */
+  display:block;
+  margin-top:6px;               /* 로고와 간격 */
+  text-align:center;            /* 여러 줄일 때도 중앙 */
+  white-space:nowrap;
 }
 
 /* 중앙: 큰 타이틀 */
@@ -56,7 +68,16 @@ a{color:inherit;text-decoration:none}
   margin:0; text-align:center;
   font-weight:800; letter-spacing:.02em;
   color:#0b1f6b;
-  font-size:42px; line-height:1.1;
+  font-size:48px;   /* ← 42px → 48px */
+  line-height:1.1;
+}
+
+/* 태블릿 이하에서는 살짝 축소 */
+@media (max-width:960px){
+  .kmca-header__title{ font-size:36px; }  /* ← 34px → 36px */
+}
+@media (max-width:780px){
+  .kmca-header__title{ font-size:28px; }  /* 모바일 유지 */
 }
 
 /* 우측: 메뉴(드롭다운) — 2번째 줄 오른쪽 정렬 */
