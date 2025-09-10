@@ -1,10 +1,6 @@
 :root{
-  --bg:#0b1220;
-  --ink:#0f172a;         /* 본문 텍스트 */
-  --muted:#475569;       /* 보조 텍스트 */
-  --brand:#f97316;       /* 포인트(주황) */
-  --card:#ffffff;
-  --line:#e2e8f0;        /* 경계선 */
+  --bg:#0b1220; --ink:#0f172a; --muted:#475569; --brand:#f97316; --card:#ffffff; --line:#e2e8f0;
+  --ask-title-size: 30px;  /* ← 메인 타이틀 기본 크기 */
 }
 
 *{box-sizing:border-box}
@@ -68,7 +64,7 @@ a{color:inherit;text-decoration:none}
   margin:0; text-align:center;
   font-weight:800; letter-spacing:.02em;
   color:#0b1f6b;
-  font-size:48px;   /* ← 42px → 48px */
+  font-size:50px;   /* ← 42px → 48px */
   line-height:1.1;
 }
 
@@ -146,10 +142,31 @@ h1,h2{margin:0 0 16px}
    본문 가운데 정렬 유틸 (요청 반영)
    ========================================================= */
 /* 섹션 타이틀 중앙 */
-.section-title{text-align:center;font-weight:800;margin:0 0 24px}
+.section-title{
+  text-align:center;
+  font-weight:800;
+  font-size: var(--ask-title-size); /* 기본 30px */
+  line-height:1.25;
+  margin: 0 0 40px;
+}
 
+@media (max-width: 780px){
+  .section-title{ font-size: calc(var(--ask-title-size) * 0.9); }
+}
 /* 그리드 안 아이템 자체를 가운데에 */
 .grid-center{display:grid;gap:24px;justify-items:center;align-items:center}
+
+/* 2단 섹션 그리드 간격/정렬 보강 */
+.grid-2{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  column-gap:40px;     /* 좌우 여백 넉넉하게 */
+  row-gap:32px;        /* 위아래 여백으로 겹침 방지 */
+  align-items:start;   /* 텍스트가 이미지에 끌려 올라가지 않게 */
+}
+
+/* 섹션 사이 추가 간격이 필요할 때 붙여 쓰는 헬퍼 */
+.section-gap{ margin-top:40px; }
 
 /* 텍스트 패널 중앙 정렬 */
 .panel-center{text-align:center;max-width:560px;width:100%}
@@ -159,11 +176,26 @@ h1,h2{margin:0 0 16px}
 .figure{border-radius:14px;overflow:hidden;border:1px solid var(--line);max-width:560px;width:100%}
 .figure img{display:block;width:100%;height:auto}
 
+.figure.equal img{
+  width:100%;
+  height:320px;        /* ← 두 섹션 모두 동일 높이 */
+  object-fit:cover;    /* 비율 유지하며 잘라내기 */
+  display:block;
+  border-radius:14px;
+}
+
+/* 모바일에선 조금 낮게 */
+@media (max-width:780px){
+  .figure.equal img{ height:220px; }
+}
+
 /* =========================================================
    FOOTER
    ========================================================= */
 .footer{background:#0f172a;color:#cbd5e1}
 .footer .cols{display:grid;grid-template-columns:2fr 1fr 1fr;gap:20px}
+
+
 
 .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace}
 .tag{display:inline-block;border:1px solid var(--line);padding:4px 8px;border-radius:999px;font-size:12px;color:#334155}
