@@ -163,8 +163,11 @@ h1,h2{margin:0 0 16px}
   .kmca-header__inner{
     grid-template-columns:1fr; row-gap:10px; text-align:center;
   }
-  .kmca-header__left{justify-self:center}
-  .kmca-header__license{position:static; display:block; margin-top:6px}
+.kmca-header__left{ text-align:center; }  /* 부모 */
+.kmca-header__license{
+  position:static; display:block; margin-top:6px;
+  display:inline-block;            /* 부모의 text-align 영향 받음 */
+}
   .kmca-header__title{order:3; font-size:28px}
   .kmca-header__nav{order:2; justify-content:center}
   .kmca-nav{gap:18px}
