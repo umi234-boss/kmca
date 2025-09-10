@@ -37,7 +37,7 @@ a{color:inherit;text-decoration:none}
 .kmca-header__logo{display:inline-flex;align-items:center;justify-content:center}
 .kmca-header__logo img{
   display:block;
-  height:80px;           /* 원하시면 48~64px 사이로 조절 */
+  height:160px;           /* 원하시면 48~64px 사이로 조절 */
   width:auto;            /* 비율 유지 */
   object-fit:contain;
   -webkit-user-drag:none;
