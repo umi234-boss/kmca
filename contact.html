@@ -3,42 +3,1131 @@
      ============================= -->
 <!doctype html>
 <html lang="ko">
-<head>
-  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>문의하기 — 신한국손해사정(주)</title>
-  <link rel="stylesheet" href="assets/style.css" />
-  <script defer src="assets/app.js"></script>
-</head>
-<body>
-  <div id="site-header"></div>
-  <section class="container">
-    <h1>문의하기</h1>
-    <div class="grid-2">
-      <form action="https://formspree.io/f/xxxxxxx" method="POST">
-        <label>성함
-          <input name="name" required style="width:100%;padding:12px;border:1px solid var(--line);border-radius:10px;margin-top:6px;margin-bottom:12px"/>
-        </label>
-        <label>연락처
-          <input name="phone" required style="width:100%;padding:12px;border:1px solid var(--line);border-radius:10px;margin-top:6px;margin-bottom:12px"/>
-        </label>
-        <label>문의내용
-          <textarea name="message" rows="5" required style="width:100%;padding:12px;border:1px solid var(--line);border-radius:10px;margin-top:6px"></textarea>
-        </label>
-        <div style="margin-top:12px;display:flex;gap:10px">
-          <button class="btn primary" type="submit">보내기</button>
-          <button class="btn" type="reset" style="border:1px solid var(--line)">초기화</button>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>문의하기 — 신한국손해사정(주)</title>
+    <link rel="stylesheet" href="assets/style.css" />
+    <link rel="stylesheet" href="assets/header.css" />
+    <script defer src="assets/app.js" data-base="/kmca/"></script>
+    <style>
+      .contact-hero {
+        background: linear-gradient(160deg, #f9fbff 0%, #eef3ff 100%);
+        padding: 120px 0 110px;
+        color: #132a6b;
+      }
+      .contact-hero__grid {
+        display: grid;
+        grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.4fr);
+        gap: 48px;
+        align-items: center;
+      }
+      .contact-hero__lead {
+        margin: 18px 0 0;
+        max-width: 520px;
+        line-height: 1.85;
+        color: rgba(19, 42, 107, 0.78);
+        font-size: 18px;
+      }
+      .contact-divider {
+        width: 64px;
+        height: 2px;
+        background: #132a6b;
+        opacity: 0.7;
+        margin: 42px 0 0;
+        border-radius: 999px;
+      }
+      .contact-links {
+        display: flex;
+        gap: 14px;
+        justify-content: flex-end;
+        flex-wrap: wrap;
+        align-items: center;
+      }
+      .contact-links__item {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 14px 26px;
+        border-radius: 999px;
+        border: 1px solid rgba(19, 42, 107, 0.18);
+        background: #f1f5ff;
+        color: #132a6b;
+        font-weight: 700;
+        font-size: 17px;
+        letter-spacing: 0.01em;
+        transition:
+          background 0.2s ease,
+          color 0.2s ease,
+          border 0.2s ease,
+          transform 0.2s ease;
+      }
+      .contact-links__item.is-active {
+        background: #132a6b;
+        color: #fff;
+        border-color: #132a6b;
+      }
+      .contact-links__item:hover {
+        background: #132a6b;
+        color: #fff;
+        transform: translateX(4px);
+      }
+      .contact-board {
+        padding: 56px 0 120px;
+        background: #ffffff;
+      }
+      .contact-board__header {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        margin-bottom: 24px;
+        gap: 12px;
+      }
+      .contact-board__title {
+        display: flex;
+        align-items: baseline;
+        gap: 10px;
+        font-size: 30px;
+        font-weight: 800;
+        color: #132a6b;
+        margin: 0;
+      }
+      .contact-board__title-count {
+        font-size: 20px;
+        color: #1f2a44;
+        font-weight: 600;
+      }
+      .contact-board__divider {
+        width: 80px;
+        height: 2px;
+        background: #132a6b;
+        border-radius: 999px;
+      }
+      .contact-board__toolbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 20px;
+        flex-wrap: wrap;
+        margin-bottom: 16px;
+      }
+      .contact-board__info {
+        color: #475569;
+        font-size: 14px;
+      }
+      .contact-board__actions {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 24px;
+      }
+      .contact-board__write {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 12px 26px;
+        border-radius: 12px;
+        background: #1d4ed8;
+        color: #fff;
+        font-weight: 700;
+        font-size: 16px;
+        border: none;
+        cursor: pointer;
+        box-shadow: 0 10px 24px rgba(29, 78, 216, 0.18);
+        transition:
+          transform 0.2s ease,
+          box-shadow 0.2s ease;
+      }
+      .contact-board__write:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 16px 28px rgba(29, 78, 216, 0.24);
+      }
+      .contact-board__write:active {
+        transform: translateY(0);
+      }
+      .contact-empty {
+        border: 1px dashed rgba(19, 42, 107, 0.16);
+        border-radius: 24px;
+        padding: 60px 20px;
+        text-align: center;
+        color: #94a3b8;
+        display: grid;
+        gap: 12px;
+        justify-items: center;
+        margin: 32px 0;
+      }
+      .contact-empty svg {
+        width: 64px;
+        height: 64px;
+      }
+      .contact-table {
+        border: 1px solid #dbe3f5;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 18px 42px rgba(15, 23, 66, 0.08);
+      }
+      .contact-table table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      .contact-table th,
+      .contact-table td {
+        padding: 16px 18px;
+        font-size: 15px;
+      }
+      .contact-table thead th {
+        background: #f4f7ff;
+        color: #0b1f6b;
+        font-weight: 700;
+        text-align: left;
+        border-bottom: 1px solid #dbe3f5;
+      }
+      .contact-table thead th:first-child,
+      .contact-table tbody td:first-child {
+        text-align: center;
+        width: 70px;
+      }
+      .contact-table tbody tr {
+        border-bottom: 1px solid #e5eaf5;
+        background: #fff;
+        transition: background 0.2s ease;
+      }
+      .contact-table tbody tr:hover {
+        background: #f7f9ff;
+      }
+      .contact-table tbody tr:last-child {
+        border-bottom: none;
+      }
+      .contact-detail {
+        margin-top: 32px;
+        padding: 28px;
+        border-radius: 20px;
+        border: 1px solid #dbe3f5;
+        background: linear-gradient(180deg, rgba(241, 245, 255, 0.9), #ffffff);
+        box-shadow: 0 22px 48px rgba(15, 23, 66, 0.08);
+      }
+      .contact-detail__header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 16px;
+      }
+      .contact-detail__title {
+        margin: 0;
+        font-size: 22px;
+        font-weight: 800;
+        color: #132a6b;
+      }
+      .contact-detail__actions {
+        display: inline-flex;
+        gap: 8px;
+        align-items: center;
+      }
+      .contact-detail__delete {
+        border: 1px solid rgba(220, 38, 38, 0.2);
+        background: rgba(220, 38, 38, 0.08);
+        color: #b91c1c;
+        border-radius: 10px;
+        padding: 8px 14px;
+        font-weight: 700;
+        cursor: pointer;
+      }
+      .contact-detail__delete:hover {
+        background: rgba(220, 38, 38, 0.12);
+      }
+      .contact-detail__reply {
+        border: 1px solid rgba(37, 99, 235, 0.24);
+        background: rgba(37, 99, 235, 0.12);
+        color: #1d4ed8;
+        border-radius: 10px;
+        padding: 8px 14px;
+        font-weight: 700;
+        cursor: pointer;
+      }
+      .contact-detail__reply:hover {
+        background: rgba(37, 99, 235, 0.18);
+      }
+      .contact-detail__close {
+        border: none;
+        background: none;
+        font-size: 20px;
+        line-height: 1;
+        cursor: pointer;
+        color: #94a3b8;
+      }
+      .contact-detail__close:hover {
+        color: #1f2a44;
+      }
+      .contact-detail__meta {
+        margin-top: 12px;
+        font-size: 13px;
+        color: #475569;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 14px;
+      }
+      .contact-detail__body {
+        margin-top: 18px;
+        color: #1f2a44;
+        line-height: 1.8;
+        white-space: pre-line;
+      }
+      .contact-detail__empty {
+        text-align: center;
+        color: #94a3b8;
+        margin: 0;
+        font-size: 15px;
+      }
+      .contact-reply {
+        margin-top: 28px;
+        border-top: 1px solid #dbe3f5;
+        padding-top: 24px;
+        display: grid;
+        gap: 18px;
+      }
+      .contact-reply__title {
+        margin: 0;
+        font-size: 18px;
+        font-weight: 700;
+        color: #132a6b;
+      }
+      .contact-reply__list {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+      }
+      .contact-reply__form {
+        display: grid;
+        gap: 16px;
+        border: 1px solid rgba(19, 42, 107, 0.18);
+        border-radius: 14px;
+        padding: 18px;
+        background: rgba(241, 245, 255, 0.6);
+      }
+      .contact-reply__field {
+        display: grid;
+        gap: 8px;
+      }
+      .contact-reply__label {
+        font-size: 14px;
+        font-weight: 600;
+        color: #1f2a44;
+      }
+      .contact-reply__input,
+      .contact-reply__textarea {
+        border: 1px solid rgba(19, 42, 107, 0.2);
+        border-radius: 12px;
+        padding: 12px 14px;
+        font-size: 14px;
+        font-family: inherit;
+      }
+      .contact-reply__textarea {
+        min-height: 140px;
+        resize: vertical;
+      }
+      .contact-reply__actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+      }
+      .contact-reply__submit {
+        border: none;
+        background: #1d4ed8;
+        color: #fff;
+        padding: 10px 22px;
+        border-radius: 10px;
+        font-weight: 700;
+        cursor: pointer;
+        box-shadow: 0 10px 24px rgba(29, 78, 216, 0.18);
+      }
+      .contact-reply__submit:hover {
+        background: #1e40af;
+      }
+      .contact-modal {
+        position: fixed;
+        inset: 0;
+        background: rgba(15, 23, 66, 0.58);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        z-index: 2000;
+      }
+      .contact-modal[hidden] {
+        display: none;
+      }
+      .contact-modal__panel {
+        background: #fff;
+        border-radius: 18px;
+        padding: 32px;
+        width: min(420px, 100%);
+        box-shadow: 0 24px 64px rgba(15, 23, 66, 0.2);
+        display: grid;
+        gap: 18px;
+      }
+      .contact-modal__title {
+        margin: 0;
+        font-size: 22px;
+        font-weight: 800;
+        color: #132a6b;
+      }
+      .contact-modal__field {
+        display: grid;
+        gap: 8px;
+      }
+      .contact-modal__label {
+        font-size: 14px;
+        font-weight: 600;
+        color: #1f2a44;
+      }
+      .contact-modal__input {
+        border: 1px solid rgba(19, 42, 107, 0.2);
+        border-radius: 12px;
+        padding: 12px 14px;
+        font-size: 15px;
+      }
+      .contact-modal__buttons {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+      }
+      .contact-modal__button {
+        padding: 10px 20px;
+        border-radius: 10px;
+        font-weight: 700;
+        cursor: pointer;
+        border: none;
+      }
+      .contact-modal__button--ghost {
+        background: #f1f5ff;
+        color: #1f2a44;
+        border: 1px solid rgba(19, 42, 107, 0.18);
+      }
+      .contact-modal__button--primary {
+        background: #1d4ed8;
+        color: #fff;
+        box-shadow: 0 12px 24px rgba(29, 78, 216, 0.22);
+      }
+      .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+      }
+      @media (max-width: 1024px) {
+        .contact-hero__grid {
+          grid-template-columns: 1fr;
+          gap: 32px;
+          text-align: center;
+        }
+        .contact-links {
+          justify-content: center;
+        }
+        .contact-divider {
+          margin: 32px auto 0;
+        }
+        .contact-board__toolbar {
+          flex-direction: column;
+          align-items: stretch;
+        }
+      }
+      @media (max-width: 720px) {
+        .contact-links__item {
+          width: 100%;
+          justify-content: center;
+        }
+        .contact-table th,
+        .contact-table td {
+          padding: 14px 12px;
+          font-size: 14px;
+        }
+        .contact-table thead {
+          display: none;
+        }
+        .contact-table table,
+        .contact-table tbody,
+        .contact-table tr,
+        .contact-table td {
+          display: block;
+          width: 100%;
+        }
+        .contact-table tbody tr {
+          border-bottom: 1px solid #dbe3f5;
+          padding: 12px 0;
+        }
+        .contact-table tbody td {
+          padding: 8px 16px;
+          text-align: left !important;
+        }
+        .contact-table tbody td[data-label]::before {
+          content: attr(data-label);
+          display: block;
+          font-weight: 700;
+          color: #132a6b;
+          margin-bottom: 4px;
+        }
+        .contact-detail {
+          padding: 24px 20px;
+        }
+        .contact-detail__title {
+          font-size: 20px;
+        }
+        .contact-modal__panel {
+          padding: 26px 22px;
+        }
+        .contact-reply__form {
+          padding: 16px;
+        }
+      }
+      @media (max-width: 540px) {
+        .contact-hero {
+          padding: 64px 0 56px;
+        }
+        .contact-hero__lead {
+          font-size: 16px;
+        }
+        .contact-links__item {
+          font-size: 15px;
+          padding: 12px 18px;
+        }
+        .contact-board {
+          padding: 40px 0 80px;
+        }
+        .contact-board__title {
+          font-size: 24px;
+        }
+        .contact-board__info {
+          text-align: center;
+        }
+        .contact-board__actions {
+          justify-content: center;
+        }
+        .contact-detail__meta {
+          font-size: 12px;
+        }
+        .contact-detail__actions {
+          flex-wrap: wrap;
+          justify-content: center;
+        }
+        .contact-reply__title {
+          font-size: 17px;
+        }
+        .contact-modal__panel {
+          width: min(360px, 100%);
+          padding: 24px 18px;
+        }
+        .contact-modal__title {
+          font-size: 20px;
+        }
+      }
+    </style>
+  </head>
+  <body data-header-mode="solid">
+    <div id="site-header"></div>
+    <main>
+      <section class="contact-hero" aria-labelledby="contactIntro">
+        <div class="container contact-hero__grid">
+          <div>
+            <h1 id="contactIntro">문의하기</h1>
+            <p class="contact-hero__lead">
+              상담이 필요하시면 문의를 남겨주세요. 담당 손해사정사가 남겨주신
+              연락처와 내용을 확인한 후 신속하게 연락드립니다.
+            </p>
+            <div class="contact-divider" aria-hidden="true"></div>
+          </div>
+          <nav class="contact-links" aria-label="찾아보기 빠른 이동">
+            <a class="contact-links__item" href="cases.html">사례보기</a>
+            <span class="contact-links__item is-active">문의하기</span>
+            <a class="contact-links__item" href="support.html">고객센터</a>
+            <a class="contact-links__item" href="map.html">오시는 길</a>
+          </nav>
         </div>
-        <p style="font-size:12px;color:#64748b;margin-top:8px">※ Formspree/서버리스로 메일 전송 연결 가능.</p>
-      </form>
-      <div>
-        <h3>고객센터</h3>
-        <p>Tel. 070-7543-5206 / Fax. 0505-527-5206</p>
-        <p>이메일: info@nkmca.net</p>
-        <p>주소: 서울시 광진구 면목로120, 광남타운 306호</p>
-        <p class="mono">사업자등록번호: 462-88-01127</p>
+      </section>
+
+      <section class="contact-board" aria-labelledby="contactBoardTitle">
+        <div class="container">
+          <header class="contact-board__header">
+            <h2 id="contactBoardTitle" class="contact-board__title">
+              상담 문의
+              <span class="contact-board__title-count" id="contactBoardCount"
+                >0</span
+              >
+            </h2>
+            <div class="contact-board__divider" aria-hidden="true"></div>
+          </header>
+
+          <div class="contact-board__toolbar">
+            <p class="contact-board__info">
+              ※ 문의 등록 시 이름과 비밀번호를 반드시 기록해 주세요. 문의 내용은
+              담당자 확인 후 순차적으로 답변드립니다.
+            </p>
+          </div>
+
+          <div
+            class="contact-table"
+            role="region"
+            aria-labelledby="contactBoardTitle"
+          >
+            <table>
+              <thead>
+                <tr>
+                  <th scope="col">No</th>
+                  <th scope="col">카테고리</th>
+                  <th scope="col">제목</th>
+                  <th scope="col">작성자</th>
+                  <th scope="col">등록일</th>
+                </tr>
+              </thead>
+              <tbody id="contactTableBody"></tbody>
+            </table>
+          </div>
+
+          <div class="contact-board__actions">
+            <button
+              type="button"
+              class="contact-board__write"
+              id="contactWriteBtn"
+            >
+              글쓰기
+            </button>
+          </div>
+
+          <section
+            class="contact-detail"
+            id="contactDetail"
+            hidden
+            aria-live="polite"
+          >
+            <div class="contact-detail__header">
+              <h3 class="contact-detail__title" id="contactDetailTitle">
+                문의 상세
+              </h3>
+              <div class="contact-detail__actions">
+                <button
+                  type="button"
+                  class="contact-detail__reply"
+                  id="contactDetailReplyToggle"
+                >
+                  답변하기
+                </button>
+                <button
+                  type="button"
+                  class="contact-detail__delete"
+                  id="contactDetailDelete"
+                >
+                  삭제
+                </button>
+                <button
+                  type="button"
+                  class="contact-detail__close"
+                  id="contactDetailClose"
+                  aria-label="닫기"
+                >
+                  ×
+                </button>
+              </div>
+            </div>
+            <div class="contact-detail__meta" id="contactDetailMeta"></div>
+            <div class="contact-detail__body" id="contactDetailBody">
+              <p class="contact-detail__empty">본문이 없습니다.</p>
+            </div>
+            <section class="contact-reply" id="contactReplySection" hidden>
+              <h4 class="contact-reply__title">답변</h4>
+              <ul class="contact-reply__list" id="contactReplyList"></ul>
+              <form id="contactReplyForm" class="contact-reply__form">
+                <div class="contact-reply__field">
+                  <label class="contact-reply__label" for="contactReplyAuthor"
+                    >작성자</label
+                  >
+                  <input
+                    id="contactReplyAuthor"
+                    class="contact-reply__input"
+                    name="replyAuthor"
+                    type="text"
+                    placeholder="작성자 이름 (예: 관리자)"
+                  />
+                </div>
+                <div class="contact-reply__field">
+                  <label class="contact-reply__label" for="contactReplyBody"
+                    >답변 내용</label
+                  >
+                  <textarea
+                    id="contactReplyBody"
+                    class="contact-reply__textarea"
+                    name="replyBody"
+                    placeholder="답변 내용을 입력해주세요."
+                    required
+                  ></textarea>
+                </div>
+                <div class="contact-reply__actions">
+                  <button type="submit" class="contact-reply__submit">
+                    등록
+                  </button>
+                </div>
+              </form>
+            </section>
+          </section>
+        </div>
+      </section>
+    </main>
+
+    <div
+      class="contact-modal"
+      id="contactAuthModal"
+      hidden
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="contactAuthTitle"
+    >
+      <div class="contact-modal__panel">
+        <h3 class="contact-modal__title" id="contactAuthTitle">
+          문의 작성 권한 확인
+        </h3>
+        <p style="margin: 0; color: #475569; font-size: 14px; line-height: 1.6">
+          문의를 남기기 전, 담당자가 확인할 수 있도록 이름과 비밀번호를
+          설정해주세요.
+        </p>
+        <form id="contactAuthForm" class="contact-modal__form">
+          <div class="contact-modal__field">
+            <label class="contact-modal__label" for="contactAuthName"
+              >이름</label
+            >
+            <input
+              id="contactAuthName"
+              class="contact-modal__input"
+              name="name"
+              type="text"
+              placeholder="이름을 입력하세요."
+              required
+              autocomplete="name"
+            />
+          </div>
+          <div class="contact-modal__field">
+            <label class="contact-modal__label" for="contactAuthPassword"
+              >비밀번호</label
+            >
+            <input
+              id="contactAuthPassword"
+              class="contact-modal__input"
+              name="password"
+              type="password"
+              placeholder="비밀번호를 입력하세요."
+              required
+            />
+          </div>
+          <div class="contact-modal__buttons">
+            <button
+              type="button"
+              class="contact-modal__button contact-modal__button--ghost"
+              data-close
+            >
+              취소
+            </button>
+            <button
+              type="submit"
+              class="contact-modal__button contact-modal__button--primary"
+            >
+              확인
+            </button>
+          </div>
+        </form>
       </div>
     </div>
-  </section>
-  <div id="site-footer"></div>
-</body>
+
+    <div id="site-footer"></div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const STORAGE_KEY = "kmcaContactEntries";
+        const AUTH_SESSION_KEY = "kmcaContactAuth";
+        const READ_AUTH_KEY = "kmcaContactReadAuth";
+
+        const categoryLabelMap = {
+          insurer: "피보험자(보험사)",
+          victim: "피해자",
+        };
+
+        const tableBody = document.getElementById("contactTableBody");
+        const countEl = document.getElementById("contactBoardCount");
+        const emptyState = document.getElementById("contactEmptyState");
+        const detail = document.getElementById("contactDetail");
+        const detailTitle = document.getElementById("contactDetailTitle");
+        const detailMeta = document.getElementById("contactDetailMeta");
+        const detailBody = document.getElementById("contactDetailBody");
+        const detailClose = document.getElementById("contactDetailClose");
+        const detailDelete = document.getElementById("contactDetailDelete");
+        const replyToggle = document.getElementById("contactDetailReplyToggle");
+        const replySection = document.getElementById("contactReplySection");
+        const replyList = document.getElementById("contactReplyList");
+        const replyForm = document.getElementById("contactReplyForm");
+        const replyAuthorInput = document.getElementById("contactReplyAuthor");
+        const replyBodyInput = document.getElementById("contactReplyBody");
+        const writeBtn = document.getElementById("contactWriteBtn");
+
+        const authModal = document.getElementById("contactAuthModal");
+        const authForm = document.getElementById("contactAuthForm");
+        const authCloseButtons = authModal?.querySelectorAll("[data-close]");
+        const authNameInput = document.getElementById("contactAuthName");
+        const authPasswordInput = document.getElementById(
+          "contactAuthPassword"
+        );
+
+        let currentEntries = [];
+        let selectedEntry = null;
+
+        function safeParse(json, fallback) {
+          try {
+            const data = JSON.parse(json);
+            return data ?? fallback;
+          } catch (_) {
+            return fallback;
+          }
+        }
+
+        function loadEntries() {
+          return safeParse(localStorage.getItem(STORAGE_KEY), []);
+        }
+
+        function saveEntries(entries) {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
+        }
+
+        const readAuth = new Set(
+          safeParse(sessionStorage.getItem(READ_AUTH_KEY), [])
+        );
+        function updateReadAuth() {
+          sessionStorage.setItem(
+            READ_AUTH_KEY,
+            JSON.stringify(Array.from(readAuth))
+          );
+        }
+
+        function formatDate(isoLike) {
+          if (!isoLike) return "작성일 미기록";
+          const date = new Date(isoLike);
+          if (Number.isNaN(date.getTime())) return isoLike;
+          return date.toLocaleDateString("ko-KR", {
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit",
+          });
+        }
+
+        function renderEntries() {
+          currentEntries = loadEntries().sort((a, b) => {
+            const dateA = new Date(a.createdAt || 0).getTime();
+            const dateB = new Date(b.createdAt || 0).getTime();
+            return dateB - dateA;
+          });
+
+          const total = currentEntries.length;
+          if (countEl) countEl.textContent = total;
+
+          tableBody.innerHTML = "";
+          if (total === 0) {
+            emptyState.hidden = false;
+            detail.hidden = true;
+            selectedEntry = null;
+            return;
+          }
+          emptyState.hidden = true;
+
+          currentEntries.forEach((item, index) => {
+            const row = document.createElement("tr");
+            const number = total - index;
+
+            function appendCell(label, value, align) {
+              const cell = document.createElement("td");
+              cell.dataset.label = label;
+              cell.textContent = value;
+              if (align) cell.style.textAlign = align;
+              row.appendChild(cell);
+              return cell;
+            }
+
+            appendCell("No", String(number), "center");
+
+            const categoryText =
+              item.categoryLabel ||
+              categoryLabelMap[item.categoryValue] ||
+              "미지정";
+            appendCell("카테고리", categoryText);
+
+            const titleCell = document.createElement("td");
+            titleCell.dataset.label = "제목";
+            const link = document.createElement("a");
+            link.href = "#!";
+            link.textContent = item.title || "제목 미등록";
+            link.setAttribute(
+              "aria-label",
+              `${item.title || "문의"} 상세 보기`
+            );
+            link.dataset.entryId = item.id;
+            link.addEventListener("click", function (event) {
+              event.preventDefault();
+              handleEntryClick(this.dataset.entryId);
+            });
+            titleCell.appendChild(link);
+            row.appendChild(titleCell);
+
+            appendCell("작성자", item.authorName || "익명");
+            appendCell("등록일", formatDate(item.createdAt));
+
+            tableBody.appendChild(row);
+          });
+        }
+
+        function renderReplies(entry) {
+          if (!replyList) return;
+          replyList.innerHTML = "";
+          const replies = Array.isArray(entry?.replies) ? entry.replies : [];
+          if (replies.length === 0) {
+            const empty = document.createElement("li");
+            empty.textContent = "등록된 답변이 없습니다.";
+            empty.style.color = "#94a3b8";
+            replyList.appendChild(empty);
+            return;
+          }
+
+          replies
+            .slice()
+            .sort((a, b) => {
+              const dateA = new Date(a.createdAt || 0).getTime();
+              const dateB = new Date(b.createdAt || 0).getTime();
+              return dateA - dateB;
+            })
+            .forEach((reply) => {
+              const li = document.createElement("li");
+              li.style.borderBottom = "1px solid #e5eaf5";
+              li.style.padding = "16px 0";
+              li.innerHTML = `
+                <div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:14px;color:#475569;">
+                  <span><strong>${reply.author || "관리자"}</strong></span>
+                  <span>${formatDate(reply.createdAt)}</span>
+                </div>
+                <p style="margin:10px 0 0;color:#1f2a44;white-space:pre-line;">${reply.body || ""}</p>
+              `;
+              replyList.appendChild(li);
+            });
+        }
+
+        function openDetail(entry) {
+          if (!entry) return;
+          selectedEntry = entry;
+          detail.hidden = false;
+          detailTitle.textContent = entry.title || "문의 상세";
+          const metaItems = [
+            `카테고리: ${entry.categoryLabel || categoryLabelMap[entry.categoryValue] || "미지정"}`,
+            `작성자: ${entry.authorName || "익명"}`,
+            `등록일: ${formatDate(entry.createdAt)}`,
+          ];
+          detailMeta.innerHTML = metaItems
+            .map((text) => `<span>${text}</span>`)
+            .join("");
+          const bodyText = (entry.body || "").trim();
+          detailBody.textContent = bodyText || "본문이 없습니다.";
+          if (replySection) replySection.setAttribute("hidden", "");
+          renderReplies(entry);
+        }
+
+        function ensurePassword(entry, message) {
+          const input = window.prompt(message || "비밀번호를 입력하세요.");
+          if (input === null) return null;
+          if (input !== entry.password) {
+            alert("비밀번호가 일치하지 않습니다.");
+            return null;
+          }
+          return input;
+        }
+
+        function handleEntryClick(entryId) {
+          const entry = currentEntries.find((item) => item.id === entryId);
+          if (!entry) {
+            alert("선택한 문의를 찾을 수 없습니다.");
+            return;
+          }
+
+          if (!readAuth.has(entry.id)) {
+            const passwordInput = ensurePassword(
+              entry,
+              "문의 등록 시 설정한 비밀번호를 입력하세요."
+            );
+            if (passwordInput === null) return;
+            readAuth.add(entry.id);
+            updateReadAuth();
+          }
+
+          openDetail(entry);
+        }
+
+        function requestDelete(entry) {
+          if (!entry) {
+            alert("삭제할 문의가 선택되지 않았습니다.");
+            return;
+          }
+          const passwordInput = ensurePassword(
+            entry,
+            "삭제 비밀번호를 입력하세요."
+          );
+          if (passwordInput === null) return;
+
+          const ok = window.confirm(
+            `"${entry.title || "제목 미등록"}" 문의를 삭제하시겠습니까?`
+          );
+          if (!ok) return;
+
+          const updated = loadEntries().filter((item) => item.id !== entry.id);
+          saveEntries(updated);
+          readAuth.delete(entry.id);
+          updateReadAuth();
+
+          alert("문의가 삭제되었습니다.");
+          detail.hidden = true;
+          selectedEntry = null;
+          renderEntries();
+        }
+
+        if (detailDelete) {
+          detailDelete.addEventListener("click", function () {
+            requestDelete(selectedEntry);
+          });
+        }
+
+        replyToggle?.addEventListener("click", function () {
+          if (!selectedEntry) {
+            alert("먼저 문의 내용을 확인해주세요.");
+            return;
+          }
+          if (!readAuth.has(selectedEntry.id)) {
+            const passwordInput = ensurePassword(
+              selectedEntry,
+              "비밀번호를 입력하세요."
+            );
+            if (passwordInput === null) return;
+            readAuth.add(selectedEntry.id);
+            updateReadAuth();
+          }
+          if (!replySection) return;
+          if (replySection.hasAttribute("hidden")) {
+            replySection.removeAttribute("hidden");
+            replyBodyInput?.focus();
+          } else {
+            replySection.setAttribute("hidden", "");
+          }
+        });
+
+        replyForm?.addEventListener("submit", function (event) {
+          event.preventDefault();
+          if (!selectedEntry) {
+            alert("먼저 문의 내용을 확인해주세요.");
+            return;
+          }
+          const passwordInput = ensurePassword(
+            selectedEntry,
+            "답변 등록 비밀번호를 입력하세요."
+          );
+          if (passwordInput === null) return;
+
+          const body = replyBodyInput?.value.trim();
+          if (!body) {
+            alert("답변 내용을 입력해주세요.");
+            return;
+          }
+          const author = replyAuthorInput?.value.trim() || "관리자";
+
+          const entries = loadEntries();
+          const target = entries.find((item) => item.id === selectedEntry.id);
+          if (!target) {
+            alert(
+              "문의 데이터를 찾을 수 없습니다. 새로고침 후 다시 시도해주세요."
+            );
+            return;
+          }
+
+          target.replies = Array.isArray(target.replies) ? target.replies : [];
+          target.replies.push({
+            id: `reply-${Date.now()}`,
+            author,
+            body,
+            createdAt: new Date().toISOString(),
+          });
+          saveEntries(entries);
+
+          replyBodyInput.value = "";
+          renderReplies(target);
+          selectedEntry = target;
+          alert("답변이 등록되었습니다.");
+        });
+
+        if (detailClose) {
+          detailClose.addEventListener("click", function () {
+            detail.hidden = true;
+            selectedEntry = null;
+            if (replySection) replySection.setAttribute("hidden", "");
+          });
+        }
+
+        function openAuthModal() {
+          if (!authModal) return;
+          authModal.hidden = false;
+          authNameInput?.focus();
+        }
+
+        function closeAuthModal() {
+          if (!authModal) return;
+          authModal.hidden = true;
+          authForm?.reset();
+        }
+
+        authCloseButtons?.forEach((btn) => {
+          btn.addEventListener("click", function () {
+            closeAuthModal();
+          });
+        });
+
+        authModal?.addEventListener("click", function (event) {
+          if (event.target === authModal) {
+            closeAuthModal();
+          }
+        });
+
+        document.addEventListener("keydown", function (event) {
+          if (event.key === "Escape" && !authModal?.hidden) {
+            closeAuthModal();
+          }
+        });
+
+        if (authForm) {
+          authForm.addEventListener("submit", function (event) {
+            event.preventDefault();
+            const name = authNameInput?.value.trim();
+            const password = authPasswordInput?.value;
+            if (!name || !password) {
+              alert("이름과 비밀번호를 모두 입력해주세요.");
+              return;
+            }
+            sessionStorage.setItem(
+              AUTH_SESSION_KEY,
+              JSON.stringify({ name, password })
+            );
+            closeAuthModal();
+            window.location.href = "contact-write.html";
+          });
+        }
+
+        if (writeBtn) {
+          writeBtn.addEventListener("click", function () {
+            openAuthModal();
+          });
+        }
+
+        renderEntries();
+      });
+    </script>
+  </body>
 </html>

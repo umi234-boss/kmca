@@ -3,23 +3,374 @@
      ============================= -->
 <!doctype html>
 <html lang="ko">
-<head>
-  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>업무절차 — 신한국손해사정(주)</title>
-  <link rel="stylesheet" href="assets/style.css" />
-  <script defer src="assets/app.js"></script>
-</head>
-<body>
-  <div id="site-header"></div>
-  <section class="container">
-    <h1>업무절차</h1>
-    <ol>
-      <li>초기 상담 및 자료 수집</li>
-      <li>사고 사실관계 및 과실 검토</li>
-      <li>손해액 산정(직접/간접손해)</li>
-      <li>보고서 작성 및 합의 지원</li>
-    </ol>
-  </section>
-  <div id="site-footer"></div>
-</body>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>업무 절차 — 신한국손해사정(주)</title>
+    <link rel="stylesheet" href="assets/style.css" />
+    <link rel="stylesheet" href="assets/header.css" />
+    <script defer src="assets/app.js" data-base="/kmca/"></script>
+    <style>
+      .process-hero {
+        background: linear-gradient(160deg, #f9fbff 0%, #eef3ff 100%);
+        padding: 120px 0 110px;
+        color: #0a1c54;
+      }
+      .process-hero__grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+        gap: 48px;
+        align-items: center;
+      }
+      .process-hero__lead {
+        margin: 18px 0 0;
+        max-width: 540px;
+        line-height: 1.8;
+        color: rgba(10, 28, 84, 0.82);
+        font-size: 18px;
+      }
+      .process-divider {
+        width: 64px;
+        height: 2px;
+        background: #132a6b;
+        opacity: 0.7;
+        margin: 42px 0 0;
+        border-radius: 999px;
+      }
+      .process-links__group {
+        display: flex;
+        gap: 14px;
+        justify-content: flex-end;
+        flex-wrap: wrap;
+        align-items: center;
+      }
+      .process-links__item {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 14px 26px;
+        border-radius: 999px;
+        border: 1px solid rgba(19, 42, 107, 0.18);
+        background: #f1f5ff;
+        color: #132a6b;
+        font-weight: 700;
+        font-size: 17px;
+        letter-spacing: 0.01em;
+        transition:
+          background 0.2s ease,
+          color 0.2s ease,
+          border 0.2s ease,
+          transform 0.2s ease;
+      }
+      .process-links__item.is-active {
+        background: #132a6b;
+        color: #fff;
+        border-color: #132a6b;
+      }
+      .process-links__item:hover {
+        background: #132a6b;
+        color: #fff;
+        transform: translateX(4px);
+      }
+      .process-flow {
+        background: linear-gradient(180deg, #e7edff 0%, #d7e4ff 100%);
+        padding: 96px 0 120px;
+      }
+      .process-flow__header {
+        margin: 0 0 40px;
+        font-size: 28px;
+        color: #0b1f6b;
+      }
+      .process-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 32px;
+        counter-reset: process-step;
+      }
+      .process-card {
+        position: relative;
+        background: #fff;
+        border-radius: 22px;
+        padding: 28px;
+        box-shadow: 0 24px 48px rgba(15, 23, 64, 0.12);
+        border: 1px solid rgba(15, 23, 42, 0.08);
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+        min-height: 280px;
+      }
+      .process-card::before {
+        counter-increment: process-step;
+        content: counter(process-step) ".";
+        position: absolute;
+        top: 22px;
+        right: 24px;
+        font-size: 18px;
+        font-weight: 800;
+        color: rgba(19, 42, 107, 0.25);
+      }
+      .process-card__icon {
+        width: 72px;
+        height: 72px;
+        border-radius: 18px;
+        background: #eef2ff;
+        display: grid;
+        place-items: center;
+        box-shadow: inset 0 0 0 1px rgba(19, 42, 107, 0.12);
+        overflow: hidden;
+      }
+      .process-card__icon img {
+        display: block;
+        width: 60px;
+        height: 60px;
+        object-fit: contain;
+      }
+      .process-card__title {
+        margin: 0;
+        font-size: 18px;
+        color: #0b1f6b;
+        font-weight: 800;
+      }
+      .process-card__desc {
+        margin: 0;
+        color: #1f2a44;
+        line-height: 1.7;
+      }
+      .process-note {
+        margin: 48px auto 0;
+        max-width: 780px;
+        background: rgba(15, 23, 66, 0.08);
+        border-radius: 18px;
+        padding: 26px 32px;
+        color: #142044;
+        line-height: 1.8;
+        border: 1px solid rgba(19, 42, 107, 0.12);
+        box-shadow: 0 20px 40px rgba(15, 23, 66, 0.12);
+      }
+      .process-note strong {
+        color: #0b1f6b;
+      }
+      @media (max-width: 1040px) {
+        .process-hero__grid {
+          grid-template-columns: 1fr;
+          gap: 32px;
+          text-align: center;
+        }
+        .process-links__group {
+          justify-content: center;
+        }
+        .process-links__item {
+          justify-content: center;
+        }
+        .process-divider {
+          margin: 32px auto 0;
+        }
+      }
+      @media (max-width: 720px) {
+        .process-links__item {
+          width: 100%;
+        }
+      }
+      @media (max-width: 540px) {
+        .process-hero {
+          padding: 64px 0 60px;
+        }
+        .process-hero__lead {
+          font-size: 16px;
+        }
+        .process-links__item {
+          font-size: 15px;
+          padding: 12px 18px;
+        }
+        .process-flow {
+          padding: 72px 0 90px;
+        }
+        .process-card {
+          padding: 22px;
+          min-height: 0;
+        }
+        .process-card__title {
+          font-size: 17px;
+        }
+        .process-card__desc {
+          font-size: 14px;
+        }
+        .process-note {
+          padding: 20px 22px;
+          font-size: 15px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="site-header"></div>
+    <main>
+      <section class="process-hero" aria-labelledby="processIntro">
+        <div class="container process-hero__grid">
+          <div>
+            <h1 id="processIntro">손해사정 업무 절차</h1>
+            <p class="process-hero__lead">
+              사고 발생부터 보상 확정까지, 신한국손해사정(주)은 단계별 전문
+              절차를 통해 고객님의 권익을 지켜드립니다.
+            </p>
+            <div class="process-divider" aria-hidden="true"></div>
+          </div>
+          <div
+            class="process-links__group"
+            role="navigation"
+            aria-label="손해사정 안내 빠른 이동"
+          >
+            <a class="process-links__item" href="claim-what.html"
+              >손해사정이란?</a
+            >
+            <span class="process-links__item is-active">업무 절차</span>
+            <a class="process-links__item" href="claim-authority.html"
+              >수임의 권한</a
+            >
+          </div>
+        </div>
+      </section>
+
+      <section class="process-flow">
+        <div class="container">
+          <h2 class="process-flow__header">손해사정 업무 단계</h2>
+          <div class="process-grid">
+            <article class="process-card">
+              <div class="process-card__icon">
+                <img
+                  src="assets/img/a1.png"
+                  alt="사고발생 아이콘"
+                  loading="lazy"
+                  decoding="async"
+                />
+              </div>
+              <h3 class="process-card__title">사고 발생 접수</h3>
+              <p class="process-card__desc">
+                사고 발생 사실을 접수하고 보험회사 및 관련 기관에 사고 내용을
+                공유합니다.
+              </p>
+            </article>
+
+            <article class="process-card">
+              <div class="process-card__icon">
+                <img
+                  src="assets/img/a2.png"
+                  alt="손해사정사 선임 아이콘"
+                  loading="lazy"
+                  decoding="async"
+                />
+              </div>
+              <h3 class="process-card__title">손해사정사 선임</h3>
+              <p class="process-card__desc">
+                의뢰인의 요청에 따라 손해사정사를 선임하고 업무 위임장, 필요
+                서류 등을 확보합니다.
+              </p>
+            </article>
+
+            <article class="process-card">
+              <div class="process-card__icon">
+                <img
+                  src="assets/img/a3.png"
+                  alt="사고 조사 아이콘"
+                  loading="lazy"
+                  decoding="async"
+                />
+              </div>
+              <h3 class="process-card__title">사고 조사</h3>
+              <p class="process-card__desc">
+                사고 현장과 관계자 진술, 관련 증빙을 검토하여 사고 원인과 손해
+                범위를 파악합니다.
+              </p>
+            </article>
+
+            <article class="process-card">
+              <div class="process-card__icon">
+                <img
+                  src="assets/img/a4.png"
+                  alt="현장 심사 아이콘"
+                  loading="lazy"
+                  decoding="async"
+                />
+              </div>
+              <h3 class="process-card__title">현장 심사</h3>
+              <p class="process-card__desc">
+                손해액 산정을 위해 현장을 검증하고, 필요 시 전문기관과 협업하여
+                심층 점검을 진행합니다.
+              </p>
+            </article>
+
+            <article class="process-card">
+              <div class="process-card__icon">
+                <img
+                  src="assets/img/a5.png"
+                  alt="자료 수집 아이콘"
+                  loading="lazy"
+                  decoding="async"
+                />
+              </div>
+              <h3 class="process-card__title">자료 수집</h3>
+              <p class="process-card__desc">
+                관계 기관 자료, 견적서, 계약서 등 손해사정에 필요한 증빙 자료를
+                체계적으로 수집합니다.
+              </p>
+            </article>
+
+            <article class="process-card">
+              <div class="process-card__icon">
+                <img
+                  src="assets/img/a6.png"
+                  alt="손해사정 아이콘"
+                  loading="lazy"
+                  decoding="async"
+                />
+              </div>
+              <h3 class="process-card__title">손해사정</h3>
+              <p class="process-card__desc">
+                수집된 자료를 토대로 손해 범위를 분석하고, 합리적인 손해액을
+                산정합니다.
+              </p>
+            </article>
+
+            <article class="process-card">
+              <div class="process-card__icon">
+                <img
+                  src="assets/img/a7.png"
+                  alt="보고서 작성 아이콘"
+                  loading="lazy"
+                  decoding="async"
+                />
+              </div>
+              <h3 class="process-card__title">보고서 작성·제출</h3>
+              <p class="process-card__desc">
+                손해사정 결과를 보고서로 작성하고, 보험사 및 관련 기관에
+                제출하여 보상 근거를 제공합니다.
+              </p>
+            </article>
+
+            <article class="process-card">
+              <div class="process-card__icon">
+                <img
+                  src="assets/img/a8.png"
+                  alt="보고서 확인 및 지급 아이콘"
+                  loading="lazy"
+                  decoding="async"
+                />
+              </div>
+              <h3 class="process-card__title">보고서 확인·지급</h3>
+              <p class="process-card__desc">
+                보고서를 검토한 뒤 보상금이 지급되도록 지원하며, 이후 절차까지
+                마무리합니다.
+              </p>
+            </article>
+          </div>
+          <div class="process-note">
+            손해사정 과정은 각 단계별로 전문성을 요구합니다.
+            신한국손해사정(주)은 사고 초기 대응부터 보상금 지급, 사후 관리까지
+            전 과정을 체계적으로 지원합니다.
+          </div>
+        </div>
+      </section>
+    </main>
+    <div id="site-footer"></div>
+  </body>
 </html>

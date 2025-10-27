@@ -1,0 +1,110 @@
+<!-- =============================
+     /support-success.html (고객센터 문의 완료)
+     ============================= -->
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>문의 완료 — 신한국손해사정(주)</title>
+    <link rel="stylesheet" href="assets/style.css" />
+    <link rel="stylesheet" href="assets/header.css" />
+    <script defer src="assets/app.js" data-base="/kmca/"></script>
+    <style>
+      .support-success {
+        min-height: calc(100vh - 340px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 80px 20px 120px;
+        background: linear-gradient(160deg, #f9fbff 0%, #eef3ff 100%);
+      }
+      .support-success__panel {
+        max-width: 520px;
+        width: 100%;
+        background: #fff;
+        border-radius: 24px;
+        padding: 48px 40px;
+        box-shadow: 0 24px 60px rgba(15, 23, 66, 0.12);
+        border: 1px solid #dbe3f5;
+        text-align: center;
+      }
+      .support-success__title {
+        margin: 0 0 18px;
+        font-size: 30px;
+        font-weight: 800;
+        color: #132a6b;
+      }
+      .support-success__body {
+        margin: 0;
+        font-size: 16px;
+        line-height: 1.8;
+        color: #1f2a44;
+      }
+      .support-success__actions {
+        margin-top: 32px;
+        display: flex;
+        justify-content: center;
+      }
+      .support-success__link {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 12px 28px;
+        border-radius: 12px;
+        background: #1d4ed8;
+        color: #fff;
+        font-weight: 700;
+        font-size: 16px;
+        text-decoration: none;
+        box-shadow: 0 12px 28px rgba(29, 78, 216, 0.22);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+      }
+      .support-success__link:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 16px 32px rgba(29, 78, 216, 0.26);
+      }
+      @media (max-width: 720px) {
+        .support-success {
+          padding: 60px 20px 100px;
+        }
+        .support-success__panel {
+          padding: 40px 26px;
+        }
+        .support-success__title {
+          font-size: 26px;
+        }
+      }
+      @media (max-width: 540px) {
+        .support-success {
+          padding: 48px 16px 72px;
+        }
+        .support-success__panel {
+          padding: 32px 22px;
+        }
+        .support-success__title {
+          font-size: 24px;
+        }
+        .support-success__body {
+          font-size: 15px;
+        }
+      }
+    </style>
+  </head>
+  <body data-header-mode="solid">
+    <div id="site-header"></div>
+    <main class="support-success">
+      <div class="support-success__panel" role="status" aria-live="polite">
+        <h1 class="support-success__title">문의가 완료되었습니다.</h1>
+        <p class="support-success__body">
+          소중한 문의를 남겨주셔서 감사합니다.<br />
+          담당 손해사정사가 내용을 확인한 후 빠르게 연락드리겠습니다.
+        </p>
+        <div class="support-success__actions">
+          <a class="support-success__link" href="index.html">메인 페이지로 돌아가기</a>
+        </div>
+      </div>
+    </main>
+    <div id="site-footer"></div>
+  </body>
+</html>

@@ -3,24 +3,811 @@
      ============================= -->
 <!doctype html>
 <html lang="ko">
-<head>
-  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>사례보기 — 신한국손해사정(주)</title>
-  <link rel="stylesheet" href="assets/style.css" />
-  <script defer src="assets/app.js"></script>
-</head>
-<body>
-  <div id="site-header"></div>
-  <section class="container">
-    <h1>사례보기</h1>
-    <p class="muted">※ 실제 사례는 내부 승인 후 업데이트하세요. 아래는 더미 카드입니다.</p>
-    <div class="cards" style="margin-top:12px">
-      <div class="card"><h3>이륜차 단독사고</h3><p>휴차료/격락손해 인정 범위 정리</p></div>
-      <div class="card"><h3>택시 공제조합</h3><p>정액 교통비 vs 실비 논점</p></div>
-      <div class="card"><h3>수입차 대물</h3><p>감가손해/수리기간 산정</p></div>
-    </div>
-  </section>
-  <div id="site-footer"></div>
-</body>
-</html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>사례보기 — 신한국손해사정(주)</title>
+    <link rel="stylesheet" href="assets/style.css" />
+    <link rel="stylesheet" href="assets/header.css" />
+    <script defer src="assets/app.js" data-base="/kmca/"></script>
+    <style>
+      .case-hero {
+        background: linear-gradient(160deg, #f9fbff 0%, #eef3ff 100%);
+        padding: 120px 0 110px;
+        color: #132a6b;
+      }
+      .case-hero__grid {
+        display: grid;
+        grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.4fr);
+        gap: 48px;
+        align-items: center;
+      }
+      .case-hero__lead {
+        margin: 18px 0 0;
+        max-width: 520px;
+        line-height: 1.85;
+        color: rgba(19, 42, 107, 0.78);
+        font-size: 18px;
+      }
+      .case-divider {
+        width: 64px;
+        height: 2px;
+        background: #132a6b;
+        opacity: 0.7;
+        margin: 42px 0 0;
+        border-radius: 999px;
+      }
+      .case-links {
+        display: flex;
+        gap: 14px;
+        justify-content: flex-end;
+        flex-wrap: wrap;
+        align-items: center;
+      }
+      .case-links__item {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 14px 26px;
+        border-radius: 999px;
+        border: 1px solid rgba(19, 42, 107, 0.18);
+        background: #f1f5ff;
+        color: #132a6b;
+        font-weight: 700;
+        font-size: 17px;
+        letter-spacing: 0.01em;
+        transition:
+          background 0.2s ease,
+          color 0.2s ease,
+          border 0.2s ease,
+          transform 0.2s ease;
+      }
+      .case-links__item.is-active {
+        background: #132a6b;
+        color: #fff;
+        border-color: #132a6b;
+      }
+      .case-links__item:hover {
+        background: #132a6b;
+        color: #fff;
+        transform: translateX(4px);
+      }
+      .case-board {
+        padding: 56px 0 120px;
+        background: #ffffff;
+      }
+      .case-board__header {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        margin-bottom: 24px;
+        gap: 12px;
+      }
+      .case-board__title {
+        display: flex;
+        align-items: baseline;
+        gap: 10px;
+        font-size: 30px;
+        font-weight: 800;
+        color: #132a6b;
+        margin: 0;
+      }
+      .case-board__title-count {
+        font-size: 20px;
+        color: #1f2a44;
+        font-weight: 600;
+      }
+      .case-board__divider {
+        width: 80px;
+        height: 2px;
+        background: #132a6b;
+        border-radius: 999px;
+      }
+      .case-board__toolbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 20px;
+        flex-wrap: wrap;
+        margin-bottom: 16px;
+      }
+      .case-board__search {
+        position: relative;
+        flex: 0 0 320px;
+        max-width: 100%;
+      }
+      .case-board__search input {
+        width: 100%;
+        border-radius: 999px;
+        border: 1px solid rgba(19, 42, 107, 0.25);
+        padding: 12px 44px 12px 18px;
+        font-size: 15px;
+        color: #0f172a;
+        background: #fff;
+      }
+      .case-board__search button {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        width: 44px;
+        border: none;
+        background: none;
+        color: #132a6b;
+        cursor: pointer;
+      }
+      .case-board__search svg {
+        width: 18px;
+        height: 18px;
+      }
+      .case-table {
+        border: 1px solid #dbe3f5;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 18px 42px rgba(15, 23, 66, 0.08);
+      }
+      .case-table table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      .case-table th,
+      .case-table td {
+        padding: 16px 18px;
+        font-size: 15px;
+      }
+      .case-table thead th {
+        background: #f4f7ff;
+        color: #0b1f6b;
+        font-weight: 700;
+        text-align: left;
+        border-bottom: 1px solid #dbe3f5;
+      }
+      .case-table thead th:first-child,
+      .case-table tbody td:first-child {
+        text-align: center;
+        width: 70px;
+      }
+      .case-table thead th:last-child,
+      .case-table tbody td:last-child {
+        text-align: right;
+        width: 100px;
+      }
+      .case-table tbody tr {
+        border-bottom: 1px solid #e5eaf5;
+        background: #fff;
+        transition: background 0.2s ease;
+      }
+      .case-table tbody tr:hover {
+        background: #f7f9ff;
+      }
+      .case-table tbody tr:last-child {
+        border-bottom: none;
+      }
+      .case-table__category {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-weight: 600;
+        color: #1f2a44;
+      }
+      .case-board__note {
+        margin: 18px 0 0;
+        color: #475569;
+        font-size: 14px;
+      }
+      .case-board__actions {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 18px;
+      }
+      .case-board__write {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 12px 26px;
+        border-radius: 12px;
+        background: #1d4ed8;
+        color: #fff;
+        font-weight: 700;
+        font-size: 16px;
+        border: none;
+        cursor: pointer;
+        box-shadow: 0 10px 24px rgba(29, 78, 216, 0.18);
+        transition:
+          transform 0.2s ease,
+          box-shadow 0.2s ease;
+      }
+      .case-board__write:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 16px 28px rgba(29, 78, 216, 0.24);
+      }
+      .case-board__write:active {
+        transform: translateY(0);
+      }
+      .case-board__empty {
+        margin: 32px 0;
+        text-align: center;
+        color: #475569;
+        font-size: 15px;
+      }
+      .case-detail {
+        margin-top: 32px;
+        padding: 28px;
+        border-radius: 20px;
+        border: 1px solid #dbe3f5;
+        background: linear-gradient(180deg, rgba(241, 245, 255, 0.9), #ffffff);
+        box-shadow: 0 22px 48px rgba(15, 23, 66, 0.08);
+      }
+      .case-detail__header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 16px;
+      }
+      .case-detail__title {
+        margin: 0;
+        font-size: 22px;
+        font-weight: 800;
+        color: #132a6b;
+      }
+      .case-detail__actions {
+        display: inline-flex;
+        gap: 8px;
+        align-items: center;
+      }
+      .case-detail__delete {
+        border: 1px solid rgba(220, 38, 38, 0.2);
+        background: rgba(220, 38, 38, 0.08);
+        color: #b91c1c;
+        border-radius: 10px;
+        padding: 8px 14px;
+        font-weight: 700;
+        cursor: pointer;
+      }
+      .case-detail__delete:hover {
+        background: rgba(220, 38, 38, 0.12);
+      }
+      .case-detail__close {
+        border: none;
+        background: none;
+        font-size: 20px;
+        line-height: 1;
+        cursor: pointer;
+        color: #94a3b8;
+      }
+      .case-detail__close:hover {
+        color: #1f2a44;
+      }
+      .case-detail__meta {
+        margin-top: 12px;
+        font-size: 13px;
+        color: #475569;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 14px;
+      }
+      .case-detail__body {
+        margin-top: 18px;
+        color: #1f2a44;
+        line-height: 1.8;
+        white-space: pre-line;
+      }
+      .case-detail__empty {
+        text-align: center;
+        color: #94a3b8;
+        margin: 0;
+        font-size: 15px;
+      }
+      .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+      }
+      @media (max-width: 1024px) {
+        .case-hero__grid {
+          grid-template-columns: 1fr;
+          gap: 32px;
+          text-align: center;
+        }
+        .case-links {
+          justify-content: center;
+        }
+        .case-divider {
+          margin: 32px auto 0;
+        }
+        .case-board__toolbar {
+          flex-direction: column;
+          align-items: stretch;
+        }
+        .case-board__search {
+          flex: 1 1 auto;
+        }
+      }
+      @media (max-width: 720px) {
+        .case-links__item {
+          width: 100%;
+          justify-content: center;
+        }
+        .case-table th,
+        .case-table td {
+          padding: 14px 12px;
+          font-size: 14px;
+        }
+        .case-table thead {
+          display: none;
+        }
+        .case-table table,
+        .case-table tbody,
+        .case-table tr,
+        .case-table td {
+          display: block;
+          width: 100%;
+        }
+        .case-table tbody tr {
+          border-bottom: 1px solid #dbe3f5;
+          padding: 12px 0;
+        }
+        .case-table tbody td {
+          padding: 8px 16px;
+          text-align: left !important;
+        }
+        .case-table tbody td[data-label]::before {
+          content: attr(data-label);
+          display: block;
+          font-weight: 700;
+          color: #132a6b;
+          margin-bottom: 4px;
+        }
+        .case-board__actions {
+          justify-content: center;
+        }
+        .case-detail {
+          padding: 24px 20px;
+        }
+        .case-detail__title {
+          font-size: 20px;
+        }
+        .case-detail__actions {
+          gap: 6px;
+        }
+        .case-detail__delete {
+          padding: 6px 12px;
+          font-size: 14px;
+        }
+      }
+      @media (max-width: 540px) {
+        .case-hero {
+          padding: 64px 0 56px;
+        }
+        .case-hero__lead {
+          font-size: 16px;
+        }
+        .case-links__item {
+          font-size: 15px;
+          padding: 12px 18px;
+        }
+        .case-board {
+          padding: 40px 0 80px;
+        }
+        .case-board__title {
+          font-size: 24px;
+        }
+        .case-table tbody td {
+          padding: 10px 14px;
+        }
+        .case-board__note {
+          font-size: 13px;
+        }
+      }
+    </style>
+  </head>
+  <body data-header-mode="solid">
+    <div id="site-header"></div>
+    <main>
+      <section class="case-hero" aria-labelledby="caseIntro">
+        <div class="container case-hero__grid">
+          <div>
+            <h1 id="caseIntro">사례보기</h1>
+            <p class="case-hero__lead">
+              신한국손해사정(주)이 실제 사고 사례를 통해 고객님의 상황과 가장
+              가까운 대응 전략을 확인해 보세요.
+            </p>
+            <div class="case-divider" aria-hidden="true"></div>
+          </div>
+          <nav class="case-links" aria-label="찾아보기 빠른 이동">
+            <span class="case-links__item is-active">사례보기</span>
+            <a class="case-links__item" href="contact.html">문의하기</a>
+            <a class="case-links__item" href="support.html">고객센터</a>
+            <a class="case-links__item" href="map.html">오시는 길</a>
+          </nav>
+        </div>
+      </section>
 
+      <section class="case-board" aria-labelledby="caseBoardTitle">
+        <div class="container">
+          <header class="case-board__header">
+            <h2 id="caseBoardTitle" class="case-board__title">
+              사고사례
+              <span class="case-board__title-count" id="caseBoardCount">0</span>
+            </h2>
+            <div class="case-board__divider" aria-hidden="true"></div>
+          </header>
+
+          <div class="case-board__toolbar">
+            <div class="case-board__note">
+              ※ 실제 사례는 내부 검토 후 주기적으로 업데이트됩니다.
+            </div>
+            <form class="case-board__search" role="search" action="#">
+              <label class="sr-only" for="caseSearchInput">사례 검색</label>
+              <input
+                id="caseSearchInput"
+                type="search"
+                name="q"
+                placeholder="Search"
+                aria-label="사례 검색"
+              />
+              <button type="submit" aria-label="검색">
+                <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                  <path
+                    d="M8.75 3.75a5 5 0 0 1 4.026 8.023l3.226 3.226a.75.75 0 1 1-1.06 1.06l-3.226-3.225A5 5 0 1 1 8.75 3.75Zm0 1.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7Z"
+                    fill="currentColor"
+                  />
+                </svg>
+              </button>
+            </form>
+          </div>
+
+          <p class="case-board__empty" id="caseEmptyMessage" hidden>
+            아직 등록된 사례가 없습니다. 첫 사례를 작성해 주세요.
+          </p>
+
+          <div
+            class="case-table"
+            role="region"
+            aria-labelledby="caseBoardTitle"
+          >
+            <table>
+              <thead>
+                <tr>
+                  <th scope="col">No</th>
+                  <th scope="col">
+                    <span class="case-table__category">
+                      카테고리
+                      <span aria-hidden="true">▾</span>
+                    </span>
+                  </th>
+                  <th scope="col">제목</th>
+                  <th scope="col">글쓴이</th>
+                  <th scope="col">조회수</th>
+                </tr>
+              </thead>
+              <tbody id="caseTableBody"></tbody>
+            </table>
+          </div>
+
+          <div class="case-board__actions">
+            <button type="button" class="case-board__write" id="caseWriteBtn">
+              글쓰기
+            </button>
+          </div>
+
+          <section
+            class="case-detail"
+            id="caseDetail"
+            hidden
+            aria-live="polite"
+          >
+            <div class="case-detail__header">
+              <h3 class="case-detail__title" id="caseDetailTitle">사례 상세</h3>
+              <div class="case-detail__actions">
+                <button
+                  type="button"
+                  class="case-detail__delete"
+                  id="caseDetailDelete"
+                >
+                  삭제
+                </button>
+                <button
+                  type="button"
+                  class="case-detail__close"
+                  id="caseDetailClose"
+                  aria-label="닫기"
+                >
+                  ×
+                </button>
+              </div>
+            </div>
+            <div class="case-detail__meta" id="caseDetailMeta"></div>
+            <div class="case-detail__body" id="caseDetailBody">
+              <p class="case-detail__empty">본문이 없습니다.</p>
+            </div>
+          </section>
+        </div>
+      </section>
+    </main>
+    <div id="site-footer"></div>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const STORAGE_KEY = "kmcaCases";
+        const DELETED_DEFAULT_KEY = "kmcaCasesDeletedDefaults";
+        const DEFAULT_CASES = [
+          {
+            id: "default-2",
+            categoryLabel: "피해자",
+            title: "바이크 용품 맞는데!",
+            author: "관리자",
+            views: 163,
+            body: "대형마트 주차장에서 발생한 접촉 사고로, 고객이 구매한 바이크 보호 장비의 손상이 문제였습니다. 손해사정 결과, 장비의 안전 기능이 훼손된 것으로 확인되어 교체 비용 전액을 인정받았습니다.",
+            createdAt: "2022-11-15T00:00:00+09:00",
+            isDefault: true,
+          },
+          {
+            id: "default-1",
+            categoryLabel: "피보험자(보험사)",
+            title: "정말 살살 부딪혔는데...",
+            author: "관리자",
+            views: 160,
+            body: "간단한 접촉 사고처럼 보였지만, 차량 전면 레이더 센서가 손상되면서 예상보다 큰 수리비가 발생한 사례입니다. 손해 범위를 면밀히 검증해 적정한 수리비 산정과 감가 손해 조정을 이끌어 냈습니다.",
+            createdAt: "2022-10-08T00:00:00+09:00",
+            isDefault: true,
+          },
+        ];
+
+        const categoryLabelMap = {
+          insurer: "피보험자(보험사)",
+          victim: "피해자",
+        };
+
+        const tableBody = document.getElementById("caseTableBody");
+        const countEl = document.getElementById("caseBoardCount");
+        const emptyMessage = document.getElementById("caseEmptyMessage");
+        const detail = document.getElementById("caseDetail");
+        const detailTitle = document.getElementById("caseDetailTitle");
+        const detailMeta = document.getElementById("caseDetailMeta");
+        const detailBody = document.getElementById("caseDetailBody");
+        const detailClose = document.getElementById("caseDetailClose");
+        const detailDelete = document.getElementById("caseDetailDelete");
+        const writeBtn = document.getElementById("caseWriteBtn");
+        const searchForm = document.querySelector(".case-board__search");
+
+        let currentCases = [];
+        let selectedCase = null;
+
+        function escapeHTML(value) {
+          return String(value || "")
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#39;");
+        }
+
+        function safeParse(json) {
+          try {
+            const data = JSON.parse(json);
+            return Array.isArray(data) ? data : [];
+          } catch (_) {
+            return [];
+          }
+        }
+
+        function loadStoredCases() {
+          return safeParse(localStorage.getItem(STORAGE_KEY));
+        }
+
+        function loadDeletedDefaultIds() {
+          return safeParse(localStorage.getItem(DELETED_DEFAULT_KEY));
+        }
+
+        function saveDeletedDefaultIds(ids) {
+          localStorage.setItem(DELETED_DEFAULT_KEY, JSON.stringify(ids));
+        }
+
+        function formatDate(isoLike) {
+          if (!isoLike) return "작성일 미기록";
+          const date = new Date(isoLike);
+          if (Number.isNaN(date.getTime())) return isoLike;
+          return date.toLocaleDateString("ko-KR", {
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit",
+          });
+        }
+
+        function openDetail(caseItem) {
+          if (!caseItem) return;
+          selectedCase = caseItem;
+          detail.hidden = false;
+          detailTitle.textContent = caseItem.title || "사례 상세";
+          if (detailDelete) {
+            detailDelete.hidden = false;
+            detailDelete.textContent = caseItem.isDefault
+              ? "샘플 삭제"
+              : "삭제";
+            detailDelete.dataset.caseId = caseItem.id || "";
+            detailDelete.dataset.isDefault = caseItem.isDefault ? "1" : "0";
+          }
+
+          const categoryText =
+            caseItem.categoryLabel ||
+            caseItem.category ||
+            categoryLabelMap[caseItem.categoryValue] ||
+            "카테고리 미지정";
+          const authorText = caseItem.author || "관리자";
+          const createdText = formatDate(caseItem.createdAt);
+          const viewsText =
+            typeof caseItem.views === "number" ? caseItem.views : 0;
+
+          detailMeta.innerHTML = [
+            `카테고리: ${escapeHTML(categoryText)}`,
+            `작성자: ${escapeHTML(authorText)}`,
+            `등록일: ${escapeHTML(createdText)}`,
+            `조회수: ${escapeHTML(viewsText)}`,
+          ]
+            .map((text) => `<span>${text}</span>`)
+            .join("");
+
+          const bodyText = (caseItem.body || "").trim();
+          if (bodyText) {
+            detailBody.textContent = bodyText;
+          } else {
+            detailBody.textContent = "본문이 없습니다.";
+          }
+        }
+
+        function renderCases() {
+          const deletedDefaultIds = new Set(loadDeletedDefaultIds());
+          const stored = loadStoredCases();
+          const sortedStored = [...stored].sort((a, b) => {
+            const dateA = new Date(a.createdAt || 0).getTime();
+            const dateB = new Date(b.createdAt || 0).getTime();
+            return dateB - dateA;
+          });
+
+          const availableDefaults = DEFAULT_CASES.filter(
+            (item) => !deletedDefaultIds.has(item.id)
+          );
+
+          currentCases = [...sortedStored, ...availableDefaults];
+          const total = currentCases.length;
+
+          if (countEl) countEl.textContent = total;
+          tableBody.innerHTML = "";
+
+          if (total === 0) {
+            emptyMessage.hidden = false;
+            detail.hidden = true;
+            selectedCase = null;
+            return;
+          }
+          emptyMessage.hidden = true;
+
+          currentCases.forEach((item, index) => {
+            const number = total - index;
+            const row = document.createElement("tr");
+
+            function appendCell(label, value, align) {
+              const cell = document.createElement("td");
+              cell.dataset.label = label;
+              cell.textContent = value;
+              if (align) cell.style.textAlign = align;
+              row.appendChild(cell);
+              return cell;
+            }
+
+            appendCell("No", String(number), "center");
+
+            const categoryText =
+              item.categoryLabel ||
+              item.category ||
+              categoryLabelMap[item.categoryValue] ||
+              "미지정";
+            appendCell("카테고리", categoryText);
+
+            const titleCell = document.createElement("td");
+            titleCell.dataset.label = "제목";
+            const titleLink = document.createElement("a");
+            titleLink.href = "#!";
+            titleLink.textContent = item.title || "제목 미등록";
+            titleLink.setAttribute(
+              "aria-label",
+              `${item.title || "사례"} 상세 보기`
+            );
+            titleLink.dataset.caseIndex = String(index);
+            titleLink.addEventListener("click", function (event) {
+              event.preventDefault();
+              const idx = Number(this.dataset.caseIndex);
+              if (Number.isInteger(idx)) {
+                openDetail(currentCases[idx]);
+              }
+            });
+            titleCell.appendChild(titleLink);
+            row.appendChild(titleCell);
+
+            appendCell("글쓴이", item.author || "관리자");
+
+            const viewsText = typeof item.views === "number" ? item.views : 0;
+            appendCell("조회수", String(viewsText), "right");
+
+            tableBody.appendChild(row);
+          });
+        }
+
+        if (searchForm) {
+          searchForm.addEventListener("submit", function (event) {
+            event.preventDefault();
+            alert("검색 기능은 준비 중입니다.");
+          });
+        }
+
+        if (writeBtn) {
+          writeBtn.addEventListener("click", function () {
+            const input = window.prompt("글쓰기 권한 비밀번호를 입력하세요.");
+            if (input === null) return;
+            if (input.trim() === "1234") {
+              window.location.href = "cases-write.html";
+            } else {
+              window.alert("비밀번호가 올바르지 않습니다.");
+            }
+          });
+        }
+
+        if (detailClose) {
+          detailClose.addEventListener("click", function () {
+            detail.hidden = true;
+            selectedCase = null;
+          });
+        }
+
+        function deleteCase(item) {
+          if (!item) return;
+          if (item.isDefault) {
+            const deleted = new Set(loadDeletedDefaultIds());
+            deleted.add(item.id);
+            saveDeletedDefaultIds(Array.from(deleted));
+          } else {
+            const stored = loadStoredCases();
+            const filtered = stored.filter(
+              (caseItem) => caseItem.id !== item.id
+            );
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(filtered));
+          }
+        }
+
+        if (detailDelete) {
+          detailDelete.addEventListener("click", function () {
+            if (!selectedCase) {
+              alert("삭제할 사례가 선택되지 않았습니다.");
+              return;
+            }
+            const input = window.prompt("삭제 비밀번호를 입력하세요.");
+            if (input === null) return;
+            if (input.trim() !== "1234") {
+              alert("비밀번호가 올바르지 않습니다.");
+              return;
+            }
+            const ok = window.confirm(
+              `"${selectedCase.title || "제목 미등록"}" 사례를 삭제하시겠습니까?`
+            );
+            if (!ok) return;
+
+            deleteCase(selectedCase);
+            alert("사례가 삭제되었습니다.");
+            detail.hidden = true;
+            selectedCase = null;
+            renderCases();
+          });
+        }
+
+        renderCases();
+      });
+    </script>
+  </body>
+</html>

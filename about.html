@@ -3,25 +3,594 @@
      ============================= -->
 <!doctype html>
 <html lang="ko">
-<head>
-  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>회사소개 — 신한국손해사정(주)</title>
-  <link rel="stylesheet" href="assets/style.css" />
-  <script defer src="assets/app.js"></script>
-</head>
-<body>
-  <div id="site-header"></div>
-  <section class="container">
-    <h1>회사소개</h1>
-    <div class="grid-2">
-      <p>신한국손해사정(주)은 교통사고 분야에 특화된 손해사정 법인입니다. 공정성과 투명성을 바탕으로 신속한 보상 해결을 돕습니다.</p>
-      <ul>
-        <li>설립: 2022년</li>
-        <li>업종: 손해사정 (제 B0000468호)</li>
-        <li>업무: 자동차/이륜차/레저사고 손해사정</li>
-      </ul>
-    </div>
-  </section>
-  <div id="site-footer"></div>
-</body>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>회사소개 — 신한국손해사정(주)</title>
+    <link rel="stylesheet" href="assets/style.css" />
+    <link rel="stylesheet" href="assets/header.css" />
+    <!-- 루트 배포면 data-base 생략 가능 / 서브경로라면 필수 -->
+    <script defer src="assets/app.js" data-base="/kmca/"></script>
+    <style>
+      .about-hero {
+        background: linear-gradient(160deg, #f1f5ff 0%, #dbe4ff 100%);
+        color: #0a1744;
+        padding: 100px 0 90px;
+      }
+      .about-hero__inner {
+        display: grid;
+        gap: 100px;
+        grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
+        align-items: center;
+      }
+      .about-hero__badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 16px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.65);
+        box-shadow: var(--shadow);
+        font-weight: 700;
+        font-size: 13px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: #0a1744;
+      }
+      .about-hero__badge::before {
+        content: "";
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--brand);
+      }
+      .about-hero__copy h1 {
+        margin: 18px 0 16px;
+        font-size: 48px;
+        line-height: 1.15;
+      }
+      .about-hero__lead {
+        margin: 0 0 24px;
+        font-size: 18px;
+        color: rgba(10, 23, 68, 0.82);
+      }
+      .about-hero__list {
+        margin: 0;
+        padding-left: 20px;
+        color: rgba(10, 23, 68, 0.78);
+        line-height: 1.8;
+      }
+      .about-hero__figure {
+        border-radius: 40px;
+        overflow: hidden;
+        aspect-ratio: 5 / 3; /* 원하는 비율 */
+        max-width: 600px;
+        width: 100%;
+      }
+
+      .about-hero__figure img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover; /* 박스를 채우되 넘치는 부분은 잘림 */
+        object-position: center center; /* 중앙 기준으로 맞춤 */
+        transform: scale(1.2); /* 살짝 확대 (예: 1.1 = 10% 확대) */
+      }
+      .greeting {
+        background: #0b1f6b;
+        color: #fff;
+        padding: 100px 0 92px;
+      }
+      .greeting__grid {
+        display: grid;
+        gap: 48px;
+        grid-template-columns: minmax(0, 1.35fr) minmax(0, 0.65fr);
+        align-items: center;
+      }
+      .greeting__eyebrow {
+        margin: 0 0 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.22em;
+        font-size: 12px;
+        color: rgba(255, 255, 255, 0.65);
+      }
+      .greeting__text h2 {
+        margin: 0 0 20px;
+        font-size: 38px;
+        color: #fff;
+      }
+      .greeting__text p {
+        margin: 0 0 16px;
+        color: rgba(255, 255, 255, 0.86);
+        font-size: 19px;
+        line-height: 1.9;
+      }
+      .greeting__sign {
+        margin-top: 30px;
+        font-weight: 600;
+        color: #fff;
+      }
+      .greeting__figure {
+        border-radius: 90px;
+        overflow: hidden;
+        box-shadow: 0 24px 48px rgba(8, 20, 64, 0.45);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+      }
+      .greeting__figure img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      .company-overview {
+        background: #ffffff;
+        padding: 96px 0;
+      }
+      .overview-table {
+        border-radius: 20px;
+        overflow: hidden;
+        border: 1px solid var(--line);
+        box-shadow: var(--shadow);
+        background: #fff;
+      }
+      .overview-table__row {
+        display: grid;
+        grid-template-columns: 200px 1fr;
+        gap: 20px;
+        padding: 26px 32px;
+      }
+      .overview-table__row:nth-child(even) {
+        background: #f8fafc;
+      }
+      .overview-table__term {
+        font-weight: 700;
+        color: #0b1f6b;
+        font-size: 22px;
+      }
+      .overview-table__desc {
+        color: #1e293b;
+        font-size: 20px;
+        line-height: 1.7;
+      }
+      .expertise {
+        background: #e9eeff;
+        padding: 100px 0;
+      }
+      .expertise-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 28px;
+      }
+      .expertise-card {
+        display: flex;
+        flex-direction: column;
+        background: #fff;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: var(--shadow);
+        border: 1px solid rgba(15, 23, 42, 0.06);
+        height: 100%;
+      }
+      .expertise-card__figure {
+        height: 200px;
+        overflow: hidden;
+      }
+      .expertise-card__figure img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      .expertise-card h3 {
+        margin: 24px 24px 8px;
+        font-size: 22px;
+        color: #0b1f6b;
+      }
+      .expertise-card__meta {
+        margin: 0 24px 16px;
+        font-weight: 600;
+        color: var(--muted);
+        font-size: 18px;
+        letter-spacing: 0.03em;
+      }
+      .expertise-card p {
+        margin: 0 24px 24px;
+        color: #334155;
+        font-size: 17px;
+        line-height: 1.8;
+      }
+      .contact-section {
+        position: relative;
+        padding: 112px 0;
+        background: #0f172a;
+        color: #fff;
+        overflow: hidden;
+      }
+      .contact-section::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background:
+          linear-gradient(
+            180deg,
+            rgba(15, 23, 42, 0.25) 0%,
+            rgba(15, 23, 42, 0.75) 100%
+          ),
+          url("assets/img/bbb2.jpg") center/cover no-repeat;
+        opacity: 0.5;
+      }
+      .contact-section::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          120deg,
+          rgba(10, 15, 35, 0.2),
+          rgba(10, 15, 35, 0.85)
+        );
+      }
+      .contact-section__inner {
+        position: relative;
+        z-index: 1;
+      }
+      .contact-section__content {
+        max-width: 560px;
+      }
+      .contact-section__content h2 {
+        margin: 0;
+        font-size: 34px;
+      }
+      .contact-section__lead {
+        margin: 14px 0 28px;
+        font-size: 20px;
+        color: rgba(255, 255, 255, 0.82);
+        line-height: 1.8;
+      }
+      .contact-section__list {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: grid;
+        gap: 12px;
+        font-size: 20px;
+      }
+      .contact-section__list strong {
+        display: inline-block;
+        min-width: 68px;
+        font-weight: 700;
+        color: #fff;
+      }
+      .contact-section__list a {
+        color: #fff;
+        text-decoration: underline;
+        text-decoration-thickness: 1px;
+        text-underline-offset: 4px;
+      }
+      .contact-section__actions {
+        display: flex;
+        gap: 18px;
+        margin: 32px 0 24px;
+        flex-wrap: wrap;
+      }
+      .contact-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-weight: 700;
+        letter-spacing: 0.02em;
+        color: #fff;
+      }
+      .contact-link::after {
+        content: "›";
+        font-size: 20px;
+        margin-left: 2px;
+      }
+      .contact-section__note {
+        margin: 0;
+        font-size: 20px;
+        color: rgba(255, 255, 255, 0.8);
+      }
+      @media (max-width: 1040px) {
+        .about-hero {
+          padding: 90px 0 84px;
+        }
+        .about-hero__inner,
+        .greeting__grid {
+          grid-template-columns: 1fr;
+          gap: 48px;
+          text-align: center;
+        }
+        .about-hero__copy,
+        .greeting__text {
+          text-align: center;
+        }
+        .about-hero__list {
+          padding-left: 0;
+          list-style-position: inside;
+        }
+        .about-hero__figure,
+        .greeting__figure {
+          max-width: 560px;
+          margin: 0 auto;
+        }
+        .greeting {
+          padding: 84px 0 72px;
+        }
+      }
+      @media (max-width: 720px) {
+        .about-hero {
+          padding: 72px 0 64px;
+        }
+        .about-hero__copy h1 {
+          font-size: 38px;
+        }
+        .about-hero__lead {
+          font-size: 16px;
+        }
+        .greeting__text h2 {
+          font-size: 32px;
+        }
+        .greeting__text p {
+          font-size: 17px;
+        }
+        .overview-table__row {
+          grid-template-columns: 1fr;
+          gap: 12px;
+          padding: 22px 24px;
+        }
+        .overview-table__term {
+          font-size: 20px;
+        }
+        .overview-table__desc {
+          font-size: 17px;
+        }
+        .contact-section {
+          padding: 88px 0;
+        }
+        .contact-section__content h2 {
+          font-size: 28px;
+        }
+        .contact-section__lead {
+          font-size: 18px;
+        }
+        .contact-section__list {
+          font-size: 18px;
+        }
+        .contact-section__actions {
+          justify-content: center;
+        }
+        .contact-link::after {
+          display: none;
+        }
+      }
+      @media (max-width: 540px) {
+        .about-hero {
+          padding: 60px 0 52px;
+        }
+        .about-hero__copy h1 {
+          font-size: 32px;
+        }
+        .greeting__text h2 {
+          font-size: 28px;
+        }
+        .greeting__text p {
+          font-size: 16px;
+        }
+        .overview-table__row {
+          padding: 18px 20px;
+        }
+        .overview-table__desc {
+          font-size: 16px;
+        }
+        .contact-section__content h2 {
+          font-size: 24px;
+        }
+        .contact-section__lead,
+        .contact-section__list {
+          font-size: 17px;
+        }
+        .contact-section__actions {
+          gap: 12px;
+        }
+      }
+    </style>
+  </head>
+  <body class="page-about" data-header-mode="solid">
+    <div id="site-header"></div>
+    <main>
+      <section class="about-hero">
+        <div class="container about-hero__inner">
+          <div class="about-hero__copy">
+            <span class="about-hero__badge">손해사정업 제 B0000468호</span>
+            <h1>신한국손해사정(주)</h1>
+            <p class="about-hero__lead">
+              교통사고 분야에 특화된 손해사정 법인으로서 공정성과 투명성을
+              바탕으로 신속하고 정확한 보상 해결을 지원합니다.
+            </p>
+            <ul class="about-hero__list">
+              <li>이륜차·레저 사고까지 아우르는 전문 손해사정 서비스</li>
+              <li>의료·법률 전문가 네트워크와 협업한 원스톱 보상 컨설팅</li>
+              <li>초기 상담부터 합의까지 고객 권익 중심의 맞춤 대응</li>
+            </ul>
+          </div>
+          <figure class="about-hero__figure">
+            <img src="assets/img/footer.jpg" alt="신한국손해사정 상담 장면" />
+          </figure>
+        </div>
+      </section>
+      <section class="greeting">
+        <div class="container">
+          <div class="greeting__grid">
+            <div class="greeting__text">
+              <h2>인사말</h2>
+              <p>신한국손해사정(주) 입니다.</p>
+              <p>
+                &nbsp;&nbsp;먼저 갑작스러운 사고로 인해 실질 피해를 입으신
+                여러분께 위로의 말씀을 드리며 빠른 시일 내에 일상으로 복귀하시길
+                기원합니다.
+              </p>
+              <p>
+                &nbsp;&nbsp;신한국손해사정(주)은 보험업법에 의거 금융감독원에
+                등록된 손해사정 전문 기업으로, 사고 피해자의 권익을 최우선으로
+                하는 공정한 보상 절차를 설계하고 수행하고 있습니다.
+              </p>
+              <p>
+                &nbsp;&nbsp;교통사고로 인해 발생한 분쟁과 손실은 고도의 전문성과
+                경험을 요구합니다. 저희는 손해사정 실무와 법률, 의료 자문단과의
+                협업을 통해 합리적인 보상안을 도출해 드리고 있습니다.
+              </p>
+              <p>
+                &nbsp;&nbsp;손해사정은 객관적인 손해 평가뿐만 아니라 고객님의
+                입장에서 공정한 합의를 이끌어내는 과정입니다. 수많은 현장 경험과
+                꾸준한 연구를 바탕으로 투명하고 신뢰할 수 있는 서비스를
+                약속드립니다.
+              </p>
+              <p>&nbsp;&nbsp;</p>
+              <p class="greeting__sign">임직원 일동</p>
+            </div>
+            <figure class="greeting__figure">
+              <img src="assets/img/cat-1.jpg" alt="전문 손해사정 상담" />
+            </figure>
+          </div>
+        </div>
+      </section>
+      <section class="company-overview">
+        <div class="container">
+          <h2 class="section-title">회사개요</h2>
+          <div class="overview-table">
+            <div class="overview-table__row">
+              <div class="overview-table__term">상호</div>
+              <div class="overview-table__desc">신한국손해사정(주)</div>
+            </div>
+            <div class="overview-table__row">
+              <div class="overview-table__term">대표이사</div>
+              <div class="overview-table__desc">서동극</div>
+            </div>
+            <div class="overview-table__row">
+              <div class="overview-table__term">사업자 등록번호</div>
+              <div class="overview-table__desc">462-88-01127</div>
+            </div>
+            <div class="overview-table__row">
+              <div class="overview-table__term">사업장 소재지</div>
+              <div class="overview-table__desc">
+                서울시 광진구 면목로 120, 광남타운 306호
+              </div>
+            </div>
+            <div class="overview-table__row">
+              <div class="overview-table__term">손해사정업 등록번호</div>
+              <div class="overview-table__desc">금융감독원 B0000468호</div>
+            </div>
+            <div class="overview-table__row">
+              <div class="overview-table__term">영업종목</div>
+              <div class="overview-table__desc">3종 대물</div>
+            </div>
+            <div class="overview-table__row">
+              <div class="overview-table__term">설립년도</div>
+              <div class="overview-table__desc">
+                2015년 (최초: 2003년 한국이론손해사정 설립)
+              </div>
+            </div>
+            <div class="overview-table__row">
+              <div class="overview-table__term">연락처</div>
+              <div class="overview-table__desc">
+                Tel. 0707-543-5206 / Fax. 0505-327-5206
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section class="expertise">
+        <div class="container">
+          <h2 class="section-title">전문분야</h2>
+          <div class="expertise-grid">
+            <article class="expertise-card">
+              <figure class="expertise-card__figure">
+                <img
+                  src="assets/img/cat-motorcycle.jpg"
+                  alt="이륜차 사고 손해사정"
+                />
+              </figure>
+              <h3>이륜차 · 전기스쿠터</h3>
+              <p class="expertise-card__meta">국산 · 수입차</p>
+              <p>
+                자동차사고로 인한 피해물(이륜차)에 대한 전문으로 공정하고
+                합리적인 손해평가
+              </p>
+            </article>
+            <article class="expertise-card">
+              <figure class="expertise-card__figure">
+                <img
+                  src="assets/img/cat-bicycle.jpg"
+                  alt="자전거 사고 손해사정"
+                />
+              </figure>
+              <h3>자전거</h3>
+              <p class="expertise-card__meta">전기킥보드 · 원동기장치</p>
+              <p>
+                자동차사고로 인한 피해물(이륜차)에 대한 전문으로 공정하고
+                합리적인 손해평가
+              </p>
+            </article>
+            <article class="expertise-card">
+              <figure class="expertise-card__figure">
+                <img src="assets/img/cat-boat.jpg" alt="레저사고 손해사정" />
+              </figure>
+              <h3>보트 · 제트스키</h3>
+              <p class="expertise-card__meta">레저용 · 기타기기</p>
+              <p>
+                자동차사고로 인한 피해물(보트, 제트스키)에 대한 전문으로
+                공정하고 합리적인 손해평가
+              </p>
+            </article>
+            <article class="expertise-card">
+              <figure class="expertise-card__figure">
+                <img
+                  src="assets/img/cat-others.jpg"
+                  alt="기타 레저사고 손해사정"
+                />
+              </figure>
+              <h3>기타대물</h3>
+              <p class="expertise-card__meta">중장비 · 악기 · 시설물 등</p>
+              <p>
+                자동차사고로 인한 대물에 대한 피해를 전문으로 공정하고 합리적인
+                손해평가
+              </p>
+            </article>
+          </div>
+        </div>
+      </section>
+      <section class="contact-section">
+        <div class="container contact-section__inner">
+          <div class="contact-section__content">
+            <h2>문의 및 오시는 길</h2>
+            <p class="contact-section__lead">
+              신속하고 정확한 사고 보상 평가로 고객님의 일상 회복을 지원합니다.
+            </p>
+            <ul class="contact-section__list">
+              <li>
+                <strong>주소</strong> 서울특별시 광진구 면목로 120, 광남타운
+                306호
+              </li>
+              <li>
+                <strong>이메일</strong>
+                <a href="mailto:kmca234@naver.com">kmca234@naver.com</a>
+              </li>
+              <li>
+                <strong>전화</strong>
+                <a href="tel:07075435206">0707-543-5206</a>
+              </li>
+              <li><strong>팩스</strong> 0505-327-5206</li>
+            </ul>
+            <div class="contact-section__actions">
+              <a class="contact-link" href="index.html#contact">문의하기</a>
+              <a class="contact-link" href="index.html#location">찾아오기</a>
+            </div>
+            <p class="contact-section__note">
+              여러분의 관심과 신뢰에 보답하는 파트너가 되겠습니다.
+            </p>
+          </div>
+        </div>
+      </section>
+    </main>
+    <div id="site-footer"></div>
+  </body>
 </html>

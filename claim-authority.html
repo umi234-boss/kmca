@@ -3,18 +3,335 @@
      ============================= -->
 <!doctype html>
 <html lang="ko">
-<head>
-  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>수임의 권한 — 신한국손해사정(주)</title>
-  <link rel="stylesheet" href="assets/style.css" />
-  <script defer src="assets/app.js"></script>
-</head>
-<body>
-  <div id="site-header"></div>
-  <section class="container">
-    <h1>수임의 권한</h1>
-    <p>위임 범위 내에서 사실조사, 자료요청, 손해액 산정, 보고서 제출, 협의 및 자문 등의 권한을 수행합니다.</p>
-  </section>
-  <div id="site-footer"></div>
-</body>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>수임의 권한 — 신한국손해사정(주)</title>
+    <link rel="stylesheet" href="assets/style.css" />
+    <link rel="stylesheet" href="assets/header.css" />
+    <script defer src="assets/app.js" data-base="/kmca/"></script>
+    <style>
+      .authority-hero {
+        background: linear-gradient(160deg, #f9fbff 0%, #eef3ff 100%);
+        padding: 120px 0 110px;
+        color: #0a1c54;
+      }
+      .authority-hero__grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+        gap: 48px;
+        align-items: center;
+      }
+      .authority-hero__lead {
+        margin: 18px 0 0;
+        max-width: 560px;
+        line-height: 1.8;
+        color: rgba(10, 28, 84, 0.82);
+        font-size: 18px;
+      }
+      .authority-divider {
+        width: 64px;
+        height: 2px;
+        background: #132a6b;
+        opacity: 0.7;
+        margin: 42px 0 0;
+        border-radius: 999px;
+      }
+      .authority-links__group {
+        display: flex;
+        gap: 14px;
+        justify-content: flex-end;
+        flex-wrap: wrap;
+        align-items: center;
+      }
+      .authority-links__item {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 14px 26px;
+        border-radius: 999px;
+        border: 1px solid rgba(19, 42, 107, 0.18);
+        background: #f1f5ff;
+        color: #132a6b;
+        font-weight: 700;
+        font-size: 17px;
+        letter-spacing: 0.01em;
+        transition:
+          background 0.2s ease,
+          color 0.2s ease,
+          border 0.2s ease,
+          transform 0.2s ease;
+      }
+      .authority-links__item.is-active {
+        background: #132a6b;
+        color: #fff;
+        border-color: #132a6b;
+      }
+      .authority-links__item:hover {
+        background: #132a6b;
+        color: #fff;
+        transform: translateX(4px);
+      }
+      .authority-body {
+        padding: 90px 0 120px;
+      }
+      .authority-article {
+        background: #fff;
+        border-radius: 32px;
+        padding: 56px 64px;
+        box-shadow: 0 24px 48px rgba(15, 23, 64, 0.12);
+        border: 1px solid rgba(15, 23, 42, 0.08);
+      }
+      .authority-article__title {
+        margin: 0;
+        font-size: 28px;
+        color: #0b1f6b;
+        font-weight: 800;
+      }
+      .authority-article__meta {
+        margin: 12px 0 32px;
+        font-size: 15px;
+        color: #475569;
+      }
+      .authority-list {
+        margin: 0;
+        padding-left: 24px;
+        display: grid;
+        gap: 26px;
+        list-style: decimal;
+        color: #1f2a44;
+        line-height: 1.85;
+        font-size: 17px;
+      }
+      .authority-list > li {
+        padding-left: 4px;
+      }
+      .authority-ref {
+        display: block;
+        margin-top: 8px;
+        font-size: 14px;
+        color: #64748b;
+      }
+      .authority-sublist {
+        margin: 14px 0 0;
+        padding-left: 22px;
+        list-style: decimal;
+        display: grid;
+        gap: 8px;
+        color: #27324d;
+        font-size: 16px;
+      }
+      .authority-callout {
+        margin-top: 48px;
+        padding: 24px 32px;
+        background: rgba(19, 42, 107, 0.08);
+        border-radius: 18px;
+        border: 1px solid rgba(19, 42, 107, 0.12);
+        color: #142044;
+        line-height: 1.8;
+        font-size: 16px;
+      }
+      .authority-callout strong {
+        color: #0b1f6b;
+      }
+      @media (max-width: 1040px) {
+        .authority-hero__grid {
+          grid-template-columns: 1fr;
+          gap: 32px;
+          text-align: center;
+        }
+        .authority-links__group {
+          justify-content: center;
+        }
+        .authority-links__item {
+          justify-content: center;
+        }
+        .authority-divider {
+          margin: 32px auto 0;
+        }
+        .authority-article {
+          padding: 40px 36px;
+        }
+      }
+      @media (max-width: 720px) {
+        .authority-links__item {
+          width: 100%;
+        }
+        .authority-article {
+          padding: 32px 24px;
+        }
+      }
+      @media (max-width: 540px) {
+        .authority-hero {
+          padding: 64px 0 60px;
+        }
+        .authority-hero__lead {
+          font-size: 16px;
+        }
+        .authority-links__item {
+          font-size: 15px;
+          padding: 12px 18px;
+        }
+        .authority-body {
+          padding: 60px 0 80px;
+        }
+        .authority-article {
+          padding: 26px 20px;
+        }
+        .authority-article__title {
+          font-size: 24px;
+        }
+        .authority-list {
+          font-size: 16px;
+        }
+        .authority-sublist {
+          font-size: 15px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="site-header"></div>
+    <main>
+      <section class="authority-hero" aria-labelledby="authorityIntro">
+        <div class="container authority-hero__grid">
+          <div>
+            <h1 id="authorityIntro">수임의 권한</h1>
+            <p class="authority-hero__lead">
+              보험계약자와 피보험자, 피해자의 권익을 지키기 위해 손해사정사가
+              행사할 수 있는 법적 권한과 의무를 안내합니다.
+            </p>
+            <div class="authority-divider" aria-hidden="true"></div>
+          </div>
+          <div
+            class="authority-links__group"
+            role="navigation"
+            aria-label="손해사정 안내 빠른 이동"
+          >
+            <a class="authority-links__item" href="claim-what.html"
+              >손해사정이란?</a
+            >
+            <a class="authority-links__item" href="claim-process.html"
+              >업무 절차</a
+            >
+            <span class="authority-links__item is-active">수임의 권한</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="authority-body">
+        <div class="container">
+          <article class="authority-article">
+            <header>
+              <h2 class="authority-article__title">
+                제9-16조 (보험계약자 등의 손해사정사 선임)
+              </h2>
+              <p class="authority-article__meta">
+                [보험업감독규정(제2024-18호)]
+              </p>
+            </header>
+            <ol class="authority-list">
+              <li>
+                <p>
+                  <u>법 제185조 제1항제2호</u>의 "보험계약자 등"이라 함은
+                  보험계약자ㆍ피보험자ㆍ보험수익자ㆍ피해자ㆍ 그 밖에 보험사고와
+                  관련된 이해관계자를 말한다.
+                </p>
+                <span class="authority-ref">&lt;개정 2024. 7. 29.&gt;</span>
+              </li>
+              <li>
+                <p>
+                  <u>법 제185조 제1항제2호</u>의 "보험계약자 등이 금융위원회가
+                  정하는 기준에 따라 손해사정사를 따로 선임한 경우"란 보험회사가
+                  손해사정을 착수하기 이전에 보험계약자 등이 보험회사에
+                  손해사정사의 선임의사를 통보한 경우를 말한다.
+                </p>
+                <span class="authority-ref">&lt;개정 2024. 7. 29.&gt;</span>
+              </li>
+              <li>
+                <p>
+                  <u>법 제185조 제2항</u>의 "금융위원회가 정하는 손해사정사
+                  선임에 관한 동의기준"이란 제2항에 따라 보험계약자 등이
+                  손해사정사를 선임하는 경우로서 다음 각 호의 요건을 모두
+                  충족하는 경우를 말한다.
+                </p>
+                <ol class="authority-sublist">
+                  <li>
+                    보험계약자 등이 선임하고자 하는 손해사정사가
+                    <u>법 제187조</u>에 따라 적법하게 등록한 자일 것
+                  </li>
+                  <li>
+                    보험계약자 등이 선임하고자 하는 손해사정사가
+                    <u>법 제186조의2</u>에 따른 교육을 이수하였을 것
+                  </li>
+                  <li>
+                    보험계약자 등이 선임하고자 하는 손해사정사가
+                    <u>제9-21조의2</u>의 규정에 따른 손해배상보장예탁금을
+                    예탁하거나 인허가보증보험에 가입하였을 것
+                  </li>
+                  <li>
+                    <u>법 제185조 제1항제2호</u>의 동의와 관련하여 협회가 마련한
+                    보험회사의 표준동의기준에 부합할 것
+                  </li>
+                </ol>
+                <span class="authority-ref">&lt;신설 2024. 7. 29.&gt;</span>
+              </li>
+              <li>
+                <p>
+                  보험계약자 등은 다음 각 호의 경우 보험회사와는 별개로
+                  손해사정사를 선임할 수 있다.
+                </p>
+                <ol class="authority-sublist">
+                  <li>
+                    정당한 사유없이 보험회사가 보험사고 통보(제3보험상품의 경우
+                    접수가 완료된 날을 말한다)를 받은 날부터 7일이 경과 하여도
+                    손해사정에 착수하지 아니한 경우
+                  </li>
+                  <li>
+                    보험회사가 고용 또는 선임한 손해사정사의 사정 결과에
+                    승복하지 않거나 별도의 손해사정이 필요한 경우
+                  </li>
+                </ol>
+                <span class="authority-ref">&lt;신설 2024. 7. 29.&gt;</span>
+              </li>
+              <li>
+                <p>
+                  보험계약자 등이 제2항 및 제4항제1호의 규정에 의하여 선임한
+                  손해사정사의 보수는 보험회사가 부담하고 보험계약자 등이
+                  제4항제2호의 규정에 의하여 선임한 손해사정사의 보수는
+                  보험계약자 등이 부담함을 원칙으로 한다.
+                </p>
+                <span class="authority-ref">&lt;개정 2024. 7. 29.&gt;</span>
+              </li>
+              <li>
+                <p>
+                  보험계약자 등은 손해사정사를 선임하였을 때에는 지체 없이 이를
+                  보험회사에 통보하여야 하며, 이 경우 선임된 손해사정사는
+                  보험계약자 등을 대리하여 통보할 수 있다.
+                </p>
+                <span class="authority-ref">&lt;개정 2024. 7. 29.&gt;</span>
+              </li>
+              <li>
+                <p>
+                  보험회사가 손해사정사를 선임한 보험계약에 대해 재보험계약을
+                  체결하는 경우 재보험을 받은 보험회사는 <u>법 제185조</u>에
+                  따른 손해사정사 또는 손해사정을 업으로 하는 자를 선임하여 그
+                  업무를 위탁한 것으로 본다.
+                </p>
+                <span class="authority-ref"
+                  >&lt;신설 2012. 2. 28., 개정 2024. 7. 29.&gt;</span
+                >
+              </li>
+            </ol>
+            <div class="authority-callout">
+              <strong>신한국손해사정(주)</strong>는 법령에 따른 절차를 준수하여
+              손해사정사의 선임과 업무 수행을 지원하며, 고객의 권익을 침해하지
+              않는 공정한 보상 결과를 목표로 합니다.
+            </div>
+          </article>
+        </div>
+      </section>
+    </main>
+    <div id="site-footer"></div>
+  </body>
 </html>

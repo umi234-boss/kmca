@@ -1,0 +1,272 @@
+<!-- =============================
+     /cases-write.html (찾아보기_사례 글쓰기)
+     ============================= -->
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>사례 글쓰기 — 신한국손해사정(주)</title>
+    <link rel="stylesheet" href="assets/style.css" />
+    <link rel="stylesheet" href="assets/header.css" />
+    <script defer src="assets/app.js" data-base="/kmca/"></script>
+    <style>
+      .case-write {
+        background: #f5f7ff;
+        min-height: calc(100vh - 340px);
+        padding: 80px 0 120px;
+      }
+      .case-write__panel {
+        background: #fff;
+        border-radius: 20px;
+        box-shadow: 0 28px 64px rgba(15, 23, 66, 0.08);
+        padding: 48px;
+        max-width: 760px;
+        margin: 0 auto;
+        border: 1px solid #dbe3f5;
+      }
+      .case-write__title {
+        margin: 0 0 24px;
+        font-size: 32px;
+        font-weight: 800;
+        color: #132a6b;
+        text-align: center;
+      }
+      .case-write__desc {
+        text-align: center;
+        margin: 0 0 36px;
+        color: #475569;
+        font-size: 15px;
+      }
+      .case-write__form {
+        display: grid;
+        gap: 24px;
+      }
+      .case-write__field {
+        display: grid;
+        gap: 10px;
+      }
+      .case-write__label {
+        font-size: 15px;
+        font-weight: 700;
+        color: #1f2a44;
+      }
+      .case-write__select,
+      .case-write__input,
+      .case-write__textarea {
+        width: 100%;
+        border-radius: 14px;
+        border: 1px solid rgba(19, 42, 107, 0.2);
+        padding: 14px 16px;
+        font-size: 15px;
+        color: #0f172a;
+        font-family: inherit;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        background: #fff;
+      }
+      .case-write__textarea {
+        min-height: 280px;
+        resize: vertical;
+        line-height: 1.7;
+      }
+      .case-write__select:focus,
+      .case-write__input:focus,
+      .case-write__textarea:focus {
+        border-color: #1d4ed8;
+        box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.2);
+        outline: none;
+      }
+      .case-write__controls {
+        display: flex;
+        justify-content: flex-end;
+        gap: 12px;
+      }
+      .case-write__button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 12px 26px;
+        border-radius: 12px;
+        font-weight: 700;
+        font-size: 15px;
+        cursor: pointer;
+        border: none;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+      }
+      .case-write__button--ghost {
+        background: #f1f5ff;
+        color: #1f2a44;
+        border: 1px solid rgba(19, 42, 107, 0.15);
+      }
+      .case-write__button--primary {
+        background: #1d4ed8;
+        color: #fff;
+        box-shadow: 0 10px 24px rgba(29, 78, 216, 0.18);
+      }
+      .case-write__button:hover {
+        transform: translateY(-1px);
+      }
+      .case-write__button:active {
+        transform: translateY(0);
+      }
+      @media (max-width: 760px) {
+        .case-write {
+          padding: 48px 0 80px;
+        }
+        .case-write__panel {
+          padding: 32px 24px;
+        }
+        .case-write__controls {
+          flex-direction: column-reverse;
+          align-items: stretch;
+        }
+        .case-write__button {
+          width: 100%;
+        }
+      }
+      @media (max-width: 540px) {
+        .case-write__panel {
+          padding: 28px 20px;
+        }
+        .case-write__title {
+          font-size: 28px;
+        }
+        .case-write__textarea {
+          min-height: 220px;
+        }
+      }
+    </style>
+  </head>
+  <body data-header-mode="solid">
+    <div id="site-header"></div>
+    <main class="case-write">
+      <div class="container">
+        <article class="case-write__panel">
+          <h1 class="case-write__title">사례 글쓰기</h1>
+          <p class="case-write__desc">
+            내부 검토를 거친 실제 사례만 등록해주세요. 입력된 내용은 담당자 승인
+            후에 사이트에 게시됩니다.
+          </p>
+          <form class="case-write__form" id="caseWriteForm">
+            <div class="case-write__field">
+              <label class="case-write__label" for="caseCategory"
+                >카테고리</label
+              >
+              <select
+                id="caseCategory"
+                class="case-write__select"
+                name="category"
+                required
+              >
+                <option value="insurer">피보험자(보험사)</option>
+                <option value="victim">피해자</option>
+              </select>
+            </div>
+            <div class="case-write__field">
+              <label class="case-write__label" for="caseTitleInput">제목</label>
+              <input
+                type="text"
+                id="caseTitleInput"
+                class="case-write__input"
+                name="title"
+                placeholder="사례 제목을 입력하세요."
+                required
+              />
+            </div>
+            <div class="case-write__field">
+              <label class="case-write__label" for="caseBody">본문</label>
+              <textarea
+                id="caseBody"
+                class="case-write__textarea"
+                name="body"
+                placeholder="사고 경위, 손해 규모, 손해사정 포인트 등을 자세히 기록해주세요."
+                required
+              ></textarea>
+            </div>
+            <div class="case-write__controls">
+              <button
+                type="button"
+                class="case-write__button case-write__button--ghost"
+                id="caseWriteCancel"
+              >
+                목록으로
+              </button>
+              <button
+                type="submit"
+                class="case-write__button case-write__button--primary"
+              >
+                임시 저장
+              </button>
+            </div>
+          </form>
+        </article>
+      </div>
+    </main>
+    <div id="site-footer"></div>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const STORAGE_KEY = "kmcaCases";
+        const categoryLabelMap = {
+          insurer: "피보험자(보험사)",
+          victim: "피해자",
+        };
+
+        function safeParse(json) {
+          try {
+            const data = JSON.parse(json);
+            return Array.isArray(data) ? data : [];
+          } catch (_) {
+            return [];
+          }
+        }
+
+        function saveCase(entry) {
+          const existing = safeParse(localStorage.getItem(STORAGE_KEY));
+          existing.push(entry);
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(existing));
+        }
+
+        const form = document.getElementById("caseWriteForm");
+        if (form) {
+          form.addEventListener("submit", function (event) {
+            event.preventDefault();
+
+            const categoryValue = form.category.value;
+            const categoryLabel =
+              categoryLabelMap[categoryValue] || "미지정";
+            const title = form.title.value.trim();
+            const body = form.body.value.trim();
+
+            if (!title || !body) {
+              alert("제목과 본문을 모두 입력해주세요.");
+              return;
+            }
+
+            const newCase = {
+              id: `case-${Date.now()}`,
+              categoryValue,
+              categoryLabel,
+              title,
+              body,
+              author: "관리자",
+              views: 0,
+              createdAt: new Date().toISOString(),
+            };
+
+            saveCase(newCase);
+            alert("사례가 임시 저장되었습니다. 목록에서 확인해주세요.");
+            window.location.href = "cases.html";
+          });
+        }
+
+        const cancelBtn = document.getElementById("caseWriteCancel");
+        if (cancelBtn) {
+          cancelBtn.addEventListener("click", function () {
+            window.location.href = "cases.html";
+          });
+        }
+      });
+    </script>
+  </body>
+</html>

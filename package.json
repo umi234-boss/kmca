@@ -1,0 +1,31 @@
+{
+  "name": "kmca",
+  "version": "1.0.0",
+  "private": true,
+  "description": "신한국손해사정(주) 정적 웹사이트",
+  "scripts": {
+    "serve": "http-server -p 5173 -c-1",
+    "format": "prettier --write .",
+    "check:format": "prettier --check ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/umi234-boss/kmca.git"
+  },
+  "keywords": [
+    "KMCA",
+    "손해사정",
+    "신한국손해사정",
+    "웹사이트"
+  ],
+  "author": "KMCA",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/umi234-boss/kmca/issues"
+  },
+  "homepage": "https://github.com/umi234-boss/kmca#readme",
+  "devDependencies": {
+    "http-server": "^14.1.1",
+    "prettier": "^3.6.2"
+  }
+}

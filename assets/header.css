@@ -1,0 +1,101 @@
+/* =========================
+   KMCA HEADER (refined overrides)
+   ========================= */
+
+.kmca-header {
+  border-bottom: none;
+  box-shadow: none;
+}
+
+.kmca-header__inner {
+  padding: clamp(28px, 5vw, 56px) 0 clamp(12px, 3vw, 24px);
+  gap: clamp(16px, 4vw, 32px);
+}
+
+.kmca-header__left {
+  color: #132a6b;
+}
+
+.kmca-header__license {
+  color: #475569;
+}
+
+.kmca-header__title {
+  color: #132a6b;
+  font-size: clamp(32px, 5vw, 48px);
+}
+
+.kmca-header__nav {
+  gap: 16px;
+}
+
+.kmca-header__toggle {
+  border-radius: 12px;
+}
+
+.kmca-nav .top-link {
+  color: #0b1f6b;
+}
+
+.kmca-nav .has-sub .submenu {
+  border: 1px solid rgba(19, 42, 107, 0.14);
+  box-shadow: 0 8px 24px rgba(0, 10, 40, 0.08);
+}
+
+.kmca-nav .submenu a:hover {
+  background: #f6f7fb;
+}
+
+.kmca-header__divider {
+  width: 72px;
+  height: 2px;
+  background: #132a6b;
+  opacity: 0.7;
+  margin: 12px auto 0;
+  border-radius: 999px;
+}
+
+@media (max-width: 900px) {
+  .kmca-header__inner {
+    padding: 24px 0 16px;
+  }
+}
+
+@media (max-width: 780px) {
+  .kmca-header__inner {
+    grid-template-columns: auto 1fr auto;
+    row-gap: 12px;
+    text-align: initial;
+  }
+  .kmca-header__title {
+    font-size: 26px;
+  }
+  .kmca-header__nav {
+    justify-self: end;
+  }
+  .kmca-nav {
+    width: min(320px, calc(100vw - 32px));
+  }
+}
+
+@media (max-width: 540px) {
+  .kmca-header__inner {
+    grid-template-columns: 1fr auto;
+  }
+  .kmca-header__title {
+    grid-column: 1 / -1;
+    font-size: 24px;
+  }
+  .kmca-nav {
+    width: min(360px, calc(100vw - 24px));
+  }
+}
+
+@media (max-width: 480px) {
+  .kmca-header__inner {
+    gap: 10px;
+  }
+  .kmca-header__license {
+    display: none;
+  }
+}

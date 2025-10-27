@@ -1,85 +1,93 @@
 <!doctype html>
 <html lang="ko">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>신한국손해사정(주) — 메인</title>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>신한국손해사정(주) — 메인</title>
 
-  <!-- 폰트 -->
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <!-- 폰트 -->
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;600;700;800&display=swap"
+      rel="stylesheet"
+    />
 
-  <meta name="description" content="교통사고 손해사정 전문 — 이륜차·자전거·보트/제트스키·기타 대물까지, 공정하고 합리적인 손해평가로 보상 절차를 동행합니다." />
-  <link rel="icon" href="favicon.ico">
+    <meta
+      name="description"
+      content="교통사고 손해사정 전문 — 이륜차·자전거·보트/제트스키·기타 대물까지, 공정하고 합리적인 손해평가로 보상 절차를 동행합니다."
+    />
+    <link rel="icon" href="favicon.ico" />
 
-  <!-- 전역 스타일 & 앱 스크립트 -->
-  <link rel="stylesheet" href="assets/style.css" />
-  <script defer src="assets/app.js"></script>
-</head>
-<body>
-  <!-- 공통 헤더 파셜 주입 -->
-  <div id="site-header"></div>
+    <!-- 전역 스타일 & 헤더 스타일 & 앱 스크립트 -->
+    <link rel="stylesheet" href="assets/style.css" />
+    <link rel="stylesheet" href="assets/header.css" />
+    <script defer src="assets/app.js"></script>
+  </head>
+  <body>
+    <!-- 공통 헤더 파셜 주입 -->
+    <div id="site-header"></div>
 
-  <!-- 메인 질문 타이틀 -->
-  <section class="container" aria-labelledby="askTitle">
-    <h1 id="askTitle" class="section-title">무엇이 불편하신가요?</h1>
-  </section>
+    <!-- ================================
+         HERO 섹션 (무엇이 불편하신가요?)
+         ================================ -->
+    <section class="hero-section" aria-labelledby="askTitle">
+      <div class="container">
+        <!-- 메인 질문 타이틀: 페이지 내 유일한 H1 -->
+        <h1 id="askTitle" class="section-title">무엇이 불편하신가요?</h1>
 
-  <!-- 상단 행: 좌(텍스트) 왼쪽정렬 / 우(이미지) -->
-  <section class="container grid-2" aria-label="교통사고 피보험자 정보">
-    <article class="panel-left">
-      <h2>교통사고 피보험자</h2>
-      <ul class="bullets">
-        <li>◎ 전문가의 자문이 필요하신 고객님</li>
-        <li>◎ 자동차 운전 중 실수로 사고를 내신 고객님</li>
-        <li>◎ 사고로 인한 자차 수리, 보트 등 레저스포츠 손해</li>
-        <li>◎ 보상 진행에 이견이 있으신 고객님</li>
-      </ul>
-    </article>
-    <figure class="figure equal">
-      <img src="assets/img/main-driver.jpg" alt="운전자 시점 도로 풍경" width="1600" height="900" loading="lazy" decoding="async">
-    </figure>
-  </section>
+        <!-- 상단 행: 좌(텍스트) / 우(이미지) -->
+        <div class="grid-2 hero-pairs" aria-label="교통사고 피보험자 정보">
+          <article class="panel-left">
+            <h2>교통사고 피보험자</h2>
+            <ul class="bullets">
+              <li>◎ 전문가의 자문이 필요하신 고객님</li>
+              <li>◎ 자동차 운전 중 실수로 사고를 내신 고객님</li>
+              <li>◎ 사고로 인한 자차 수리, 보트 등 레저스포츠 손해</li>
+              <li>◎ 보상 진행에 이견이 있으신 고객님</li>
+            </ul>
+          </article>
 
-  <!-- 하단 행: 좌(이미지) 왼쪽정렬 / 우(텍스트) -->
-  <section class="container grid-2 section-gap" aria-label="교통사고 피해자 정보">
-    <figure class="figure equal">
-      <img src="assets/img/main-bike.jpg" alt="도심 속 오토바이" width="1600" height="900" loading="lazy" decoding="async">
-    </figure>
-    <article class="panel-left">
-      <h2>교통사고 피해자</h2>
-      <ul class="bullets">
-        <li>◎ 운전 중 불가피하게 사고를 당하신 분</li>
-        <li>◎ 이륜차·자전거 등 레저스포츠 기종 피해</li>
-        <li>◎ 피해 보상에 이견이 있으신 고객님</li>
-      </ul>
-    </article>
-  </section>
+          <figure class="figure equal">
+            <img
+              src="assets/img/main-driver.jpg"
+              alt="운전자 시점 도로 풍경"
+              width="1600"
+              height="900"
+              loading="lazy"
+              decoding="async"
+            />
+          </figure>
+        </div>
 
-  <!-- 하단 브랜딩/내비/회사정보 블록 -->
-  <section class="container" aria-label="브랜드 및 연락">
-    <div class="corp">신한국손해사정(주)</div>
-    <div class="sub-en">KOREA, MAKE A CLAIM OF ADJUSTER</div>
+        <!-- 하단 행: 좌(이미지) / 우(텍스트) -->
+        <div
+          class="grid-2 hero-pairs section-gap"
+          aria-label="교통사고 피해자 정보"
+        >
+          <figure class="figure equal">
+            <img
+              src="assets/img/main-bike.jpg"
+              alt="도심 속 오토바이"
+              width="1600"
+              height="900"
+              loading="lazy"
+              decoding="async"
+            />
+          </figure>
 
-    <nav class="pill-nav" aria-label="빠른 메뉴">
-      <a href="about.html">회사소개</a>
-      <a href="claim-what.html">손해사정이란</a>
-      <a href="claim-process.html">업무 절차</a>
-      <a href="cases.html">사례보기</a>
-      <a href="contact.html">문의하기</a>
-      <a href="map.html">오시는 길</a>
-    </nav>
+          <article class="panel-left">
+            <h2>교통사고 피해자</h2>
+            <ul class="bullets">
+              <li>◎ 운전 중 불가피하게 사고를 당하신 분</li>
+              <li>◎ 이륜차·자전거 등 레저스포츠 기종 피해</li>
+              <li>◎ 피해 보상에 이견이 있으신 고객님</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
 
-    <div class="company-info">
-      <div><strong>회사명:</strong> 신한국손해사정(주) &nbsp;&nbsp; <strong>대표자:</strong> 서동극</div>
-      <div><strong>사업자등록번호:</strong> 462-88-01127</div>
-      <div><strong>주소:</strong> 서울시 광진구 면목로120, 광남타운 306호</div>
-      <div><strong>대표번호:</strong> Tel. 070-7543-5206 &nbsp;&nbsp; Fax. 0505-327-5206</div>
-    </div>
-    <div class="copy">© Copyright 2027. All Rights Reserved.</div>
-  </section>
-
-  <!-- 공통 푸터 파셜 주입 -->
-  <div id="site-footer"></div>
-</body>
+    <!-- 공통 푸터 파셜 주입 (site-footer가 모든 브랜딩/회사정보 담당) -->
+    <div id="site-footer"></div>
+  </body>
 </html>

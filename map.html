@@ -3,19 +3,278 @@
      ============================= -->
 <!doctype html>
 <html lang="ko">
-<head>
-  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>오시는 길 — 신한국손해사정(주)</title>
-  <link rel="stylesheet" href="assets/style.css" />
-  <script defer src="assets/app.js"></script>
-</head>
-<body>
-  <div id="site-header"></div>
-  <section class="container">
-    <h1>오시는 길</h1>
-    <p>아래 버튼으로 지도를 연결하세요.</p>
-    <p><a class="btn" style="border:1px solid var(--line)" target="_blank" href="https://map.kakao.com/">카카오맵 열기</a></p>
-  </section>
-  <div id="site-footer"></div>
-</body>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>오시는 길 — 신한국손해사정(주)</title>
+    <link rel="stylesheet" href="assets/style.css" />
+    <link rel="stylesheet" href="assets/header.css" />
+    <script defer src="assets/app.js" data-base="/kmca/"></script>
+    <style>
+      .map-hero {
+        background: linear-gradient(160deg, #f9fbff 0%, #eef3ff 100%);
+        padding: 120px 0 110px;
+        color: #132a6b;
+      }
+      .map-hero__grid {
+        display: grid;
+        grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.4fr);
+        gap: 48px;
+        align-items: center;
+      }
+      .map-hero__lead {
+        margin: 18px 0 0;
+        max-width: 520px;
+        line-height: 1.85;
+        color: rgba(19, 42, 107, 0.78);
+        font-size: 18px;
+      }
+      .map-divider {
+        width: 64px;
+        height: 2px;
+        background: #132a6b;
+        opacity: 0.7;
+        margin: 42px 0 0;
+        border-radius: 999px;
+      }
+      .map-links {
+        display: flex;
+        gap: 14px;
+        justify-content: flex-end;
+        flex-wrap: wrap;
+        align-items: center;
+      }
+      .map-links__item {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 14px 26px;
+        border-radius: 999px;
+        border: 1px solid rgba(19, 42, 107, 0.18);
+        background: #f1f5ff;
+        color: #132a6b;
+        font-weight: 700;
+        font-size: 17px;
+        letter-spacing: 0.01em;
+        transition:
+          background 0.2s ease,
+          color 0.2s ease,
+          border 0.2s ease,
+          transform 0.2s ease;
+      }
+      .map-links__item.is-active {
+        background: #132a6b;
+        color: #fff;
+        border-color: #132a6b;
+      }
+      .map-links__item:hover {
+        background: #132a6b;
+        color: #fff;
+        transform: translateX(4px);
+      }
+      .map-info {
+        padding: 72px 0 56px;
+        background: #ffffff;
+      }
+      .map-info__inner {
+        max-width: 780px;
+        margin: 0 auto;
+        text-align: center;
+        display: grid;
+        gap: 18px;
+      }
+      .map-info__title {
+        margin: 0;
+        font-size: 40px;
+        font-weight: 800;
+        color: #0b1f6b;
+      }
+      .map-info__body {
+        margin: 0;
+        color: #1f2a44;
+        font-size: 16px;
+        line-height: 1.8;
+      }
+      .map-info__body strong {
+        font-weight: 800;
+        color: #0b1f6b;
+      }
+      .map-frame {
+        padding: 0 0 120px;
+      }
+      .map-frame__inner {
+        max-width: 1024px;
+        margin: 0 auto;
+        padding: 32px 24px;
+        border-radius: 24px;
+        box-shadow: 0 24px 56px rgba(15, 23, 66, 0.12);
+        border: 1px solid #dbe3f5;
+        background: #ffffff;
+      }
+      .map-embed {
+        max-width: 640px;
+        margin: 0 auto;
+        font: normal normal 400 12px/normal "Dotum", sans-serif;
+        color: #333;
+      }
+      .map-embed__visual img {
+        display: block;
+        width: 100%;
+        height: auto;
+        border: 1px solid #ccc;
+        border-radius: 6px 6px 0 0;
+      }
+      .map-embed__footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        padding: 9px 12px;
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        border-radius: 0 0 6px 6px;
+        background: #f9f9f9;
+      }
+      .map-embed__footer a {
+        font-size: 11px;
+        color: #111;
+        text-decoration: none;
+      }
+      .map-embed__footer a:hover {
+        text-decoration: underline;
+      }
+      .map-embed__footer img {
+        display: block;
+        width: 72px;
+        height: 16px;
+      }
+      @media (max-width: 1024px) {
+        .map-hero__grid {
+          grid-template-columns: 1fr;
+          gap: 32px;
+          text-align: center;
+        }
+        .map-links {
+          justify-content: center;
+        }
+        .map-divider {
+          margin: 32px auto 0;
+        }
+        .map-frame__inner {
+          padding: 24px 20px;
+        }
+      }
+      @media (max-width: 720px) {
+        .map-links__item {
+          width: 100%;
+          justify-content: center;
+        }
+        .map-info__title {
+          font-size: 32px;
+        }
+        .map-frame__inner {
+          padding: 24px 16px;
+        }
+      }
+      @media (max-width: 540px) {
+        .map-hero {
+          padding: 64px 0 56px;
+        }
+        .map-hero__lead {
+          font-size: 16px;
+        }
+        .map-links__item {
+          font-size: 15px;
+          padding: 12px 18px;
+        }
+        .map-info {
+          padding: 52px 0;
+        }
+        .map-info__title {
+          font-size: 30px;
+        }
+        .map-frame {
+          padding: 0 0 80px;
+        }
+        .map-frame__inner {
+          padding: 20px 16px;
+        }
+      }
+    </style>
+  </head>
+  <body data-header-mode="solid">
+    <div id="site-header"></div>
+    <main>
+      <section class="map-hero" aria-labelledby="mapIntro">
+        <div class="container map-hero__grid">
+          <div>
+            <h1 id="mapIntro">오시는 길</h1>
+            <p class="map-hero__lead">
+              신한국손해사정(주) 본사 위치와 대중교통, 자가용 안내입니다. 방문
+              전 예약 전화를 주시면 더욱 원활한 상담이 가능합니다.
+            </p>
+            <div class="map-divider" aria-hidden="true"></div>
+          </div>
+          <nav class="map-links" aria-label="찾아보기 빠른 이동">
+            <a class="map-links__item" href="cases.html">사례보기</a>
+            <a class="map-links__item" href="contact.html">문의하기</a>
+            <a class="map-links__item" href="support.html">고객센터</a>
+            <span class="map-links__item is-active">오시는 길</span>
+          </nav>
+        </div>
+      </section>
+
+      <section class="map-info">
+        <div class="container map-info__inner">
+          <h2 class="map-info__title">신한국손해사정(주)</h2>
+          <p class="map-info__body">
+            주소: <strong>서울특별시 광진구 면목로120, 광남타운 306호</strong
+            ><br />
+            이메일: <a href="mailto:kmca234@naver.com">kmca234@naver.com</a
+            ><br />
+            전화: <strong>070-7543-5206</strong>
+          </p>
+          <p class="map-info__body">
+            자가용: 상기 주소로 오신 뒤 070-7543-5206으로 연락주세요.(주차
+            가능)<br />
+            대중교통: 버스/지하철(중곡역) 하차 후 도보 약 10분 이내
+          </p>
+        </div>
+      </section>
+
+      <section class="map-frame" aria-label="지도">
+        <div class="container map-frame__inner">
+          <div class="map-embed">
+            <div class="map-embed__visual">
+              <a
+                href="https://map.kakao.com/?urlX=517780.00000000163&amp;urlY=1129052.0000000019&amp;name=%EC%84%9C%EC%9A%B8%20%EA%B4%91%EC%A7%84%EA%B5%AC%20%EB%A9%B4%EB%AA%A9%EB%A1%9C%20120&amp;map_type=TYPE_MAP&amp;from=roughmap"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <img
+                  src="https://t1.daumcdn.net/roughmap/imgmap/18d5d5b7a45b064d552ad29971f9bf062321ef82a89966a235b9013b2e427996"
+                  alt="신한국손해사정(주) 위치 - 카카오맵"
+                />
+              </a>
+            </div>
+            <div class="map-embed__footer">
+              <a href="https://map.kakao.com" target="_blank" rel="noopener noreferrer">
+                <img
+                  src="https://t1.daumcdn.net/localimg/localimages/07/2018/pc/common/logo_kakaomap.png"
+                  alt="카카오맵"
+                />
+              </a>
+              <a
+                href="https://map.kakao.com/?from=roughmap&amp;eName=%EC%84%9C%EC%9A%B8%20%EA%B4%91%EC%A7%84%EA%B5%AC%20%EB%A9%B4%EB%AA%A9%EB%A1%9C%20120&amp;eX=517780.00000000163&amp;eY=1129052.0000000019"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                길찾기
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+    <div id="site-footer"></div>
+  </body>
 </html>

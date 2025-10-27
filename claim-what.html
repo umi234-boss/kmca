@@ -3,18 +3,302 @@
      ============================= -->
 <!doctype html>
 <html lang="ko">
-<head>
-  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>손해사정이란? — 신한국손해사정(주)</title>
-  <link rel="stylesheet" href="assets/style.css" />
-  <script defer src="assets/app.js"></script>
-</head>
-<body>
-  <div id="site-header"></div>
-  <section class="container">
-    <h1>손해사정이란?</h1>
-    <p>보험사고 발생 시 손해액과 보험금 지급사유를 조사·평가하여 공정한 보상이 이루어지도록 하는 전문 업무입니다.</p>
-  </section>
-  <div id="site-footer"></div>
-</body>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>손해사정이란? — 신한국손해사정(주)</title>
+    <link rel="stylesheet" href="assets/style.css" />
+    <link rel="stylesheet" href="assets/header.css" />
+    <!-- 루트 배포면 data-base 생략 가능 / 서브경로라면 필수 -->
+    <script defer src="assets/app.js" data-base="/kmca/"></script>
+    <style>
+      .claim-hero {
+        background: linear-gradient(160deg, #f9fbff 0%, #eef3ff 100%);
+        padding: 120px 0 110px;
+        color: #0a1c54;
+      }
+      .claim-hero__grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+        gap: 48px;
+        align-items: center;
+      }
+      .claim-hero__lead {
+        margin: 18px 0 0;
+        max-width: 520px;
+        line-height: 1.8;
+        color: rgba(10, 28, 84, 0.82);
+        font-size: 18px;
+      }
+      .claim-divider {
+        width: 64px;
+        height: 2px;
+        background: #132a6b;
+        opacity: 0.7;
+        margin: 42px 0 0;
+        border-radius: 999px;
+      }
+      .claim-links__group {
+        display: flex;
+        gap: 14px;
+        justify-content: flex-end;
+        flex-wrap: wrap;
+        align-items: center;
+      }
+      .claim-links__item {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 14px 26px;
+        border-radius: 999px;
+        border: 1px solid rgba(19, 42, 107, 0.18);
+        background: #f1f5ff;
+        color: #132a6b;
+        font-weight: 700;
+        font-size: 17px;
+        letter-spacing: 0.01em;
+        transition:
+          background 0.2s ease,
+          color 0.2s ease,
+          border 0.2s ease,
+          transform 0.2s ease;
+      }
+      .claim-links__item.is-active {
+        background: #132a6b;
+        color: #fff;
+        border-color: #132a6b;
+      }
+      .claim-links__item:hover {
+        background: #132a6b;
+        color: #fff;
+        transform: translateX(4px);
+      }
+      .claim-body {
+        padding: 40px 0 120px;
+      }
+      .claim-body__grid {
+        display: grid;
+        grid-template-columns: minmax(0, 7fr) minmax(0, 3fr);
+        gap: 48px;
+        align-items: stretch;
+      }
+      .claim-block {
+        margin-bottom: 36px;
+      }
+      .claim-block:last-of-type {
+        margin-bottom: 0;
+      }
+      .claim-block__title {
+        position: relative;
+        margin: 0 0 12px;
+        font-size: 22px;
+        color: #0b1f6b;
+        font-weight: 800;
+      }
+      .claim-block__title::before {
+        content: "▶";
+        margin-right: 10px;
+        color: #132a6b;
+      }
+      .claim-block__body {
+        margin: 0;
+        color: #1f2a44;
+        line-height: 1.9;
+      }
+      .claim-block__em {
+        display: inline-block;
+        margin-top: 12px;
+        font-weight: 700;
+        color: #be123c;
+      }
+      .claim-note {
+        margin: 48px 0 0;
+        padding: 28px 36px;
+        border-radius: 18px;
+        background: linear-gradient(135deg, rgba(15, 23, 66, 0.08), rgba(19, 42, 107, 0.12));
+        color: #132a6b;
+        line-height: 1.85;
+        border: 1px solid rgba(19, 42, 107, 0.1);
+        box-shadow: 0 18px 42px rgba(15, 23, 66, 0.12);
+        grid-column: 1 / -1;
+      }
+      .claim-note strong {
+        color: #0b1f6b;
+      }
+      .claim-figure {
+        border-radius: 28px;
+        overflow: hidden;
+        box-shadow: 0 32px 60px rgba(11, 23, 66, 0.2);
+        border: 1px solid rgba(15, 23, 42, 0.08);
+        height: 100%;
+        min-height: 640px;
+        align-self: stretch;
+        display: flex;
+      }
+      .claim-figure img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      @media (max-width: 1040px) {
+        .claim-hero__grid {
+          grid-template-columns: 1fr;
+          gap: 32px;
+          text-align: center;
+        }
+        .claim-links__group {
+          justify-content: center;
+        }
+        .claim-links__item {
+          justify-content: center;
+        }
+        .claim-divider {
+          margin: 32px auto 0;
+        }
+      }
+      @media (max-width: 960px) {
+        .claim-hero {
+          padding: 96px 0 80px;
+        }
+        .claim-body__grid {
+          grid-template-columns: 1fr;
+        }
+        .claim-figure {
+          max-width: 520px;
+          margin: 0 auto;
+          min-height: 360px;
+        }
+        .claim-note {
+          margin: 40px 0 0;
+        }
+      }
+      @media (max-width: 720px) {
+        .claim-links__item {
+          width: 100%;
+          justify-content: center;
+        }
+        .claim-block__title {
+          font-size: 20px;
+        }
+      }
+      @media (max-width: 540px) {
+        .claim-hero {
+          padding: 64px 0 56px;
+        }
+        .claim-hero__lead {
+          font-size: 16px;
+        }
+        .claim-links__item {
+          font-size: 15px;
+          padding: 12px 18px;
+        }
+        .claim-body {
+          padding: 32px 0 72px;
+        }
+        .claim-block__title {
+          font-size: 18px;
+        }
+        .claim-note {
+          padding: 20px 22px;
+        }
+        .claim-figure {
+          min-height: 280px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="site-header"></div>
+    <main>
+      <section class="claim-hero" aria-labelledby="claimIntro">
+        <div class="container claim-hero__grid">
+          <div>
+            <h1 id="claimIntro">손해사정이란?</h1>
+            <p class="claim-hero__lead">
+              &nbsp;&nbsp;보험사고 발생 시 손해액과 보험금 지급 사유를
+              객관적으로 조사·평가하여 보험 소비자와 보험사가 모두 납득할 수
+              있는 합리적인 보상 결과를 만드는 전문 업무입니다.
+            </p>
+            <div class="claim-divider" aria-hidden="true"></div>
+          </div>
+          <div
+            class="claim-links__group"
+            role="navigation"
+            aria-label="손해사정 안내 빠른 이동"
+          >
+            <span class="claim-links__item is-active">손해사정이란?</span>
+            <a class="claim-links__item" href="claim-process.html">업무 절차</a>
+            <a class="claim-links__item" href="claim-authority.html"
+              >수임의 권한</a
+            >
+          </div>
+        </div>
+      </section>
+
+      <section class="claim-body">
+        <div class="container claim-body__grid">
+          <article>
+            <div class="claim-block">
+              <h2 class="claim-block__title">손해사정사 란?</h2>
+              <p class="claim-block__body">
+                &nbsp;&nbsp;보험사고 발생시 손해액 및 보험금의 산정업무를
+                전문적으로 수행하는 자로서 보험금지급의 객관성과 공정성을
+                확보하여 보험계약자나 피해자의 권익을 침해하지 않도록 해주는 일,
+                즉 보험사고발생시 손해액 및 보험금을 객관적이고 공정하게
+                산정하는 자
+              </p>
+            </div>
+
+            <div class="claim-block">
+              <h2 class="claim-block__title">손해사정업 제도</h2>
+              <p class="claim-block__body">
+                &nbsp;&nbsp;대통령령으로 정하는 보험회사는 손해사정사를 고용하여
+                보험사고에 따른 손해액 및 보험금의 사정(이하 “손해사정”이라
+                한다)에 관한 업무를 담당하게 하거나 손해사정사 또는 손해사정을
+                업으로 하는 자(이하 “손해사정업자”라 한다)를 선임하여 그 업무를
+                위탁하여야 한다.
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(보험업법
+                제 185조)
+              </p>
+            </div>
+
+            <div class="claim-block">
+              <h2 class="claim-block__title">손해사정 목적</h2>
+              <p class="claim-block__body">
+                &nbsp;&nbsp;보험금 산정이 보험회사에 의해서만 이루어질 경우 보험
+                피보험자, 보험수익자나, 피해자의 권익이 침해될 수 있는 부분에서
+                중립적인 위치로 "손해사정사" 전문 자격자가 손해사정 업무를
+                담당하여 공정하고 합리적인 보험금을 산출하기 위함.
+              </p>
+            </div>
+
+            <div class="claim-block">
+              <h2 class="claim-block__title">손해사정 구분</h2>
+              <p class="claim-block__body">
+                &nbsp;&nbsp;신한국손해사정(주)은 자동차사고로 인한 피해물
+                보험금을 산정 할 수 있는<span class="claim-block__em">&nbsp;&nbsp;3종 대물・손해사정법인</span>
+                <p></p> &nbsp;&nbsp;보험사, 보험 소비자 (보험 계약자, 피보험자등), 피해자로부터 행정 업무를 수임하는<span class="claim-block__em">&nbsp;&nbsp;독립 손해사정정법인</span>
+              </p>
+            </div>
+          </article>
+
+          <figure class="claim-figure">
+            <img
+              src="assets/img/bbb1.jpg"
+              alt="손해사정 관련 문서와 계산기"
+              loading="lazy"
+              decoding="async"
+            />
+          </figure>
+          <div class="claim-note">
+            손해사정은 중립적인 입장에서 사고 원인과 손해액을 검토하고 객관적인 자료를 바탕으로 합리적인
+            보상안을 제시하는 과정입니다. 더욱 신뢰할 수 있는 손해사정을 위해
+            <strong>신한국손해사정(주)</strong>와 함께하세요.
+          </div>
+        </div>
+      </section>
+    </main>
+    <div id="site-footer"></div>
+  </body>
 </html>

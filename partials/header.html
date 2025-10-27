@@ -2,13 +2,17 @@
   <div class="kmca-header__inner container">
     <!-- 좌측: 로고 + 면허표기 -->
     <div class="kmca-header__left">
-      <a class="kmca-header__logo" href="index.html" aria-label="신한국손해사정(주) 메인으로">
+      <a
+        class="kmca-header__logo"
+        href="index.html"
+        aria-label="신한국손해사정(주) 메인으로"
+      >
         <img
           class="logo"
           src="assets/img/logo.jpg"
-          srcset="assets/img/logo.jpg 1x, assets/img/logo@2x.jpg 2x"
+          srcset="assets/img/logo.jpg 1x, assets/img/logo.jpg 2x"
           alt="신한국손해사정(주)"
-          height="56"
+          height="80"
           loading="eager"
           decoding="async"
         />
@@ -16,37 +20,79 @@
       <div class="kmca-header__license">손해사정업 제 B0000468호</div>
     </div>
 
-    <!-- 가운데: 사이트 타이틀 -->
+    <!-- 가운데: 사이트 타이틀 (중앙 정렬 + 대형) -->
     <h1 class="kmca-header__title">
-      <a href="index.html" class="kmca-header__title-link">신한국손해사정(주)</a>
+      <a href="index.html" class="kmca-header__title-link"
+        >신한국손해사정(주)</a
+      >
     </h1>
 
     <!-- 우측: 내비게이션 -->
     <nav class="kmca-header__nav" aria-label="상단 메뉴">
-      <ul class="kmca-nav">
-        <li><a class="top-link" href="about.html" data-href="about.html">회사소개</a></li>
+      <button
+        type="button"
+        class="kmca-header__toggle"
+        aria-label="메뉴 열기"
+        aria-expanded="false"
+        aria-controls="site-nav"
+      >
+        <span class="kmca-burger"></span>
+      </button>
+
+      <ul class="kmca-nav" id="site-nav">
+        <li>
+          <a class="top-link" data-href="about.html" href="about.html"
+            >회사소개</a
+          >
+        </li>
 
         <li class="has-sub">
-          <a class="top-link" href="claim-what.html" data-href="claim-what.html">손해사정이란</a>
+          <a class="top-link" href="claim-what.html" data-href="claim-what.html"
+            >손해사정이란</a
+          >
           <div class="submenu" role="menu">
-            <a href="claim-what.html" data-href="claim-what.html" role="menuitem">손해사정이란?</a>
-            <a href="claim-process.html" data-href="claim-process.html" role="menuitem">업무절차</a>
-            <a href="claim-authority.html" data-href="claim-authority.html" role="menuitem">수임의 권한</a>
+            <a
+              href="claim-what.html"
+              data-href="claim-what.html"
+              role="menuitem"
+              >손해사정이란?</a
+            >
+            <a
+              href="claim-process.html"
+              data-href="claim-process.html"
+              role="menuitem"
+              >업무절차</a
+            >
+            <a
+              href="claim-authority.html"
+              data-href="claim-authority.html"
+              role="menuitem"
+              >수임의 권한</a
+            >
           </div>
         </li>
 
         <li class="has-sub">
           <a class="top-link" href="map.html" data-href="map.html">찾아보기</a>
           <div class="submenu" role="menu">
-            <a href="cases.html" data-href="cases.html" role="menuitem">사례보기</a>
-            <a href="contact.html" data-href="contact.html" role="menuitem">문의하기</a>
-            <a href="support.html" data-href="support.html" role="menuitem">고객센터</a>
-            <a href="map.html" data-href="map.html" role="menuitem">오시는 길</a>
+            <a href="cases.html" data-href="cases.html" role="menuitem"
+              >사례보기</a
+            >
+            <a href="contact.html" data-href="contact.html" role="menuitem"
+              >문의하기</a
+            >
+            <a href="support.html" data-href="support.html" role="menuitem"
+              >고객센터</a
+            >
+            <a href="map.html" data-href="map.html" role="menuitem"
+              >오시는 길</a
+            >
           </div>
         </li>
       </ul>
     </nav>
   </div>
 
+  <!-- 가운데 짧은 구분선 -->
   <div class="kmca-header__divider" aria-hidden="true"></div>
 </header>
