@@ -537,6 +537,7 @@
       document.addEventListener("DOMContentLoaded", function () {
         const STORAGE_KEY = "kmcaCases";
         const DELETED_DEFAULT_KEY = "kmcaCasesDeletedDefaults";
+        const DEFAULT_VIEWS_KEY = "kmcaCaseDefaultViews";
         const DEFAULT_CASES = [
           {
             id: "default-2",
@@ -598,6 +599,17 @@
           }
         }
 
+        function safeParseObject(json) {
+          try {
+            const data = JSON.parse(json);
+            return data && typeof data === "object" && !Array.isArray(data)
+              ? data
+              : {};
+          } catch (_) {
+            return {};
+          }
+        }
+
         function loadStoredCases() {
           return safeParse(localStorage.getItem(STORAGE_KEY));
         }
@@ -608,6 +620,18 @@
 
         function saveDeletedDefaultIds(ids) {
           localStorage.setItem(DELETED_DEFAULT_KEY, JSON.stringify(ids));
+        }
+
+        function loadDefaultViewOverrides() {
+          return safeParseObject(localStorage.getItem(DEFAULT_VIEWS_KEY));
+        }
+
+        function saveDefaultViewOverrides(map) {
+          localStorage.setItem(DEFAULT_VIEWS_KEY, JSON.stringify(map));
+        }
+
+        function saveStoredCases(data) {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
         }
 
         function formatDate(isoLike) {
@@ -671,9 +695,15 @@
             return dateB - dateA;
           });
 
+          const defaultViewOverrides = loadDefaultViewOverrides();
           const availableDefaults = DEFAULT_CASES.filter(
             (item) => !deletedDefaultIds.has(item.id)
-          );
+          ).map((item) => {
+            const overrideViews = defaultViewOverrides[item.id];
+            const nextViews =
+              typeof overrideViews === "number" ? overrideViews : item.views;
+            return { ...item, views: nextViews };
+          });
 
           currentCases = [...sortedStored, ...availableDefaults];
           const total = currentCases.length;
@@ -724,9 +754,23 @@
             titleLink.addEventListener("click", function (event) {
               event.preventDefault();
               const idx = Number(this.dataset.caseIndex);
-              if (Number.isInteger(idx)) {
-                openDetail(currentCases[idx]);
+              if (!Number.isInteger(idx)) return;
+              const current = currentCases[idx];
+              const updatedCase = bumpCaseViews(current);
+              if (!updatedCase) return;
+              currentCases[idx] = updatedCase;
+              const rowEl = this.closest("tr");
+              if (rowEl) {
+                const viewsCell = rowEl.querySelector("td:last-child");
+                if (viewsCell) {
+                  viewsCell.textContent = String(
+                    typeof updatedCase.views === "number"
+                      ? updatedCase.views
+                      : 0
+                  );
+                }
               }
+              openDetail(updatedCase);
             });
             titleCell.appendChild(titleLink);
             row.appendChild(titleCell);
@@ -804,6 +848,42 @@
             selectedCase = null;
             renderCases();
           });
+        }
+
+        function bumpCaseViews(caseItem) {
+          if (!caseItem) return null;
+          const nextViews = (Number(caseItem.views) || 0) + 1;
+          const updatedItem = { ...caseItem, views: nextViews };
+
+          if (caseItem.isDefault) {
+            if (!caseItem.id) return updatedItem;
+            const overrides = loadDefaultViewOverrides();
+            overrides[caseItem.id] = nextViews;
+            saveDefaultViewOverrides(overrides);
+          } else {
+            const stored = loadStoredCases();
+            let matched = false;
+            const updatedStored = stored.map((item) => {
+              const sameId =
+                item.id && caseItem.id ? item.id === caseItem.id : false;
+              const sameCreated =
+                !caseItem.id && item.createdAt && item.createdAt === caseItem.createdAt;
+              if (sameId || sameCreated) {
+                matched = true;
+                return { ...item, views: nextViews };
+              }
+              return item;
+            });
+            if (!matched) {
+              updatedStored.push({
+                ...caseItem,
+                views: nextViews,
+              });
+            }
+            saveStoredCases(updatedStored);
+          }
+
+          return updatedItem;
         }
 
         renderCases();
