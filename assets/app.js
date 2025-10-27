@@ -11,6 +11,28 @@ function getBasePath() {
   return fromScript || fromBody || "";
 }
 
+// 네이버 애널리틱스 (WCS) 스크립트 로드
+function initNaverAnalytics() {
+  const SITE_KEY = "23ff2123920380";
+  if (window.__kmcaNaverAnalyticsInitialized) return;
+  const head = document.head;
+  if (!head) return;
+
+  window.__kmcaNaverAnalyticsInitialized = true;
+  window.wcs_add = window.wcs_add || {};
+  window.wcs_add.wa = SITE_KEY;
+
+  const script = document.createElement("script");
+  script.src = "https://wcs.pstatic.net/wcslog.js";
+  script.async = true;
+  script.onload = () => {
+    if (typeof window.wcs !== "undefined" && typeof window.wcs_do === "function") {
+      window.wcs_do();
+    }
+  };
+  head.appendChild(script);
+}
+
 // 주어진 URL을 순차 시도하며 첫 성공을 반환
 async function tryFetch(urls) {
   for (const url of urls) {
@@ -372,6 +394,8 @@ window.addEventListener("DOMContentLoaded", async () => {
   // 헤더/푸터 주입 (경로 자동 복구)
   const $header = await inject("#site-header", "partials/header.html");
   const $footer = await inject("#site-footer", "partials/footer.html");
+
+  initNaverAnalytics();
 
   // 헤더가 주입된 뒤에만 실행되어야 하는 것들
   if ($header) {
