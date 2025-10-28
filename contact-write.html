@@ -249,7 +249,6 @@
     <div id="site-footer"></div>
     <script>
       document.addEventListener("DOMContentLoaded", function () {
-        const STORAGE_KEY = "kmcaContactEntries";
         const AUTH_SESSION_KEY = "kmcaContactAuth";
         const TEMPLATE_TEXT = [
           '문의 하기 등록 하신 분은 반드시 "kmca234@naver.com" 메일로 이름/제목/비밀번호를 남기셔야 답변 및 연락을 드릴수 있습니다.',
@@ -318,19 +317,47 @@
           bodyInput.value = TEMPLATE_TEXT;
         }
 
-        function safeParse(json) {
-          try {
-            const data = JSON.parse(json);
-            return Array.isArray(data) ? data : [];
-          } catch (_) {
-            return [];
+        const apiBase = (() => {
+          const attr = (document.body.getAttribute("data-api-base") || "").trim();
+          if (attr) return attr;
+          if (
+            (location.hostname === "localhost" || location.hostname === "127.0.0.1") &&
+            location.port === "5173"
+          ) {
+            return "http://localhost:5174/api";
           }
+          return "/api";
+        })();
+
+        function buildApiUrl(path) {
+          const base = apiBase.replace(/\/+$/, "");
+          const cleanPath = path.startsWith("/") ? path : `/${path}`;
+          return `${base}${cleanPath}`;
         }
 
-        function saveEntry(entry) {
-          const existing = safeParse(localStorage.getItem(STORAGE_KEY));
-          existing.push(entry);
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(existing));
+        async function createEntry(entry) {
+          const response = await fetch(buildApiUrl("/contact/entries"), {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Accept: "application/json",
+            },
+            body: JSON.stringify(entry),
+          });
+          const data = await response.json().catch(() => ({}));
+          if (!response.ok || !data.success) {
+            if (response.status === 401) {
+              throw new Error(
+                data && data.error
+                  ? data.error
+                  : "비밀번호 인증에 실패했습니다. 다시 시도해주세요."
+              );
+            }
+            const message =
+              data && data.error ? data.error : `HTTP ${response.status}`;
+            throw new Error(message);
+          }
+          return data.entry;
         }
 
         if (form) {
@@ -345,20 +372,27 @@
             }
 
             const entry = {
-              id: `contact-${Date.now()}`,
               categoryValue,
               categoryLabel: categoryLabelMap[categoryValue] || "미지정",
               title,
               body,
               authorName: authInfo.name,
               password: authInfo.password,
-              createdAt: new Date().toISOString(),
             };
 
-            saveEntry(entry);
-            sessionStorage.removeItem(AUTH_SESSION_KEY);
-            alert("문의가 등록되었습니다. 목록에서 확인해주세요.");
-            window.location.href = "contact.html";
+            try {
+              await createEntry(entry);
+              sessionStorage.removeItem(AUTH_SESSION_KEY);
+              alert("문의가 등록되었습니다. 목록에서 확인해주세요.");
+              window.location.href = "contact.html";
+            } catch (error) {
+              console.error("[contact] 문의 등록 실패:", error);
+              alert(
+                error && error.message
+                  ? `문의 등록 중 오류가 발생했습니다.\n사유: ${error.message}`
+                  : "문의 등록 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요."
+              );
+            }
           });
         }
 

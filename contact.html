@@ -112,8 +112,56 @@
         margin-bottom: 16px;
       }
       .contact-board__info {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
         color: #475569;
         font-size: 14px;
+      }
+      .contact-board__note {
+        margin: 0;
+        color: #475569;
+      }
+      .contact-status {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 6px 12px;
+        border-radius: 999px;
+        font-size: 13px;
+        font-weight: 600;
+        border: 1px solid transparent;
+        transition:
+          background 0.2s ease,
+          color 0.2s ease,
+          border-color 0.2s ease;
+      }
+      .contact-status__dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: currentColor;
+        display: inline-block;
+      }
+      .contact-status.is-loading {
+        background: #f8fafc;
+        color: #2563eb;
+        border-color: rgba(37, 99, 235, 0.2);
+      }
+      .contact-status.is-online {
+        background: #ecfdf5;
+        color: #047857;
+        border-color: rgba(4, 120, 87, 0.25);
+      }
+      .contact-status.is-offline {
+        background: #fef2f2;
+        color: #dc2626;
+        border-color: rgba(220, 38, 38, 0.25);
+      }
+      .contact-status.is-auth {
+        background: #fef9c3;
+        color: #b45309;
+        border-color: rgba(180, 83, 9, 0.3);
       }
       .contact-board__actions {
         display: flex;
@@ -527,7 +575,7 @@
       }
     </style>
   </head>
-  <body data-header-mode="solid">
+  <body data-header-mode="solid" data-api-base="/api">
     <div id="site-header"></div>
     <main>
       <section class="contact-hero" aria-labelledby="contactIntro">
@@ -562,10 +610,21 @@
           </header>
 
           <div class="contact-board__toolbar">
-            <p class="contact-board__info">
-              ※ 문의 등록 시 이름과 비밀번호를 반드시 기록해 주세요. 문의 내용은
-              담당자 확인 후 순차적으로 답변드립니다.
-            </p>
+            <div class="contact-board__info">
+              <div
+                class="contact-status is-loading"
+                id="contactStatusIndicator"
+                role="status"
+                aria-live="polite"
+              >
+                <span class="contact-status__dot" aria-hidden="true"></span>
+                <span class="contact-status__text">서버 연결 확인 중...</span>
+              </div>
+              <p class="contact-board__note">
+                ※ 문의 등록 시 이름과 비밀번호를 반드시 기록해 주세요. 문의 내용은
+                담당자 확인 후 순차적으로 답변드립니다.
+              </p>
+            </div>
           </div>
 
           <div class="contact-empty" id="contactEmptyState" hidden>
@@ -768,9 +827,8 @@
 
     <script>
       document.addEventListener("DOMContentLoaded", function () {
-        const STORAGE_KEY = "kmcaContactEntries";
         const AUTH_SESSION_KEY = "kmcaContactAuth";
-        const READ_AUTH_KEY = "kmcaContactReadAuth";
+        const PASSWORD_CACHE_KEY = "kmcaContactPasswordCache";
 
         const categoryLabelMap = {
           insurer: "피보험자(보험사)",
@@ -798,39 +856,134 @@
         const authForm = document.getElementById("contactAuthForm");
         const authCloseButtons = authModal?.querySelectorAll("[data-close]");
         const authNameInput = document.getElementById("contactAuthName");
-        const authPasswordInput = document.getElementById(
-          "contactAuthPassword"
+        const authPasswordInput =
+          document.getElementById("contactAuthPassword");
+
+        const statusIndicator = document.getElementById(
+          "contactStatusIndicator"
         );
+        const statusText =
+          statusIndicator?.querySelector(".contact-status__text") || null;
+        const statusNote = document.querySelector(".contact-board__note");
+        const defaultStatusNote = statusNote ? statusNote.textContent : "";
+
+        const detailCache = new Map();
+        const passwordCache = loadPasswordCache();
+
+        const connectionState = {
+          status: "loading",
+          message: "서버 연결 확인 중...",
+        };
 
         let currentEntries = [];
         let selectedEntry = null;
 
-        function safeParse(json, fallback) {
+        const apiBase = (() => {
+          const attr = (document.body.getAttribute("data-api-base") || "").trim();
+          if (attr) return attr;
+          if (
+            (location.hostname === "localhost" || location.hostname === "127.0.0.1") &&
+            location.port === "5173"
+          ) {
+            return "http://localhost:5174/api";
+          }
+          return "/api";
+        })();
+
+        function buildApiUrl(path) {
+          const base = apiBase.replace(/\/+$/, "");
+          const cleanPath = path.startsWith("/") ? path : `/${path}`;
+          return `${base}${cleanPath}`;
+        }
+
+        function loadPasswordCache() {
           try {
-            const data = JSON.parse(json);
-            return data ?? fallback;
+            const raw = sessionStorage.getItem(PASSWORD_CACHE_KEY);
+            if (!raw) return new Map();
+            const parsed = JSON.parse(raw);
+            if (parsed && typeof parsed === "object" && !Array.isArray(parsed)) {
+              return new Map(Object.entries(parsed));
+            }
           } catch (_) {
-            return fallback;
+            // ignore
+          }
+          return new Map();
+        }
+
+        function persistPasswordCache() {
+          try {
+            const plain = Object.fromEntries(passwordCache.entries());
+            sessionStorage.setItem(PASSWORD_CACHE_KEY, JSON.stringify(plain));
+          } catch (_) {
+            // ignore
           }
         }
 
-        function loadEntries() {
-          return safeParse(localStorage.getItem(STORAGE_KEY), []);
+        function setEntryPassword(entryId, password) {
+          if (!entryId || !password) return;
+          passwordCache.set(entryId, password);
+          persistPasswordCache();
         }
 
-        function saveEntries(entries) {
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
+        function clearEntryPassword(entryId) {
+          if (!entryId) return;
+          passwordCache.delete(entryId);
+          persistPasswordCache();
         }
 
-        const readAuth = new Set(
-          safeParse(sessionStorage.getItem(READ_AUTH_KEY), [])
-        );
-        function updateReadAuth() {
-          sessionStorage.setItem(
-            READ_AUTH_KEY,
-            JSON.stringify(Array.from(readAuth))
-          );
+        function getEntryPassword(entryId) {
+          return passwordCache.get(entryId) || "";
         }
+
+        function getStatusMessage(status, customMessage) {
+          if (typeof customMessage === "string" && customMessage.trim()) {
+            return customMessage.trim();
+          }
+          if (status === "online") return "서버에 연결되었습니다.";
+          if (status === "offline")
+            return "서버 연결이 필요합니다. 문의 목록이 업데이트되지 않을 수 있습니다.";
+          if (status === "auth")
+            return "비밀번호 인증이 필요합니다.";
+          return "서버 연결 확인 중...";
+        }
+
+        function renderConnectionStatus() {
+          if (statusIndicator && statusText) {
+            statusIndicator.classList.remove(
+              "is-loading",
+              "is-online",
+              "is-offline",
+              "is-auth"
+            );
+            const classMap = {
+              loading: "is-loading",
+              online: "is-online",
+              offline: "is-offline",
+              auth: "is-auth",
+            };
+            const cls = classMap[connectionState.status] || "is-loading";
+            statusIndicator.classList.add(cls);
+            statusIndicator.setAttribute("data-status", connectionState.status);
+            statusText.textContent = connectionState.message;
+          }
+
+          if (statusNote) {
+            if (connectionState.status === "offline") {
+              statusNote.textContent =
+                "※ 서버 연결 실패로 최신 문의를 불러오지 못했습니다.";
+            } else {
+              statusNote.textContent = defaultStatusNote;
+            }
+          }
+        }
+
+        function updateConnectionStatus(status, message) {
+          connectionState.status = status;
+          connectionState.message = getStatusMessage(status, message);
+          renderConnectionStatus();
+        }
+
+        renderConnectionStatus();
 
         function formatDate(isoLike) {
           if (!isoLike) return "작성일 미기록";
@@ -843,26 +996,103 @@
           });
         }
 
-        function renderEntries() {
-          currentEntries = loadEntries().sort((a, b) => {
-            const dateA = new Date(a.createdAt || 0).getTime();
-            const dateB = new Date(b.createdAt || 0).getTime();
-            return dateB - dateA;
+        async function fetchEntriesFromServer() {
+          const response = await fetch(buildApiUrl("/contact/entries"), {
+            cache: "no-store",
           });
+          const data = await response.json().catch(() => ({}));
+          if (!response.ok || !data.success) {
+            const message = data && data.error ? data.error : `HTTP ${response.status}`;
+            throw new Error(message);
+          }
+          return Array.isArray(data.entries) ? data.entries : [];
+        }
 
-          const total = currentEntries.length;
+        async function fetchEntryDetail(entryId, password) {
+          const response = await fetch(
+            buildApiUrl(`/contact/entries/${encodeURIComponent(entryId)}/view`),
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Accept: "application/json",
+              },
+              body: JSON.stringify({ password }),
+            }
+          );
+          const data = await response.json().catch(() => ({}));
+          if (response.status === 401) {
+            throw new Error(data && data.error ? data.error : "비밀번호가 올바르지 않습니다.");
+          }
+          if (!response.ok || !data.success) {
+            const message = data && data.error ? data.error : `HTTP ${response.status}`;
+            throw new Error(message);
+          }
+          return data.entry;
+        }
+
+        async function deleteEntry(entryId, password) {
+          const response = await fetch(
+            buildApiUrl(`/contact/entries/${encodeURIComponent(entryId)}`),
+            {
+              method: "DELETE",
+              headers: {
+                "Content-Type": "application/json",
+                Accept: "application/json",
+              },
+              body: JSON.stringify({ password }),
+            }
+          );
+          const data = await response.json().catch(() => ({}));
+          if (response.status === 401) {
+            throw new Error(data && data.error ? data.error : "비밀번호가 올바르지 않습니다.");
+          }
+          if (!response.ok || !data.success) {
+            const message = data && data.error ? data.error : `HTTP ${response.status}`;
+            throw new Error(message);
+          }
+          return true;
+        }
+
+        async function submitReply(entryId, password, author, body) {
+          const response = await fetch(
+            buildApiUrl(`/contact/entries/${encodeURIComponent(entryId)}/replies`),
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Accept: "application/json",
+              },
+              body: JSON.stringify({ password, author, body }),
+            }
+          );
+          const data = await response.json().catch(() => ({}));
+          if (response.status === 401) {
+            throw new Error(data && data.error ? data.error : "비밀번호가 올바르지 않습니다.");
+          }
+          if (!response.ok || !data.success) {
+            const message = data && data.error ? data.error : `HTTP ${response.status}`;
+            throw new Error(message);
+          }
+          return data.entry;
+        }
+
+        function renderEntries(entries) {
+          const total = entries.length;
           if (countEl) countEl.textContent = total;
 
           tableBody.innerHTML = "";
+
           if (total === 0) {
             emptyState.hidden = false;
             detail.hidden = true;
             selectedEntry = null;
             return;
           }
+
           emptyState.hidden = true;
 
-          currentEntries.forEach((item, index) => {
+          entries.forEach((item, index) => {
             const row = document.createElement("tr");
             const number = total - index;
 
@@ -893,9 +1123,9 @@
               `${item.title || "문의"} 상세 보기`
             );
             link.dataset.entryId = item.id;
-            link.addEventListener("click", function (event) {
+            link.addEventListener("click", async function (event) {
               event.preventDefault();
-              handleEntryClick(this.dataset.entryId);
+              await handleEntryClick(this.dataset.entryId);
             });
             titleCell.appendChild(link);
             row.appendChild(titleCell);
@@ -944,6 +1174,7 @@
         function openDetail(entry) {
           if (!entry) return;
           selectedEntry = entry;
+          detailCache.set(entry.id, entry);
           detail.hidden = false;
           detailTitle.textContent = entry.title || "문의 상세";
           const metaItems = [
@@ -960,66 +1191,91 @@
           renderReplies(entry);
         }
 
-        function ensurePassword(entry, message) {
-          const input = window.prompt(message || "비밀번호를 입력하세요.");
-          if (input === null) return null;
-          if (input !== entry.password) {
-            alert("비밀번호가 일치하지 않습니다.");
-            return null;
-          }
-          return input;
-        }
-
-        function handleEntryClick(entryId) {
-          const entry = currentEntries.find((item) => item.id === entryId);
-          if (!entry) {
+        async function handleEntryClick(entryId) {
+          const meta = currentEntries.find((item) => item.id === entryId);
+          if (!meta) {
             alert("선택한 문의를 찾을 수 없습니다.");
             return;
           }
 
-          if (!readAuth.has(entry.id)) {
-            const passwordInput = ensurePassword(
-              entry,
-              "문의 등록 시 설정한 비밀번호를 입력하세요."
-            );
-            if (passwordInput === null) return;
-            readAuth.add(entry.id);
-            updateReadAuth();
+          const cached = detailCache.get(entryId);
+          if (cached) {
+            openDetail(cached);
+            return;
           }
 
-          openDetail(entry);
+          let password = getEntryPassword(entryId);
+          const promptMessage = "문의 등록 시 설정한 비밀번호를 입력하세요.";
+          if (!password) {
+            const input = window.prompt(promptMessage);
+            if (input === null) return;
+            password = input.trim();
+            if (!password) {
+              alert("비밀번호를 입력해주세요.");
+              return;
+            }
+          }
+
+          try {
+            const entry = await fetchEntryDetail(entryId, password);
+            setEntryPassword(entryId, password);
+            openDetail(entry);
+          } catch (error) {
+            clearEntryPassword(entryId);
+            detailCache.delete(entryId);
+            alert(
+              error && error.message
+                ? error.message
+                : "문의 내용을 불러오지 못했습니다. 비밀번호를 다시 확인해주세요."
+            );
+          }
         }
 
-        function requestDelete(entry) {
+        async function requestDelete(entry) {
           if (!entry) {
             alert("삭제할 문의가 선택되지 않았습니다.");
             return;
           }
-          const passwordInput = ensurePassword(
-            entry,
-            "삭제 비밀번호를 입력하세요."
-          );
-          if (passwordInput === null) return;
+
+          let password = getEntryPassword(entry.id);
+          if (!password) {
+            const input = window.prompt("삭제 비밀번호를 입력하세요.");
+            if (input === null) return;
+            password = input.trim();
+            if (!password) {
+              alert("비밀번호를 입력해주세요.");
+              return;
+            }
+          }
 
           const ok = window.confirm(
             `"${entry.title || "제목 미등록"}" 문의를 삭제하시겠습니까?`
           );
           if (!ok) return;
 
-          const updated = loadEntries().filter((item) => item.id !== entry.id);
-          saveEntries(updated);
-          readAuth.delete(entry.id);
-          updateReadAuth();
-
-          alert("문의가 삭제되었습니다.");
-          detail.hidden = true;
-          selectedEntry = null;
-          renderEntries();
+          try {
+            await deleteEntry(entry.id, password);
+            clearEntryPassword(entry.id);
+            detailCache.delete(entry.id);
+            alert("문의가 삭제되었습니다.");
+            detail.hidden = true;
+            selectedEntry = null;
+            await refreshEntries();
+          } catch (error) {
+            if (error && error.message === "비밀번호가 올바르지 않습니다.") {
+              clearEntryPassword(entry.id);
+            }
+            alert(
+              error && error.message
+                ? error.message
+                : "문의 삭제 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요."
+            );
+          }
         }
 
         if (detailDelete) {
-          detailDelete.addEventListener("click", function () {
-            requestDelete(selectedEntry);
+          detailDelete.addEventListener("click", async function () {
+            await requestDelete(selectedEntry);
           });
         }
 
@@ -1027,15 +1283,6 @@
           if (!selectedEntry) {
             alert("먼저 문의 내용을 확인해주세요.");
             return;
-          }
-          if (!readAuth.has(selectedEntry.id)) {
-            const passwordInput = ensurePassword(
-              selectedEntry,
-              "비밀번호를 입력하세요."
-            );
-            if (passwordInput === null) return;
-            readAuth.add(selectedEntry.id);
-            updateReadAuth();
           }
           if (!replySection) return;
           if (replySection.hasAttribute("hidden")) {
@@ -1046,17 +1293,22 @@
           }
         });
 
-        replyForm?.addEventListener("submit", function (event) {
+        replyForm?.addEventListener("submit", async function (event) {
           event.preventDefault();
           if (!selectedEntry) {
             alert("먼저 문의 내용을 확인해주세요.");
             return;
           }
-          const passwordInput = ensurePassword(
-            selectedEntry,
-            "답변 등록 비밀번호를 입력하세요."
-          );
-          if (passwordInput === null) return;
+          let password = getEntryPassword(selectedEntry.id);
+          if (!password) {
+            const input = window.prompt("답변 등록 비밀번호를 입력하세요.");
+            if (input === null) return;
+            password = input.trim();
+            if (!password) {
+              alert("비밀번호를 입력해주세요.");
+              return;
+            }
+          }
 
           const body = replyBodyInput?.value.trim();
           if (!body) {
@@ -1065,28 +1317,29 @@
           }
           const author = replyAuthorInput?.value.trim() || "관리자";
 
-          const entries = loadEntries();
-          const target = entries.find((item) => item.id === selectedEntry.id);
-          if (!target) {
-            alert(
-              "문의 데이터를 찾을 수 없습니다. 새로고침 후 다시 시도해주세요."
+          try {
+            const updatedEntry = await submitReply(
+              selectedEntry.id,
+              password,
+              author,
+              body
             );
-            return;
+            setEntryPassword(selectedEntry.id, password);
+            replyBodyInput.value = "";
+            detailCache.set(updatedEntry.id, updatedEntry);
+            selectedEntry = updatedEntry;
+            renderReplies(updatedEntry);
+            alert("답변이 등록되었습니다.");
+          } catch (error) {
+            if (error && error.message === "비밀번호가 올바르지 않습니다.") {
+              clearEntryPassword(selectedEntry.id);
+            }
+            alert(
+              error && error.message
+                ? error.message
+                : "답변 등록 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요."
+            );
           }
-
-          target.replies = Array.isArray(target.replies) ? target.replies : [];
-          target.replies.push({
-            id: `reply-${Date.now()}`,
-            author,
-            body,
-            createdAt: new Date().toISOString(),
-          });
-          saveEntries(entries);
-
-          replyBodyInput.value = "";
-          renderReplies(target);
-          selectedEntry = target;
-          alert("답변이 등록되었습니다.");
         });
 
         if (detailClose) {
@@ -1151,7 +1404,29 @@
           });
         }
 
-        renderEntries();
+        async function refreshEntries() {
+          updateConnectionStatus("loading");
+          try {
+            const entries = await fetchEntriesFromServer();
+            currentEntries = entries.sort((a, b) => {
+              const dateA = new Date(a.createdAt || 0).getTime();
+              const dateB = new Date(b.createdAt || 0).getTime();
+              return dateB - dateA;
+            });
+            updateConnectionStatus("online");
+            renderEntries(currentEntries);
+          } catch (error) {
+            console.error("[contact] 목록을 불러오지 못했습니다:", error);
+            currentEntries = [];
+            updateConnectionStatus(
+              "offline",
+              "서버 연결에 실패했습니다. 잠시 후 다시 시도해주세요."
+            );
+            renderEntries(currentEntries);
+          }
+        }
+
+        refreshEntries();
       });
     </script>
   </body>

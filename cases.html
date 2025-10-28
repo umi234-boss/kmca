@@ -688,7 +688,10 @@
         function ensureAdminToken(promptMessage) {
           let token = getAdminToken();
           if (token) return token;
-          const input = window.prompt(promptMessage || "관리자 비밀번호를 입력하세요.");
+          const input = window.prompt(
+            promptMessage ||
+              "관리자 비밀번호(KMCA_API_SECRET)를 입력하세요."
+          );
           if (input === null) return "";
           const trimmed = input.trim();
           if (!trimmed) {
@@ -801,11 +804,14 @@
           detailDelete.dataset.caseId = target.id;
           detailDelete.textContent = target.isDefault ? "샘플 삭제" : "삭제";
           detailDelete.dataset.isDefault = target.isDefault ? "1" : "0";
-          detailDelete.removeAttribute("disabled");
-          if (connectionState.status === "offline" || connectionState.status === "auth") {
+          const disableAction =
+            connectionState.status === "offline" || connectionState.status === "auth";
+          if (disableAction) {
+            detailDelete.setAttribute("disabled", "true");
             const note = connectionState.message || "서버 연결 후 삭제할 수 있습니다.";
             detailDelete.setAttribute("title", note);
           } else {
+            detailDelete.removeAttribute("disabled");
             detailDelete.removeAttribute("title");
           }
         }
@@ -1062,7 +1068,9 @@
 
         if (writeBtn) {
           writeBtn.addEventListener("click", function () {
-            const token = ensureAdminToken("사례 글쓰기 비밀번호를 입력하세요.");
+            const token = ensureAdminToken(
+              "사례 글쓰기 비밀번호(KMCA_API_SECRET)를 입력하세요."
+            );
             if (!token) return;
             window.location.href = "cases-write.html";
           });
@@ -1087,7 +1095,9 @@
               return;
             }
 
-            const token = ensureAdminToken("삭제 비밀번호를 입력하세요.");
+            const token = ensureAdminToken(
+              "삭제 비밀번호(KMCA_API_SECRET)를 입력하세요."
+            );
             if (!token) return;
 
             const ok = window.confirm(
