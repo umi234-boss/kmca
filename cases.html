@@ -700,10 +700,13 @@
         let apiAvailable = false;
 
         const apiBase = (() => {
-          const attr = (document.body.getAttribute("data-api-base") || "").trim();
+          const attr = (
+            document.body.getAttribute("data-api-base") || ""
+          ).trim();
           if (attr) return attr;
           if (
-            (location.hostname === "localhost" || location.hostname === "127.0.0.1") &&
+            (location.hostname === "localhost" ||
+              location.hostname === "127.0.0.1") &&
             location.port === "5173"
           ) {
             return "http://localhost:5174/api";
@@ -739,7 +742,8 @@
               offline: "is-offline",
               loading: "is-loading",
             };
-            const className = classNameMap[connectionState.status] || "is-loading";
+            const className =
+              classNameMap[connectionState.status] || "is-loading";
             statusIndicator.classList.add(className);
             statusIndicator.setAttribute("data-status", connectionState.status);
             statusText.textContent = connectionState.message;
@@ -747,7 +751,8 @@
 
           if (statusNote) {
             if (connectionState.status === "offline") {
-              statusNote.textContent = "※ 서버 연결 실패로 예시 데이터만 표시 중입니다.";
+              statusNote.textContent =
+                "※ 서버 연결 실패로 예시 데이터만 표시 중입니다.";
             } else {
               statusNote.textContent = defaultStatusText;
             }
@@ -785,7 +790,8 @@
           detailDelete.dataset.isDefault = target.isDefault ? "1" : "0";
           if (connectionState.status === "offline") {
             detailDelete.setAttribute("disabled", "true");
-            const note = connectionState.message || "서버 연결 후 삭제할 수 있습니다.";
+            const note =
+              connectionState.message || "서버 연결 후 삭제할 수 있습니다.";
             detailDelete.setAttribute("title", note);
           } else {
             detailDelete.removeAttribute("disabled");
@@ -799,7 +805,8 @@
           });
           const data = await response.json().catch(() => ({}));
           if (!response.ok || !data.success) {
-            const message = data && data.error ? data.error : `HTTP ${response.status}`;
+            const message =
+              data && data.error ? data.error : `HTTP ${response.status}`;
             throw new Error(message);
           }
           return Array.isArray(data.cases) ? data.cases : [];
@@ -815,7 +822,8 @@
           );
           const data = await response.json().catch(() => ({}));
           if (!response.ok || !data.success) {
-            const message = data && data.error ? data.error : `HTTP ${response.status}`;
+            const message =
+              data && data.error ? data.error : `HTTP ${response.status}`;
             throw new Error(message);
           }
           return data.case;
@@ -835,7 +843,8 @@
           );
           const data = await response.json().catch(() => ({}));
           if (!response.ok || !data.success) {
-            const message = data && data.error ? data.error : `HTTP ${response.status}`;
+            const message =
+              data && data.error ? data.error : `HTTP ${response.status}`;
             throw new Error(message);
           }
           return true;
@@ -879,7 +888,8 @@
             "카테고리 미지정";
           const authorText = caseItem.author || "관리자";
           const createdText = formatDate(caseItem.createdAt);
-          const viewsText = typeof caseItem.views === "number" ? caseItem.views : 0;
+          const viewsText =
+            typeof caseItem.views === "number" ? caseItem.views : 0;
 
           detailMeta.innerHTML = [
             `카테고리: ${escapeHTML(categoryText)}`,
@@ -940,7 +950,10 @@
             const titleLink = document.createElement("a");
             titleLink.href = "#!";
             titleLink.textContent = item.title || "제목 미등록";
-            titleLink.setAttribute("aria-label", `${item.title || "사례"} 상세 보기`);
+            titleLink.setAttribute(
+              "aria-label",
+              `${item.title || "사례"} 상세 보기`
+            );
             titleLink.dataset.caseIndex = String(index);
             titleLink.addEventListener("click", async function (event) {
               event.preventDefault();
@@ -960,7 +973,10 @@
                   if (error && error.message === "UNAUTHORIZED") {
                     updatedCase = incrementViewsLocally(current);
                   } else {
-                    updateConnectionStatus("offline", "서버 연결이 원활하지 않습니다.");
+                    updateConnectionStatus(
+                      "offline",
+                      "서버 연결이 원활하지 않습니다."
+                    );
                     updatedCase = incrementViewsLocally(current);
                   }
                 }
@@ -977,7 +993,9 @@
                 const viewsCell = rowEl.querySelector("td:last-child");
                 if (viewsCell) {
                   viewsCell.textContent = String(
-                    typeof updatedCase.views === "number" ? updatedCase.views : 0
+                    typeof updatedCase.views === "number"
+                      ? updatedCase.views
+                      : 0
                   );
                 }
               }
@@ -1031,9 +1049,8 @@
 
         if (writeBtn) {
           writeBtn.addEventListener("click", function () {
-            const password = requestAdminPassword(
-              "사례 글쓰기 비밀번호(1234)를 입력하세요."
-            );
+            const password =
+              requestAdminPassword("글쓰기 비밀번호를 입력하세요.");
             if (!password) return;
             window.location.href = "cases-write.html";
           });
@@ -1058,7 +1075,8 @@
               return;
             }
 
-            const password = requestAdminPassword("삭제 비밀번호를 입력하세요.");
+            const password =
+              requestAdminPassword("삭제 비밀번호를 입력하세요.");
             if (!password) return;
 
             const ok = window.confirm(
