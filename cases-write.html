@@ -236,7 +236,23 @@
           victim: "피해자",
         };
 
-        const ADMIN_PASSWORD = "1234";
+        const CASE_ADMIN_PASSWORD_KEY = "kmcaCaseAdminPassword";
+
+        function getStoredAdminPassword() {
+          try {
+            return sessionStorage.getItem(CASE_ADMIN_PASSWORD_KEY) || "";
+          } catch (_) {
+            return "";
+          }
+        }
+
+        function clearStoredAdminPassword() {
+          try {
+            sessionStorage.removeItem(CASE_ADMIN_PASSWORD_KEY);
+          } catch (_) {
+            // ignore
+          }
+        }
 
         const apiBase = (() => {
           const attr = (
@@ -278,6 +294,14 @@
         }
 
         const form = document.getElementById("caseWriteForm");
+        const storedPassword = getStoredAdminPassword();
+
+        if (!storedPassword) {
+          alert("사례 작성 권한이 확인되지 않았습니다. 다시 시도해주세요.");
+          window.location.href = "cases.html";
+          return;
+        }
+
         if (form) {
           const submitBtn = form.querySelector('button[type="submit"]');
           const defaultSubmitText = submitBtn ? submitBtn.textContent : "";
@@ -308,9 +332,10 @@
                   body,
                   author: "관리자",
                 },
-                ADMIN_PASSWORD
+                storedPassword
               );
               alert("사례가 저장되었습니다. 목록에서 확인해주세요.");
+              clearStoredAdminPassword();
               window.location.href = "cases.html";
             } catch (error) {
               console.error("[case] 저장 실패:", error);
@@ -332,6 +357,7 @@
         const cancelBtn = document.getElementById("caseWriteCancel");
         if (cancelBtn) {
           cancelBtn.addEventListener("click", function () {
+            clearStoredAdminPassword();
             window.location.href = "cases.html";
           });
         }
