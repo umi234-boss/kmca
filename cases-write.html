@@ -218,39 +218,9 @@
           victim: "피해자",
         };
 
-        const CASE_ADMIN_PASSWORD_KEY = "kmcaCaseAdminPassword";
         const UI_ADMIN_PASSWORD = "1234";
 
-        function getStoredAdminPassword() {
-          try {
-            return sessionStorage.getItem(CASE_ADMIN_PASSWORD_KEY) || "";
-          } catch (_) {
-            return "";
-          }
-        }
-
-        function storeAdminPassword(password) {
-          try {
-            sessionStorage.setItem(CASE_ADMIN_PASSWORD_KEY, password);
-          } catch (_) {
-            // ignore storage errors
-          }
-        }
-
-        function clearStoredAdminPassword() {
-          try {
-            sessionStorage.removeItem(CASE_ADMIN_PASSWORD_KEY);
-          } catch (_) {
-            // ignore
-          }
-        }
-
         function requireAdminPassword(promptMessage) {
-          const existing = getStoredAdminPassword();
-          if (existing) {
-            if (existing === UI_ADMIN_PASSWORD) return existing;
-            clearStoredAdminPassword();
-          }
           const input = window.prompt(
             promptMessage || "관리자 비밀번호를 입력하세요."
           );
@@ -260,7 +230,6 @@
             alert("비밀번호가 올바르지 않습니다.");
             return "";
           }
-          storeAdminPassword(trimmed);
           return trimmed;
         }
 
