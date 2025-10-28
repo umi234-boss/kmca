@@ -114,6 +114,16 @@
       .case-write__button:active {
         transform: translateY(0);
       }
+      .case-write__shortcut {
+        margin-top: 18px;
+        font-size: 14px;
+        text-align: right;
+        color: #475569;
+      }
+      .case-write__shortcut a {
+        color: #1d4ed8;
+        font-weight: 600;
+      }
       @media (max-width: 760px) {
         .case-write {
           padding: 48px 0 80px;
@@ -127,6 +137,9 @@
         }
         .case-write__button {
           width: 100%;
+        }
+        .case-write__shortcut {
+          text-align: center;
         }
       }
       @media (max-width: 540px) {
@@ -207,6 +220,11 @@
               </button>
             </div>
           </form>
+          <p class="case-write__shortcut" style="margin-top: 18px; text-align: right; font-size: 14px; color: #475569;">
+            사례 목록으로 돌아가시려면
+            <a href="cases.html" style="color: #1d4ed8; font-weight: 600;">여기를 클릭</a>
+            하세요.
+          </p>
         </article>
       </div>
     </main>
@@ -218,20 +236,7 @@
           victim: "피해자",
         };
 
-        const UI_ADMIN_PASSWORD = "1234";
-
-        function requireAdminPassword(promptMessage) {
-          const input = window.prompt(
-            promptMessage || "관리자 비밀번호를 입력하세요."
-          );
-          if (input === null) return "";
-          const trimmed = input.trim();
-          if (trimmed !== UI_ADMIN_PASSWORD) {
-            alert("비밀번호가 올바르지 않습니다.");
-            return "";
-          }
-          return trimmed;
-        }
+        const ADMIN_PASSWORD = "1234";
 
         const apiBase = (() => {
           const attr = (
@@ -289,13 +294,6 @@
               return;
             }
 
-            const adminPassword =
-              requireAdminPassword("사례 저장 비밀번호를 입력하세요.");
-            if (!adminPassword) {
-              alert("저장을 위해 관리자 비밀번호가 필요합니다.");
-              return;
-            }
-
             if (submitBtn) {
               submitBtn.disabled = true;
               submitBtn.textContent = "저장 중...";
@@ -310,9 +308,8 @@
                   body,
                   author: "관리자",
                 },
-                adminPassword
+                ADMIN_PASSWORD
               );
-              clearStoredAdminPassword();
               alert("사례가 저장되었습니다. 목록에서 확인해주세요.");
               window.location.href = "cases.html";
             } catch (error) {
@@ -335,7 +332,6 @@
         const cancelBtn = document.getElementById("caseWriteCancel");
         if (cancelBtn) {
           cancelBtn.addEventListener("click", function () {
-            clearStoredAdminPassword();
             window.location.href = "cases.html";
           });
         }
