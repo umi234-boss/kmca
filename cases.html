@@ -1062,9 +1062,7 @@
               return;
             }
 
-            const password = requestAdminPassword(
-              "삭제 비밀번호(1234)를 입력하세요."
-            );
+            const password = requestAdminPassword("삭제 비밀번호를 입력하세요.");
             if (!password) return;
 
             const ok = window.confirm(

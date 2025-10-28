@@ -364,7 +364,7 @@
         }
 
         if (form) {
-          form.addEventListener("submit", function (event) {
+          form.addEventListener("submit", async function (event) {
             event.preventDefault();
             const categoryValue = form.category.value;
             const title = form.title.value.trim();
