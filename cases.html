@@ -153,11 +153,6 @@
         color: #dc2626;
         border-color: rgba(220, 38, 38, 0.25);
       }
-      .case-status.is-auth {
-        background: #fef9c3;
-        color: #b45309;
-        border-color: rgba(180, 83, 9, 0.3);
-      }
       .case-board__search {
         position: relative;
         flex: 0 0 320px;
@@ -660,48 +655,49 @@
           message: "서버 연결 확인 중...",
         };
 
-        const ADMIN_TOKEN_KEY = "kmcaAdminToken";
+        const CASE_ADMIN_PASSWORD_KEY = "kmcaCaseAdminPassword";
+        const UI_ADMIN_PASSWORD = "1234";
 
-        function getAdminToken() {
+        function getStoredAdminPassword() {
           try {
-            return sessionStorage.getItem(ADMIN_TOKEN_KEY) || "";
+            return sessionStorage.getItem(CASE_ADMIN_PASSWORD_KEY) || "";
           } catch (_) {
             return "";
           }
         }
 
-        function setAdminToken(token) {
+        function storeAdminPassword(password) {
           try {
-            if (token) {
-              sessionStorage.setItem(ADMIN_TOKEN_KEY, token);
-            }
+            sessionStorage.setItem(CASE_ADMIN_PASSWORD_KEY, password);
           } catch (_) {
             // ignore storage error
           }
         }
 
-        function clearAdminToken() {
+        function clearStoredAdminPassword() {
           try {
-            sessionStorage.removeItem(ADMIN_TOKEN_KEY);
+            sessionStorage.removeItem(CASE_ADMIN_PASSWORD_KEY);
           } catch (_) {
             // ignore
           }
         }
 
-        function ensureAdminToken(promptMessage) {
-          let token = getAdminToken();
-          if (token) return token;
+        function requestAdminPassword(promptMessage) {
+          const existing = getStoredAdminPassword();
+          if (existing) {
+            if (existing === UI_ADMIN_PASSWORD) return existing;
+            clearStoredAdminPassword();
+          }
           const input = window.prompt(
-            promptMessage ||
-              "관리자 비밀번호(KMCA_API_SECRET)를 입력하세요."
+            promptMessage || "관리자 비밀번호(1234)를 입력하세요."
           );
           if (input === null) return "";
           const trimmed = input.trim();
-          if (!trimmed) {
-            alert("비밀번호를 입력해주세요.");
+          if (trimmed !== UI_ADMIN_PASSWORD) {
+            alert("비밀번호가 올바르지 않습니다.");
             return "";
           }
-          setAdminToken(trimmed);
+          storeAdminPassword(trimmed);
           return trimmed;
         }
 
@@ -732,8 +728,6 @@
           if (status === "online") return "서버에 연결되었습니다.";
           if (status === "offline")
             return "서버 연결이 필요합니다. 예시 데이터만 표시됩니다.";
-          if (status === "auth")
-            return "관리자 인증이 필요합니다. 조회는 가능하지만 수정 권한이 없습니다.";
           return "서버 연결 확인 중...";
         }
 
@@ -742,13 +736,11 @@
             statusIndicator.classList.remove(
               "is-loading",
               "is-online",
-              "is-offline",
-              "is-auth"
+              "is-offline"
             );
             const classNameMap = {
               online: "is-online",
               offline: "is-offline",
-              auth: "is-auth",
               loading: "is-loading",
             };
             const className = classNameMap[connectionState.status] || "is-loading";
@@ -760,8 +752,6 @@
           if (statusNote) {
             if (connectionState.status === "offline") {
               statusNote.textContent = "※ 서버 연결 실패로 예시 데이터만 표시 중입니다.";
-            } else if (connectionState.status === "auth") {
-              statusNote.textContent = "※ 관리자 인증 후 수정·삭제 기능을 이용할 수 있습니다.";
             } else {
               statusNote.textContent = defaultStatusText;
             }
@@ -782,16 +772,6 @@
           return { ...item, views: nextViews };
         }
 
-        function handleUnauthorized(message, options) {
-          clearAdminToken();
-          const nextStatus = (options && options.status) || "auth";
-          const fallbackMessage =
-            nextStatus === "auth"
-              ? "관리자 인증이 필요합니다. 조회는 가능하지만 수정 권한이 없습니다."
-              : "관리자 인증이 필요합니다.";
-          updateConnectionStatus(nextStatus, message || fallbackMessage);
-        }
-
         function updateDetailDeleteState(caseItem) {
           if (!detailDelete) return;
           const target = caseItem || selectedCase;
@@ -807,9 +787,7 @@
           detailDelete.dataset.caseId = target.id;
           detailDelete.textContent = target.isDefault ? "샘플 삭제" : "삭제";
           detailDelete.dataset.isDefault = target.isDefault ? "1" : "0";
-          const disableAction =
-            connectionState.status === "offline" || connectionState.status === "auth";
-          if (disableAction) {
+          if (connectionState.status === "offline") {
             detailDelete.setAttribute("disabled", "true");
             const note = connectionState.message || "서버 연결 후 삭제할 수 있습니다.";
             detailDelete.setAttribute("title", note);
@@ -820,12 +798,8 @@
         }
 
         async function fetchCasesFromServer() {
-          const token = getAdminToken();
-          const headers = { Accept: "application/json" };
-          if (token) headers["X-KMCA-Admin"] = token;
           const response = await fetch(buildApiUrl("/cases"), {
             cache: "no-store",
-            headers,
           });
           const data = await response.json().catch(() => ({}));
           if (!response.ok || !data.success) {
@@ -836,21 +810,14 @@
         }
 
         async function incrementCaseViews(caseId) {
-          const token = getAdminToken();
-          const headers = { Accept: "application/json" };
-          if (token) headers["X-KMCA-Admin"] = token;
           const response = await fetch(
             buildApiUrl(`/cases/${encodeURIComponent(caseId)}/views`),
             {
               method: "PATCH",
-              headers,
+              headers: { Accept: "application/json" },
             }
           );
           const data = await response.json().catch(() => ({}));
-          if (response.status === 401) {
-            handleUnauthorized("관리자 인증이 필요합니다.", { status: "auth" });
-            throw new Error("UNAUTHORIZED");
-          }
           if (!response.ok || !data.success) {
             const message = data && data.error ? data.error : `HTTP ${response.status}`;
             throw new Error(message);
@@ -858,22 +825,19 @@
           return data.case;
         }
 
-        async function deleteCaseById(caseId) {
-          const token = getAdminToken();
-          const headers = { Accept: "application/json" };
-          if (token) headers["X-KMCA-Admin"] = token;
+        async function deleteCaseById(caseId, adminPassword) {
           const response = await fetch(
             buildApiUrl(`/cases/${encodeURIComponent(caseId)}`),
             {
               method: "DELETE",
-              headers,
+              headers: {
+                "Content-Type": "application/json",
+                Accept: "application/json",
+              },
+              body: JSON.stringify({ adminPassword }),
             }
           );
           const data = await response.json().catch(() => ({}));
-          if (response.status === 401) {
-            handleUnauthorized("관리자 인증이 필요합니다.");
-            throw new Error("UNAUTHORIZED");
-          }
           if (!response.ok || !data.success) {
             const message = data && data.error ? data.error : `HTTP ${response.status}`;
             throw new Error(message);
@@ -1071,10 +1035,10 @@
 
         if (writeBtn) {
           writeBtn.addEventListener("click", function () {
-            const token = ensureAdminToken(
-              "사례 글쓰기 비밀번호(KMCA_API_SECRET)를 입력하세요."
+            const password = requestAdminPassword(
+              "사례 글쓰기 비밀번호(1234)를 입력하세요."
             );
-            if (!token) return;
+            if (!password) return;
             window.location.href = "cases-write.html";
           });
         }
@@ -1098,10 +1062,10 @@
               return;
             }
 
-            const token = ensureAdminToken(
-              "삭제 비밀번호(KMCA_API_SECRET)를 입력하세요."
+            const password = requestAdminPassword(
+              "삭제 비밀번호(1234)를 입력하세요."
             );
-            if (!token) return;
+            if (!password) return;
 
             const ok = window.confirm(
               `"${selectedCase.title || "제목 미등록"}" 사례를 삭제하시겠습니까?`
@@ -1109,7 +1073,7 @@
             if (!ok) return;
 
             try {
-              await deleteCaseById(selectedCase.id);
+              await deleteCaseById(selectedCase.id, password);
               updateConnectionStatus("online");
               alert("사례가 삭제되었습니다.");
               detail.hidden = true;
@@ -1117,15 +1081,16 @@
               await refreshCases();
             } catch (error) {
               console.error("[case] 삭제 실패:", error);
-              if (error && error.message === "UNAUTHORIZED") {
-                alert("관리자 인증에 실패했습니다. 비밀번호를 다시 확인해주세요.");
-              } else {
-                updateConnectionStatus(
-                  "offline",
-                  "사례 삭제 중 서버 연결 문제가 발생했습니다."
-                );
-                alert("사례 삭제 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
-              }
+              updateConnectionStatus(
+                "offline",
+                "사례 삭제 중 서버 연결 문제가 발생했습니다."
+              );
+              const reason =
+                error && error.message ? `\n사유: ${error.message}` : "";
+              alert(
+                "사례 삭제 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요." +
+                  reason
+              );
             }
           });
         }

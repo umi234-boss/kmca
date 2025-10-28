@@ -33,6 +33,7 @@ const DATA_DIR = process.env.DATA_DIR || path.join(__dirname, "..", "data");
 const CASES_FILE = path.join(DATA_DIR, "cases.json");
 const CONTACT_FILE = path.join(DATA_DIR, "contact.json");
 const API_SECRET = process.env.KMCA_API_SECRET || "";
+const ADMIN_PASSWORD = process.env.KMCA_ADMIN_PASSWORD || "1234";
 
 function isAuthorized(req) {
   if (!API_SECRET) return false;
@@ -54,6 +55,22 @@ function requireAuthorized(req, res) {
     return false;
   }
   return true;
+}
+
+function hasValidAdminPassword(body) {
+  if (!body || typeof body.adminPassword !== "string") return false;
+  return body.adminPassword.trim() === ADMIN_PASSWORD;
+}
+
+function requireCasesAdmin(req, res, body) {
+  if (isAuthorized(req) || hasValidAdminPassword(body)) {
+    return true;
+  }
+  sendJson(res, 401, {
+    success: false,
+    error: "관리자 비밀번호가 올바르지 않습니다.",
+  });
+  return false;
 }
 
 function hashPassword(password) {
@@ -440,8 +457,9 @@ const routes = [
     method: "POST",
     pattern: /^\/api\/cases\/?$/,
     handler: withErrorHandling(async (req, res) => {
-      if (!requireAuthorized(req, res)) return;
       const body = await readJsonBody(req);
+      if (!requireCasesAdmin(req, res, body)) return;
+      const adminPassword = body.adminPassword;
       const categoryValue =
         typeof body.categoryValue === "string" ? body.categoryValue.trim() : "";
       const categoryLabel =
@@ -450,6 +468,10 @@ const routes = [
       const content = typeof body.body === "string" ? body.body.trim() : "";
       const author =
         typeof body.author === "string" ? body.author.trim() : "관리자";
+
+      if (adminPassword) {
+        delete body.adminPassword;
+      }
 
       if (!title || !content) {
         sendJson(res, 400, {
@@ -485,7 +507,8 @@ const routes = [
     method: "DELETE",
     pattern: /^\/api\/cases\/([^/]+)\/?$/,
     handler: withErrorHandling(async (req, res, params) => {
-      if (!requireAuthorized(req, res)) return;
+      const body = await readJsonBody(req);
+      if (!requireCasesAdmin(req, res, body)) return;
       const [, caseId] = params;
       const cases = await loadCases();
       const nextCases = cases.filter((item) => item.id !== caseId);
@@ -504,7 +527,6 @@ const routes = [
     method: "PATCH",
     pattern: /^\/api\/cases\/([^/]+)\/views\/?$/,
     handler: withErrorHandling(async (req, res, params) => {
-      if (!requireAuthorized(req, res)) return;
       const [, caseId] = params;
       const cases = await loadCases();
       let updatedCase = null;
