@@ -211,6 +211,53 @@
           victim: "피해자",
         };
 
+        const ADMIN_TOKEN_KEY = "kmcaAdminToken";
+
+        function getAdminToken() {
+          try {
+            return sessionStorage.getItem(ADMIN_TOKEN_KEY) || "";
+          } catch (_) {
+            return "";
+          }
+        }
+
+        function setAdminToken(token) {
+          try {
+            if (token) {
+              sessionStorage.setItem(ADMIN_TOKEN_KEY, token);
+            }
+          } catch (_) {
+            // ignore storage errors
+          }
+        }
+
+        function clearAdminToken() {
+          try {
+            sessionStorage.removeItem(ADMIN_TOKEN_KEY);
+          } catch (_) {
+            // ignore
+          }
+        }
+
+        function ensureAdminToken(promptMessage) {
+          let token = getAdminToken();
+          if (token) return token;
+          const input = window.prompt(promptMessage || "관리자 비밀번호를 입력하세요.");
+          if (input === null) return "";
+          const trimmed = input.trim();
+          if (!trimmed) {
+            alert("비밀번호를 입력해주세요.");
+            return "";
+          }
+          setAdminToken(trimmed);
+          return trimmed;
+        }
+
+        function handleUnauthorized(message) {
+          clearAdminToken();
+          alert(message || "관리자 인증에 실패했습니다. 비밀번호를 다시 입력해주세요.");
+        }
+
         const apiBase = (() => {
           const attr = (document.body.getAttribute("data-api-base") || "").trim();
           if (attr) return attr;
@@ -230,15 +277,25 @@
         }
 
         async function createCase(entry) {
+          const token = getAdminToken();
+          if (!token) {
+            handleUnauthorized("관리자 인증이 필요합니다.");
+            throw new Error("UNAUTHORIZED");
+          }
           const response = await fetch(buildApiUrl("/cases"), {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
               Accept: "application/json",
+              "X-KMCA-Admin": token,
             },
             body: JSON.stringify(entry),
           });
           const data = await response.json().catch(() => ({}));
+          if (response.status === 401) {
+            handleUnauthorized("관리자 인증이 유효하지 않습니다.");
+            throw new Error("UNAUTHORIZED");
+          }
           if (!response.ok || !data.success) {
             const message = data && data.error ? data.error : `HTTP ${response.status}`;
             throw new Error(message);
@@ -263,6 +320,12 @@
               return;
             }
 
+            const token = ensureAdminToken("사례 저장 비밀번호를 입력하세요.");
+            if (!token) {
+              alert("저장을 위해 관리자 비밀번호가 필요합니다.");
+              return;
+            }
+
             if (submitBtn) {
               submitBtn.disabled = true;
               submitBtn.textContent = "저장 중...";
@@ -280,10 +343,14 @@
               window.location.href = "cases.html";
             } catch (error) {
               console.error("[case] 저장 실패:", error);
-              const reason = error && error.message ? `\n사유: ${error.message}` : "";
-              alert(
-                "사례 저장 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요." + reason
-              );
+              if (error && error.message === "UNAUTHORIZED") {
+                alert("관리자 인증에 실패했습니다. 비밀번호를 다시 확인해주세요.");
+              } else {
+                const reason = error && error.message ? `\n사유: ${error.message}` : "";
+                alert(
+                  "사례 저장 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요." + reason
+                );
+              }
             } finally {
               if (submitBtn) {
                 submitBtn.disabled = false;

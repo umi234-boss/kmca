@@ -1,9 +1,57 @@
 const http = require("http");
 const fs = require("fs/promises");
+const fsSync = require("fs");
 const path = require("path");
+
+function loadEnv(filePath) {
+  try {
+    const raw = fsSync.readFileSync(filePath, "utf-8");
+    raw
+      .split(/\r?\n/)
+      .map((line) => line.trim())
+      .filter((line) => line && !line.startsWith("#"))
+      .forEach((line) => {
+        const idx = line.indexOf("=");
+        if (idx === -1) return;
+        const key = line.slice(0, idx).trim();
+        if (!key) return;
+        const value = line.slice(idx + 1).trim();
+        if (typeof process.env[key] === "undefined") {
+          process.env[key] = value;
+        }
+      });
+  } catch (_) {
+    // optional .env file
+  }
+}
+
+loadEnv(path.join(__dirname, "..", ".env"));
 
 const PORT = process.env.PORT ? Number(process.env.PORT) : 5174;
 const DATA_FILE = path.join(__dirname, "..", "data", "cases.json");
+const API_SECRET = process.env.KMCA_API_SECRET || "";
+
+function isAuthorized(req) {
+  if (!API_SECRET) return false;
+  const headerValue = req.headers["x-kmca-admin"];
+  if (typeof headerValue !== "string") return false;
+  return headerValue === API_SECRET;
+}
+
+function requireAuthorized(req, res) {
+  if (!API_SECRET) {
+    sendJson(res, 500, {
+      success: false,
+      error: "서버에 관리자 비밀키가 설정되지 않았습니다.",
+    });
+    return false;
+  }
+  if (!isAuthorized(req)) {
+    sendJson(res, 401, { success: false, error: "관리자 인증이 필요합니다." });
+    return false;
+  }
+  return true;
+}
 
 async function ensureDataFile() {
   try {
@@ -38,7 +86,7 @@ function sendJson(res, statusCode, payload) {
     "Content-Type": "application/json; charset=utf-8",
     "Access-Control-Allow-Origin": "*",
     "Access-Control-Allow-Methods": "GET,POST,DELETE,PATCH,OPTIONS",
-    "Access-Control-Allow-Headers": "Content-Type",
+    "Access-Control-Allow-Headers": "Content-Type, X-KMCA-Admin",
   });
   res.end(body);
 }
@@ -48,7 +96,7 @@ function sendText(res, statusCode, text = "") {
     "Content-Type": "text/plain; charset=utf-8",
     "Access-Control-Allow-Origin": "*",
     "Access-Control-Allow-Methods": "GET,POST,DELETE,PATCH,OPTIONS",
-    "Access-Control-Allow-Headers": "Content-Type",
+    "Access-Control-Allow-Headers": "Content-Type, X-KMCA-Admin",
   });
   res.end(text);
 }
@@ -121,6 +169,7 @@ const routes = [
     method: "POST",
     pattern: /^\/api\/cases\/?$/,
     handler: withErrorHandling(async (req, res) => {
+      if (!requireAuthorized(req, res)) return;
       const body = await readJsonBody(req);
       const categoryValue =
         typeof body.categoryValue === "string" ? body.categoryValue.trim() : "";
@@ -160,7 +209,8 @@ const routes = [
   {
     method: "DELETE",
     pattern: /^\/api\/cases\/([^/]+)\/?$/,
-    handler: withErrorHandling(async (_req, res, params) => {
+    handler: withErrorHandling(async (req, res, params) => {
+      if (!requireAuthorized(req, res)) return;
       const [, caseId] = params;
       const cases = await loadCases();
       const nextCases = cases.filter((item) => item.id !== caseId);
@@ -175,7 +225,8 @@ const routes = [
   {
     method: "PATCH",
     pattern: /^\/api\/cases\/([^/]+)\/views\/?$/,
-    handler: withErrorHandling(async (_req, res, params) => {
+    handler: withErrorHandling(async (req, res, params) => {
+      if (!requireAuthorized(req, res)) return;
       const [, caseId] = params;
       const cases = await loadCases();
       let updatedCase = null;

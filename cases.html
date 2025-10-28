@@ -111,6 +111,53 @@
         flex-wrap: wrap;
         margin-bottom: 16px;
       }
+      .case-board__info {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        align-items: flex-start;
+      }
+      .case-status {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 6px 12px;
+        border-radius: 999px;
+        font-size: 13px;
+        font-weight: 600;
+        border: 1px solid transparent;
+        transition:
+          background 0.2s ease,
+          color 0.2s ease,
+          border-color 0.2s ease;
+      }
+      .case-status__dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: currentColor;
+        display: inline-block;
+      }
+      .case-status.is-loading {
+        background: #f8fafc;
+        color: #2563eb;
+        border-color: rgba(37, 99, 235, 0.2);
+      }
+      .case-status.is-online {
+        background: #ecfdf5;
+        color: #047857;
+        border-color: rgba(4, 120, 87, 0.25);
+      }
+      .case-status.is-offline {
+        background: #fef2f2;
+        color: #dc2626;
+        border-color: rgba(220, 38, 38, 0.25);
+      }
+      .case-status.is-auth {
+        background: #fef9c3;
+        color: #b45309;
+        border-color: rgba(180, 83, 9, 0.3);
+      }
       .case-board__search {
         position: relative;
         flex: 0 0 320px;
@@ -268,6 +315,13 @@
       .case-detail__delete:hover {
         background: rgba(220, 38, 38, 0.12);
       }
+      .case-detail__delete[disabled] {
+        opacity: 0.5;
+        cursor: not-allowed;
+        background: rgba(148, 163, 184, 0.16);
+        border-color: rgba(148, 163, 184, 0.2);
+        color: #64748b;
+      }
       .case-detail__close {
         border: none;
         background: none;
@@ -325,6 +379,10 @@
         .case-board__toolbar {
           flex-direction: column;
           align-items: stretch;
+        }
+        .case-board__info {
+          align-items: center;
+          text-align: center;
         }
         .case-board__search {
           flex: 1 1 auto;
@@ -441,8 +499,19 @@
           </header>
 
           <div class="case-board__toolbar">
-            <div class="case-board__note">
-              ※ 실제 사례는 내부 검토 후 주기적으로 업데이트됩니다.
+            <div class="case-board__info">
+              <div
+                class="case-status is-loading"
+                id="caseStatusIndicator"
+                role="status"
+                aria-live="polite"
+              >
+                <span class="case-status__dot" aria-hidden="true"></span>
+                <span class="case-status__text">서버 연결 확인 중...</span>
+              </div>
+              <div class="case-board__note">
+                ※ 실제 사례는 내부 검토 후 주기적으로 업데이트됩니다.
+              </div>
             </div>
             <form class="case-board__search" role="search" action="#">
               <label class="sr-only" for="caseSearchInput">사례 검색</label>
@@ -578,6 +647,59 @@
         const searchForm = document.querySelector(".case-board__search");
         const statusNote = document.querySelector(".case-board__note");
         const defaultStatusText = statusNote ? statusNote.textContent : "";
+        const statusIndicator = document.getElementById("caseStatusIndicator");
+        const statusText = statusIndicator
+          ? statusIndicator.querySelector(".case-status__text")
+          : null;
+
+        const connectionState = {
+          status: "loading",
+          message: "서버 연결 확인 중...",
+        };
+
+        const ADMIN_TOKEN_KEY = "kmcaAdminToken";
+
+        function getAdminToken() {
+          try {
+            return sessionStorage.getItem(ADMIN_TOKEN_KEY) || "";
+          } catch (_) {
+            return "";
+          }
+        }
+
+        function setAdminToken(token) {
+          try {
+            if (token) {
+              sessionStorage.setItem(ADMIN_TOKEN_KEY, token);
+            }
+          } catch (_) {
+            // ignore storage error
+          }
+        }
+
+        function clearAdminToken() {
+          try {
+            sessionStorage.removeItem(ADMIN_TOKEN_KEY);
+          } catch (_) {
+            // ignore
+          }
+        }
+
+        function ensureAdminToken(promptMessage) {
+          let token = getAdminToken();
+          if (token) return token;
+          const input = window.prompt(promptMessage || "관리자 비밀번호를 입력하세요.");
+          if (input === null) return "";
+          const trimmed = input.trim();
+          if (!trimmed) {
+            alert("비밀번호를 입력해주세요.");
+            return "";
+          }
+          setAdminToken(trimmed);
+          return trimmed;
+        }
+
+        let apiAvailable = false;
 
         const apiBase = (() => {
           const attr = (document.body.getAttribute("data-api-base") || "").trim();
@@ -597,9 +719,104 @@
           return `${base}${cleanPath}`;
         }
 
+        function getStatusMessage(status, customMessage) {
+          if (typeof customMessage === "string" && customMessage.trim()) {
+            return customMessage.trim();
+          }
+          if (status === "online") return "서버에 연결되었습니다.";
+          if (status === "offline")
+            return "서버 연결이 필요합니다. 예시 데이터만 표시됩니다.";
+          if (status === "auth")
+            return "관리자 인증이 필요합니다. 조회는 가능하지만 수정 권한이 없습니다.";
+          return "서버 연결 확인 중...";
+        }
+
+        function renderConnectionStatus() {
+          if (statusIndicator && statusText) {
+            statusIndicator.classList.remove(
+              "is-loading",
+              "is-online",
+              "is-offline",
+              "is-auth"
+            );
+            const classNameMap = {
+              online: "is-online",
+              offline: "is-offline",
+              auth: "is-auth",
+              loading: "is-loading",
+            };
+            const className = classNameMap[connectionState.status] || "is-loading";
+            statusIndicator.classList.add(className);
+            statusIndicator.setAttribute("data-status", connectionState.status);
+            statusText.textContent = connectionState.message;
+          }
+
+          if (statusNote) {
+            if (connectionState.status === "offline") {
+              statusNote.textContent = "※ 서버 연결 실패로 예시 데이터만 표시 중입니다.";
+            } else if (connectionState.status === "auth") {
+              statusNote.textContent = "※ 관리자 인증 후 수정·삭제 기능을 이용할 수 있습니다.";
+            } else {
+              statusNote.textContent = defaultStatusText;
+            }
+          }
+
+          updateDetailDeleteState(selectedCase);
+        }
+
+        function updateConnectionStatus(status, message) {
+          connectionState.status = status;
+          connectionState.message = getStatusMessage(status, message);
+          apiAvailable = status !== "offline";
+          renderConnectionStatus();
+        }
+
+        function incrementViewsLocally(item) {
+          const nextViews = (Number(item.views) || 0) + 1;
+          return { ...item, views: nextViews };
+        }
+
+        function handleUnauthorized(message, options) {
+          clearAdminToken();
+          const nextStatus = (options && options.status) || "auth";
+          const fallbackMessage =
+            nextStatus === "auth"
+              ? "관리자 인증이 필요합니다. 조회는 가능하지만 수정 권한이 없습니다."
+              : "관리자 인증이 필요합니다.";
+          updateConnectionStatus(nextStatus, message || fallbackMessage);
+        }
+
+        function updateDetailDeleteState(caseItem) {
+          if (!detailDelete) return;
+          const target = caseItem || selectedCase;
+          if (!target || !target.id) {
+            detailDelete.hidden = true;
+            detailDelete.dataset.caseId = "";
+            delete detailDelete.dataset.isDefault;
+            detailDelete.removeAttribute("title");
+            detailDelete.removeAttribute("disabled");
+            return;
+          }
+          detailDelete.hidden = false;
+          detailDelete.dataset.caseId = target.id;
+          detailDelete.textContent = target.isDefault ? "샘플 삭제" : "삭제";
+          detailDelete.dataset.isDefault = target.isDefault ? "1" : "0";
+          detailDelete.removeAttribute("disabled");
+          if (connectionState.status === "offline" || connectionState.status === "auth") {
+            const note = connectionState.message || "서버 연결 후 삭제할 수 있습니다.";
+            detailDelete.setAttribute("title", note);
+          } else {
+            detailDelete.removeAttribute("title");
+          }
+        }
+
         async function fetchCasesFromServer() {
+          const token = getAdminToken();
+          const headers = { Accept: "application/json" };
+          if (token) headers["X-KMCA-Admin"] = token;
           const response = await fetch(buildApiUrl("/cases"), {
             cache: "no-store",
+            headers,
           });
           const data = await response.json().catch(() => ({}));
           if (!response.ok || !data.success) {
@@ -610,16 +827,21 @@
         }
 
         async function incrementCaseViews(caseId) {
+          const token = getAdminToken();
+          const headers = { Accept: "application/json" };
+          if (token) headers["X-KMCA-Admin"] = token;
           const response = await fetch(
             buildApiUrl(`/cases/${encodeURIComponent(caseId)}/views`),
             {
               method: "PATCH",
-              headers: {
-                Accept: "application/json",
-              },
+              headers,
             }
           );
           const data = await response.json().catch(() => ({}));
+          if (response.status === 401) {
+            handleUnauthorized("관리자 인증이 필요합니다.", { status: "auth" });
+            throw new Error("UNAUTHORIZED");
+          }
           if (!response.ok || !data.success) {
             const message = data && data.error ? data.error : `HTTP ${response.status}`;
             throw new Error(message);
@@ -628,16 +850,21 @@
         }
 
         async function deleteCaseById(caseId) {
+          const token = getAdminToken();
+          const headers = { Accept: "application/json" };
+          if (token) headers["X-KMCA-Admin"] = token;
           const response = await fetch(
             buildApiUrl(`/cases/${encodeURIComponent(caseId)}`),
             {
               method: "DELETE",
-              headers: {
-                Accept: "application/json",
-              },
+              headers,
             }
           );
           const data = await response.json().catch(() => ({}));
+          if (response.status === 401) {
+            handleUnauthorized("관리자 인증이 필요합니다.");
+            throw new Error("UNAUTHORIZED");
+          }
           if (!response.ok || !data.success) {
             const message = data && data.error ? data.error : `HTTP ${response.status}`;
             throw new Error(message);
@@ -647,7 +874,7 @@
 
         let currentCases = [];
         let selectedCase = null;
-        let apiAvailable = true;
+        renderConnectionStatus();
 
         function escapeHTML(value) {
           return String(value || "")
@@ -674,17 +901,7 @@
           selectedCase = caseItem;
           detail.hidden = false;
           detailTitle.textContent = caseItem.title || "사례 상세";
-
-          if (detailDelete) {
-            const canDelete = apiAvailable && Boolean(caseItem.id);
-            detailDelete.hidden = !canDelete;
-            if (canDelete) {
-              detailDelete.textContent = caseItem.isDefault ? "샘플 삭제" : "삭제";
-              detailDelete.dataset.caseId = caseItem.id;
-            } else {
-              detailDelete.dataset.caseId = "";
-            }
-          }
+          updateDetailDeleteState(caseItem);
 
           const categoryText =
             caseItem.categoryLabel ||
@@ -715,18 +932,13 @@
             countEl.textContent = total;
           }
 
-          if (statusNote) {
-            statusNote.textContent = apiAvailable
-              ? defaultStatusText
-              : "※ 서버와 연결되지 않아 예시 데이터만 표시됩니다.";
-          }
-
           tableBody.innerHTML = "";
 
           if (total === 0) {
             emptyMessage.hidden = false;
             detail.hidden = true;
             selectedCase = null;
+            updateDetailDeleteState(null);
             return;
           }
 
@@ -773,18 +985,31 @@
               if (apiAvailable && current.id) {
                 try {
                   updatedCase = await incrementCaseViews(current.id);
-                  currentCases[idx] = updatedCase;
-                  const rowEl = this.closest("tr");
-                  if (rowEl) {
-                    const viewsCell = rowEl.querySelector("td:last-child");
-                    if (viewsCell) {
-                      viewsCell.textContent = String(
-                        typeof updatedCase.views === "number" ? updatedCase.views : 0
-                      );
-                    }
-                  }
+                  updateConnectionStatus("online");
                 } catch (error) {
                   console.warn("[case] 조회수 업데이트 실패:", error);
+                  if (error && error.message === "UNAUTHORIZED") {
+                    updatedCase = incrementViewsLocally(current);
+                  } else {
+                    updateConnectionStatus("offline", "서버 연결이 원활하지 않습니다.");
+                    updatedCase = incrementViewsLocally(current);
+                  }
+                }
+              } else {
+                if (!apiAvailable) {
+                  updateConnectionStatus("offline");
+                }
+                updatedCase = incrementViewsLocally(current);
+              }
+
+              currentCases[idx] = updatedCase;
+              const rowEl = this.closest("tr");
+              if (rowEl) {
+                const viewsCell = rowEl.querySelector("td:last-child");
+                if (viewsCell) {
+                  viewsCell.textContent = String(
+                    typeof updatedCase.views === "number" ? updatedCase.views : 0
+                  );
                 }
               }
 
@@ -803,9 +1028,10 @@
         }
 
         async function refreshCases() {
+          updateConnectionStatus("loading");
           try {
             const cases = await fetchCasesFromServer();
-            apiAvailable = true;
+            updateConnectionStatus("online");
             currentCases = [...cases].sort((a, b) => {
               const dateA = new Date(a.createdAt || 0).getTime();
               const dateB = new Date(b.createdAt || 0).getTime();
@@ -813,7 +1039,10 @@
             });
           } catch (error) {
             console.error("[case] 서버에서 사례를 불러오지 못했습니다:", error);
-            apiAvailable = false;
+            updateConnectionStatus(
+              "offline",
+              "서버 연결 실패로 예시 데이터만 표시됩니다."
+            );
             currentCases = [...FALLBACK_CASES].sort((a, b) => {
               const dateA = new Date(a.createdAt || 0).getTime();
               const dateB = new Date(b.createdAt || 0).getTime();
@@ -833,13 +1062,9 @@
 
         if (writeBtn) {
           writeBtn.addEventListener("click", function () {
-            const input = window.prompt("글쓰기 권한 비밀번호를 입력하세요.");
-            if (input === null) return;
-            if (input.trim() === "1234") {
-              window.location.href = "cases-write.html";
-            } else {
-              window.alert("비밀번호가 올바르지 않습니다.");
-            }
+            const token = ensureAdminToken("사례 글쓰기 비밀번호를 입력하세요.");
+            if (!token) return;
+            window.location.href = "cases-write.html";
           });
         }
 
@@ -847,26 +1072,24 @@
           detailClose.addEventListener("click", function () {
             detail.hidden = true;
             selectedCase = null;
+            updateDetailDeleteState(null);
           });
         }
 
         if (detailDelete) {
           detailDelete.addEventListener("click", async function () {
+            if (this.disabled) {
+              alert("서버 연결 후 삭제할 수 있습니다.");
+              return;
+            }
             if (!selectedCase || !selectedCase.id) {
               alert("삭제할 사례가 선택되지 않았습니다.");
               return;
             }
-            if (!apiAvailable) {
-              alert("서버와 연결되지 않아 삭제할 수 없습니다.");
-              return;
-            }
 
-            const input = window.prompt("삭제 비밀번호를 입력하세요.");
-            if (input === null) return;
-            if (input.trim() !== "1234") {
-              alert("비밀번호가 올바르지 않습니다.");
-              return;
-            }
+            const token = ensureAdminToken("삭제 비밀번호를 입력하세요.");
+            if (!token) return;
+
             const ok = window.confirm(
               `"${selectedCase.title || "제목 미등록"}" 사례를 삭제하시겠습니까?`
             );
@@ -874,13 +1097,22 @@
 
             try {
               await deleteCaseById(selectedCase.id);
+              updateConnectionStatus("online");
               alert("사례가 삭제되었습니다.");
               detail.hidden = true;
               selectedCase = null;
               await refreshCases();
             } catch (error) {
               console.error("[case] 삭제 실패:", error);
-              alert("사례 삭제 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
+              if (error && error.message === "UNAUTHORIZED") {
+                alert("관리자 인증에 실패했습니다. 비밀번호를 다시 확인해주세요.");
+              } else {
+                updateConnectionStatus(
+                  "offline",
+                  "사례 삭제 중 서버 연결 문제가 발생했습니다."
+                );
+                alert("사례 삭제 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
+              }
             }
           });
         }
