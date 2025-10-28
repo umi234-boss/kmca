@@ -28,9 +28,10 @@ function loadEnv(filePath) {
 
 loadEnv(path.join(__dirname, "..", ".env"));
 
-const PORT = process.env.PORT ? Number(process.env.PORT) : 5174;
-const CASES_FILE = path.join(__dirname, "..", "data", "cases.json");
-const CONTACT_FILE = path.join(__dirname, "..", "data", "contact.json");
+const PORT = Number(process.env.PORT) || 8080;
+const DATA_DIR = process.env.DATA_DIR || path.join(__dirname, "..", "data");
+const CASES_FILE = path.join(DATA_DIR, "cases.json");
+const CONTACT_FILE = path.join(DATA_DIR, "contact.json");
 const API_SECRET = process.env.KMCA_API_SECRET || "";
 
 function isAuthorized(req) {
@@ -179,7 +180,10 @@ function withErrorHandling(handler) {
       await handler(req, res, params);
     } catch (error) {
       console.error("[api] unhandled error:", error);
-      sendJson(res, 500, { success: false, error: "서버 오류가 발생했습니다." });
+      sendJson(res, 500, {
+        success: false,
+        error: "서버 오류가 발생했습니다.",
+      });
     }
   };
 }
@@ -226,7 +230,10 @@ const routes = [
 
       const now = new Date();
       const entry = {
-        id: body.id && typeof body.id === "string" ? body.id : `contact-${Date.now()}`,
+        id:
+          body.id && typeof body.id === "string"
+            ? body.id
+            : `contact-${Date.now()}`,
         categoryValue: categoryValue || null,
         categoryLabel: categoryLabel || null,
         title,
@@ -243,7 +250,10 @@ const routes = [
 
       sendJson(res, 201, {
         success: true,
-        entry: sanitizeContactEntry(entry, { includeBody: true, includeReplies: true }),
+        entry: sanitizeContactEntry(entry, {
+          includeBody: true,
+          includeReplies: true,
+        }),
       });
     }),
   },
@@ -266,12 +276,18 @@ const routes = [
       const entries = await loadContactEntries();
       const entry = entries.find((item) => item.id === entryId);
       if (!entry) {
-        sendJson(res, 404, { success: false, error: "문의 글을 찾을 수 없습니다." });
+        sendJson(res, 404, {
+          success: false,
+          error: "문의 글을 찾을 수 없습니다.",
+        });
         return;
       }
 
       if (hashPassword(password) !== entry.passwordHash) {
-        sendJson(res, 401, { success: false, error: "비밀번호가 올바르지 않습니다." });
+        sendJson(res, 401, {
+          success: false,
+          error: "비밀번호가 올바르지 않습니다.",
+        });
         return;
       }
 
@@ -307,13 +323,19 @@ const routes = [
       const entries = await loadContactEntries();
       const entryIndex = entries.findIndex((item) => item.id === entryId);
       if (entryIndex === -1) {
-        sendJson(res, 404, { success: false, error: "문의 글을 찾을 수 없습니다." });
+        sendJson(res, 404, {
+          success: false,
+          error: "문의 글을 찾을 수 없습니다.",
+        });
         return;
       }
 
       const entry = entries[entryIndex];
       if (hashPassword(password) !== entry.passwordHash) {
-        sendJson(res, 401, { success: false, error: "비밀번호가 올바르지 않습니다." });
+        sendJson(res, 401, {
+          success: false,
+          error: "비밀번호가 올바르지 않습니다.",
+        });
         return;
       }
 
@@ -358,13 +380,19 @@ const routes = [
       const entries = await loadContactEntries();
       const entryIndex = entries.findIndex((item) => item.id === entryId);
       if (entryIndex === -1) {
-        sendJson(res, 404, { success: false, error: "문의 글을 찾을 수 없습니다." });
+        sendJson(res, 404, {
+          success: false,
+          error: "문의 글을 찾을 수 없습니다.",
+        });
         return;
       }
 
       const entry = entries[entryIndex];
       if (hashPassword(password) !== entry.passwordHash) {
-        sendJson(res, 401, { success: false, error: "비밀번호가 올바르지 않습니다." });
+        sendJson(res, 401, {
+          success: false,
+          error: "비밀번호가 올바르지 않습니다.",
+        });
         return;
       }
 
@@ -399,7 +427,10 @@ const routes = [
       const cases = await loadCases();
       const found = cases.find((item) => item.id === caseId);
       if (!found) {
-        sendJson(res, 404, { success: false, error: "사례를 찾을 수 없습니다." });
+        sendJson(res, 404, {
+          success: false,
+          error: "사례를 찾을 수 없습니다.",
+        });
         return;
       }
       sendJson(res, 200, { success: true, case: found });
@@ -417,7 +448,8 @@ const routes = [
         typeof body.categoryLabel === "string" ? body.categoryLabel.trim() : "";
       const title = typeof body.title === "string" ? body.title.trim() : "";
       const content = typeof body.body === "string" ? body.body.trim() : "";
-      const author = typeof body.author === "string" ? body.author.trim() : "관리자";
+      const author =
+        typeof body.author === "string" ? body.author.trim() : "관리자";
 
       if (!title || !content) {
         sendJson(res, 400, {
@@ -429,7 +461,10 @@ const routes = [
 
       const now = new Date();
       const entry = {
-        id: body.id && typeof body.id === "string" ? body.id : `case-${Date.now()}`,
+        id:
+          body.id && typeof body.id === "string"
+            ? body.id
+            : `case-${Date.now()}`,
         categoryValue: categoryValue || null,
         categoryLabel: categoryLabel || null,
         title,
@@ -455,7 +490,10 @@ const routes = [
       const cases = await loadCases();
       const nextCases = cases.filter((item) => item.id !== caseId);
       if (nextCases.length === cases.length) {
-        sendJson(res, 404, { success: false, error: "삭제할 사례가 없습니다." });
+        sendJson(res, 404, {
+          success: false,
+          error: "삭제할 사례가 없습니다.",
+        });
         return;
       }
       await saveCases(nextCases);
@@ -477,7 +515,10 @@ const routes = [
         return updatedCase;
       });
       if (!updatedCase) {
-        sendJson(res, 404, { success: false, error: "사례를 찾을 수 없습니다." });
+        sendJson(res, 404, {
+          success: false,
+          error: "사례를 찾을 수 없습니다.",
+        });
         return;
       }
       await saveCases(nextCases);
