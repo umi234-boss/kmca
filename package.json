@@ -5,6 +5,7 @@
   "description": "신한국손해사정(주) 정적 웹사이트",
   "scripts": {
     "serve": "http-server -p 5173 -c-1",
+    "serve:api": "node server/index.js",
     "format": "prettier --write .",
     "check:format": "prettier --check ."
   },

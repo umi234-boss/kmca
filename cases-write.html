@@ -138,7 +138,7 @@
       }
     </style>
   </head>
-  <body data-header-mode="solid">
+  <body data-header-mode="solid" data-api-base="/api">
     <div id="site-header"></div>
     <main class="case-write">
       <div class="container">
@@ -206,35 +206,55 @@
     <div id="site-footer"></div>
     <script>
       document.addEventListener("DOMContentLoaded", function () {
-        const STORAGE_KEY = "kmcaCases";
         const categoryLabelMap = {
           insurer: "피보험자(보험사)",
           victim: "피해자",
         };
 
-        function safeParse(json) {
-          try {
-            const data = JSON.parse(json);
-            return Array.isArray(data) ? data : [];
-          } catch (_) {
-            return [];
+        const apiBase = (() => {
+          const attr = (document.body.getAttribute("data-api-base") || "").trim();
+          if (attr) return attr;
+          if (
+            (location.hostname === "localhost" || location.hostname === "127.0.0.1") &&
+            location.port === "5173"
+          ) {
+            return "http://localhost:5174/api";
           }
+          return "/api";
+        })();
+
+        function buildApiUrl(path) {
+          const base = apiBase.replace(/\/+$/, "");
+          const cleanPath = path.startsWith("/") ? path : `/${path}`;
+          return `${base}${cleanPath}`;
         }
 
-        function saveCase(entry) {
-          const existing = safeParse(localStorage.getItem(STORAGE_KEY));
-          existing.push(entry);
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(existing));
+        async function createCase(entry) {
+          const response = await fetch(buildApiUrl("/cases"), {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Accept: "application/json",
+            },
+            body: JSON.stringify(entry),
+          });
+          const data = await response.json().catch(() => ({}));
+          if (!response.ok || !data.success) {
+            const message = data && data.error ? data.error : `HTTP ${response.status}`;
+            throw new Error(message);
+          }
+          return data.case;
         }
 
         const form = document.getElementById("caseWriteForm");
         if (form) {
-          form.addEventListener("submit", function (event) {
+          const submitBtn = form.querySelector('button[type="submit"]');
+          const defaultSubmitText = submitBtn ? submitBtn.textContent : "";
+          form.addEventListener("submit", async function (event) {
             event.preventDefault();
 
             const categoryValue = form.category.value;
-            const categoryLabel =
-              categoryLabelMap[categoryValue] || "미지정";
+            const categoryLabel = categoryLabelMap[categoryValue] || "미지정";
             const title = form.title.value.trim();
             const body = form.body.value.trim();
 
@@ -243,20 +263,33 @@
               return;
             }
 
-            const newCase = {
-              id: `case-${Date.now()}`,
-              categoryValue,
-              categoryLabel,
-              title,
-              body,
-              author: "관리자",
-              views: 0,
-              createdAt: new Date().toISOString(),
-            };
+            if (submitBtn) {
+              submitBtn.disabled = true;
+              submitBtn.textContent = "저장 중...";
+            }
 
-            saveCase(newCase);
-            alert("사례가 임시 저장되었습니다. 목록에서 확인해주세요.");
-            window.location.href = "cases.html";
+            try {
+              await createCase({
+                categoryValue,
+                categoryLabel,
+                title,
+                body,
+                author: "관리자",
+              });
+              alert("사례가 저장되었습니다. 목록에서 확인해주세요.");
+              window.location.href = "cases.html";
+            } catch (error) {
+              console.error("[case] 저장 실패:", error);
+              const reason = error && error.message ? `\n사유: ${error.message}` : "";
+              alert(
+                "사례 저장 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요." + reason
+              );
+            } finally {
+              if (submitBtn) {
+                submitBtn.disabled = false;
+                submitBtn.textContent = defaultSubmitText || "임시 저장";
+              }
+            }
           });
         }
 

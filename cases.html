@@ -408,7 +408,7 @@
       }
     </style>
   </head>
-  <body data-header-mode="solid">
+  <body data-header-mode="solid" data-api-base="/api">
     <div id="site-header"></div>
     <main>
       <section class="case-hero" aria-labelledby="caseIntro">
@@ -535,12 +535,10 @@
     <div id="site-footer"></div>
     <script>
       document.addEventListener("DOMContentLoaded", function () {
-        const STORAGE_KEY = "kmcaCases";
-        const DELETED_DEFAULT_KEY = "kmcaCasesDeletedDefaults";
-        const DEFAULT_VIEWS_KEY = "kmcaCaseDefaultViews";
-        const DEFAULT_CASES = [
+        const FALLBACK_CASES = [
           {
             id: "default-2",
+            categoryValue: "victim",
             categoryLabel: "피해자",
             title: "바이크 용품 맞는데!",
             author: "관리자",
@@ -551,11 +549,12 @@
           },
           {
             id: "default-1",
+            categoryValue: "insurer",
             categoryLabel: "피보험자(보험사)",
             title: "정말 살살 부딪혔는데...",
             author: "관리자",
             views: 160,
-            body: "간단한 접촉 사고처럼 보였지만, 차량 전면 레이더 센서가 손상되면서 예상보다 큰 수리비가 발생한 사례입니다. 손해 범위를 면밀히 검증해 적정한 수리비 산정과 감가 손해 조정을 이끌어 냈습니다.",
+            body: "간단한 접촉 사고처럼 보였지만, 차량 전면 레이더 센서가 손상되면서 예상보다 큰 수리비가 발생한 사례입니다. 손해사정 범위를 면밀히 검증해 적정한 수리비 산정과 감가 손해 조정을 이끌어 냈습니다.",
             createdAt: "2022-10-08T00:00:00+09:00",
             isDefault: true,
           },
@@ -577,9 +576,78 @@
         const detailDelete = document.getElementById("caseDetailDelete");
         const writeBtn = document.getElementById("caseWriteBtn");
         const searchForm = document.querySelector(".case-board__search");
+        const statusNote = document.querySelector(".case-board__note");
+        const defaultStatusText = statusNote ? statusNote.textContent : "";
+
+        const apiBase = (() => {
+          const attr = (document.body.getAttribute("data-api-base") || "").trim();
+          if (attr) return attr;
+          if (
+            (location.hostname === "localhost" || location.hostname === "127.0.0.1") &&
+            location.port === "5173"
+          ) {
+            return "http://localhost:5174/api";
+          }
+          return "/api";
+        })();
+
+        function buildApiUrl(path) {
+          const base = apiBase.replace(/\/+$/, "");
+          const cleanPath = path.startsWith("/") ? path : `/${path}`;
+          return `${base}${cleanPath}`;
+        }
+
+        async function fetchCasesFromServer() {
+          const response = await fetch(buildApiUrl("/cases"), {
+            cache: "no-store",
+          });
+          const data = await response.json().catch(() => ({}));
+          if (!response.ok || !data.success) {
+            const message = data && data.error ? data.error : `HTTP ${response.status}`;
+            throw new Error(message);
+          }
+          return Array.isArray(data.cases) ? data.cases : [];
+        }
+
+        async function incrementCaseViews(caseId) {
+          const response = await fetch(
+            buildApiUrl(`/cases/${encodeURIComponent(caseId)}/views`),
+            {
+              method: "PATCH",
+              headers: {
+                Accept: "application/json",
+              },
+            }
+          );
+          const data = await response.json().catch(() => ({}));
+          if (!response.ok || !data.success) {
+            const message = data && data.error ? data.error : `HTTP ${response.status}`;
+            throw new Error(message);
+          }
+          return data.case;
+        }
+
+        async function deleteCaseById(caseId) {
+          const response = await fetch(
+            buildApiUrl(`/cases/${encodeURIComponent(caseId)}`),
+            {
+              method: "DELETE",
+              headers: {
+                Accept: "application/json",
+              },
+            }
+          );
+          const data = await response.json().catch(() => ({}));
+          if (!response.ok || !data.success) {
+            const message = data && data.error ? data.error : `HTTP ${response.status}`;
+            throw new Error(message);
+          }
+          return true;
+        }
 
         let currentCases = [];
         let selectedCase = null;
+        let apiAvailable = true;
 
         function escapeHTML(value) {
           return String(value || "")
@@ -588,50 +656,6 @@
             .replace(/>/g, "&gt;")
             .replace(/"/g, "&quot;")
             .replace(/'/g, "&#39;");
-        }
-
-        function safeParse(json) {
-          try {
-            const data = JSON.parse(json);
-            return Array.isArray(data) ? data : [];
-          } catch (_) {
-            return [];
-          }
-        }
-
-        function safeParseObject(json) {
-          try {
-            const data = JSON.parse(json);
-            return data && typeof data === "object" && !Array.isArray(data)
-              ? data
-              : {};
-          } catch (_) {
-            return {};
-          }
-        }
-
-        function loadStoredCases() {
-          return safeParse(localStorage.getItem(STORAGE_KEY));
-        }
-
-        function loadDeletedDefaultIds() {
-          return safeParse(localStorage.getItem(DELETED_DEFAULT_KEY));
-        }
-
-        function saveDeletedDefaultIds(ids) {
-          localStorage.setItem(DELETED_DEFAULT_KEY, JSON.stringify(ids));
-        }
-
-        function loadDefaultViewOverrides() {
-          return safeParseObject(localStorage.getItem(DEFAULT_VIEWS_KEY));
-        }
-
-        function saveDefaultViewOverrides(map) {
-          localStorage.setItem(DEFAULT_VIEWS_KEY, JSON.stringify(map));
-        }
-
-        function saveStoredCases(data) {
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
         }
 
         function formatDate(isoLike) {
@@ -650,13 +674,16 @@
           selectedCase = caseItem;
           detail.hidden = false;
           detailTitle.textContent = caseItem.title || "사례 상세";
+
           if (detailDelete) {
-            detailDelete.hidden = false;
-            detailDelete.textContent = caseItem.isDefault
-              ? "샘플 삭제"
-              : "삭제";
-            detailDelete.dataset.caseId = caseItem.id || "";
-            detailDelete.dataset.isDefault = caseItem.isDefault ? "1" : "0";
+            const canDelete = apiAvailable && Boolean(caseItem.id);
+            detailDelete.hidden = !canDelete;
+            if (canDelete) {
+              detailDelete.textContent = caseItem.isDefault ? "샘플 삭제" : "삭제";
+              detailDelete.dataset.caseId = caseItem.id;
+            } else {
+              detailDelete.dataset.caseId = "";
+            }
           }
 
           const categoryText =
@@ -666,8 +693,7 @@
             "카테고리 미지정";
           const authorText = caseItem.author || "관리자";
           const createdText = formatDate(caseItem.createdAt);
-          const viewsText =
-            typeof caseItem.views === "number" ? caseItem.views : 0;
+          const viewsText = typeof caseItem.views === "number" ? caseItem.views : 0;
 
           detailMeta.innerHTML = [
             `카테고리: ${escapeHTML(categoryText)}`,
@@ -679,36 +705,22 @@
             .join("");
 
           const bodyText = (caseItem.body || "").trim();
-          if (bodyText) {
-            detailBody.textContent = bodyText;
-          } else {
-            detailBody.textContent = "본문이 없습니다.";
-          }
+          detailBody.textContent = bodyText ? bodyText : "본문이 없습니다.";
         }
 
         function renderCases() {
-          const deletedDefaultIds = new Set(loadDeletedDefaultIds());
-          const stored = loadStoredCases();
-          const sortedStored = [...stored].sort((a, b) => {
-            const dateA = new Date(a.createdAt || 0).getTime();
-            const dateB = new Date(b.createdAt || 0).getTime();
-            return dateB - dateA;
-          });
-
-          const defaultViewOverrides = loadDefaultViewOverrides();
-          const availableDefaults = DEFAULT_CASES.filter(
-            (item) => !deletedDefaultIds.has(item.id)
-          ).map((item) => {
-            const overrideViews = defaultViewOverrides[item.id];
-            const nextViews =
-              typeof overrideViews === "number" ? overrideViews : item.views;
-            return { ...item, views: nextViews };
-          });
-
-          currentCases = [...sortedStored, ...availableDefaults];
           const total = currentCases.length;
 
-          if (countEl) countEl.textContent = total;
+          if (countEl) {
+            countEl.textContent = total;
+          }
+
+          if (statusNote) {
+            statusNote.textContent = apiAvailable
+              ? defaultStatusText
+              : "※ 서버와 연결되지 않아 예시 데이터만 표시됩니다.";
+          }
+
           tableBody.innerHTML = "";
 
           if (total === 0) {
@@ -717,6 +729,7 @@
             selectedCase = null;
             return;
           }
+
           emptyMessage.hidden = true;
 
           currentCases.forEach((item, index) => {
@@ -746,30 +759,35 @@
             const titleLink = document.createElement("a");
             titleLink.href = "#!";
             titleLink.textContent = item.title || "제목 미등록";
-            titleLink.setAttribute(
-              "aria-label",
-              `${item.title || "사례"} 상세 보기`
-            );
+            titleLink.setAttribute("aria-label", `${item.title || "사례"} 상세 보기`);
             titleLink.dataset.caseIndex = String(index);
-            titleLink.addEventListener("click", function (event) {
+            titleLink.addEventListener("click", async function (event) {
               event.preventDefault();
               const idx = Number(this.dataset.caseIndex);
               if (!Number.isInteger(idx)) return;
               const current = currentCases[idx];
-              const updatedCase = bumpCaseViews(current);
-              if (!updatedCase) return;
-              currentCases[idx] = updatedCase;
-              const rowEl = this.closest("tr");
-              if (rowEl) {
-                const viewsCell = rowEl.querySelector("td:last-child");
-                if (viewsCell) {
-                  viewsCell.textContent = String(
-                    typeof updatedCase.views === "number"
-                      ? updatedCase.views
-                      : 0
-                  );
+              if (!current) return;
+
+              let updatedCase = current;
+
+              if (apiAvailable && current.id) {
+                try {
+                  updatedCase = await incrementCaseViews(current.id);
+                  currentCases[idx] = updatedCase;
+                  const rowEl = this.closest("tr");
+                  if (rowEl) {
+                    const viewsCell = rowEl.querySelector("td:last-child");
+                    if (viewsCell) {
+                      viewsCell.textContent = String(
+                        typeof updatedCase.views === "number" ? updatedCase.views : 0
+                      );
+                    }
+                  }
+                } catch (error) {
+                  console.warn("[case] 조회수 업데이트 실패:", error);
                 }
               }
+
               openDetail(updatedCase);
             });
             titleCell.appendChild(titleLink);
@@ -782,6 +800,28 @@
 
             tableBody.appendChild(row);
           });
+        }
+
+        async function refreshCases() {
+          try {
+            const cases = await fetchCasesFromServer();
+            apiAvailable = true;
+            currentCases = [...cases].sort((a, b) => {
+              const dateA = new Date(a.createdAt || 0).getTime();
+              const dateB = new Date(b.createdAt || 0).getTime();
+              return dateB - dateA;
+            });
+          } catch (error) {
+            console.error("[case] 서버에서 사례를 불러오지 못했습니다:", error);
+            apiAvailable = false;
+            currentCases = [...FALLBACK_CASES].sort((a, b) => {
+              const dateA = new Date(a.createdAt || 0).getTime();
+              const dateB = new Date(b.createdAt || 0).getTime();
+              return dateB - dateA;
+            });
+          }
+
+          renderCases();
         }
 
         if (searchForm) {
@@ -810,27 +850,17 @@
           });
         }
 
-        function deleteCase(item) {
-          if (!item) return;
-          if (item.isDefault) {
-            const deleted = new Set(loadDeletedDefaultIds());
-            deleted.add(item.id);
-            saveDeletedDefaultIds(Array.from(deleted));
-          } else {
-            const stored = loadStoredCases();
-            const filtered = stored.filter(
-              (caseItem) => caseItem.id !== item.id
-            );
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(filtered));
-          }
-        }
-
         if (detailDelete) {
-          detailDelete.addEventListener("click", function () {
-            if (!selectedCase) {
+          detailDelete.addEventListener("click", async function () {
+            if (!selectedCase || !selectedCase.id) {
               alert("삭제할 사례가 선택되지 않았습니다.");
               return;
             }
+            if (!apiAvailable) {
+              alert("서버와 연결되지 않아 삭제할 수 없습니다.");
+              return;
+            }
+
             const input = window.prompt("삭제 비밀번호를 입력하세요.");
             if (input === null) return;
             if (input.trim() !== "1234") {
@@ -842,51 +872,20 @@
             );
             if (!ok) return;
 
-            deleteCase(selectedCase);
-            alert("사례가 삭제되었습니다.");
-            detail.hidden = true;
-            selectedCase = null;
-            renderCases();
+            try {
+              await deleteCaseById(selectedCase.id);
+              alert("사례가 삭제되었습니다.");
+              detail.hidden = true;
+              selectedCase = null;
+              await refreshCases();
+            } catch (error) {
+              console.error("[case] 삭제 실패:", error);
+              alert("사례 삭제 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
+            }
           });
         }
 
-        function bumpCaseViews(caseItem) {
-          if (!caseItem) return null;
-          const nextViews = (Number(caseItem.views) || 0) + 1;
-          const updatedItem = { ...caseItem, views: nextViews };
-
-          if (caseItem.isDefault) {
-            if (!caseItem.id) return updatedItem;
-            const overrides = loadDefaultViewOverrides();
-            overrides[caseItem.id] = nextViews;
-            saveDefaultViewOverrides(overrides);
-          } else {
-            const stored = loadStoredCases();
-            let matched = false;
-            const updatedStored = stored.map((item) => {
-              const sameId =
-                item.id && caseItem.id ? item.id === caseItem.id : false;
-              const sameCreated =
-                !caseItem.id && item.createdAt && item.createdAt === caseItem.createdAt;
-              if (sameId || sameCreated) {
-                matched = true;
-                return { ...item, views: nextViews };
-              }
-              return item;
-            });
-            if (!matched) {
-              updatedStored.push({
-                ...caseItem,
-                views: nextViews,
-              });
-            }
-            saveStoredCases(updatedStored);
-          }
-
-          return updatedItem;
-        }
-
-        renderCases();
+        refreshCases();
       });
     </script>
   </body>
