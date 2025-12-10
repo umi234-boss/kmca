@@ -914,6 +914,15 @@ h2 {
   font-size: 13px;
   color: #475569;
 }
+.modal__link {
+  color: #0b1f6b;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.modal__link:hover,
+.modal__link:focus-visible {
+  color: #1d4ed8;
+}
 
 body[data-modal-open="true"] {
   overflow: hidden;
