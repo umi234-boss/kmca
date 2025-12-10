@@ -798,6 +798,16 @@ h2 {
   outline: 2px solid #1d4ed8;
   outline-offset: 2px;
 }
+.footer-link--privacy {
+  font-weight: 700;
+  font-size: 14px;
+  color: #03174f;
+}
+.footer-link--privacy:hover,
+.footer-link--privacy:focus-visible {
+  color: #03174f;
+  outline-color: #03174f;
+}
 
 @media (max-width: 640px) {
   .footer-nav {
