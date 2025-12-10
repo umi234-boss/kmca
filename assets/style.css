@@ -798,6 +798,9 @@ h2 {
   outline: 2px solid #1d4ed8;
   outline-offset: 2px;
 }
+.footer-link--terms {
+  text-decoration: none;
+}
 .footer-link--privacy {
   font-weight: 700;
   font-size: 14px;
