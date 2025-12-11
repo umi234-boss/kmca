@@ -924,6 +924,35 @@ h2 {
   color: #1d4ed8;
 }
 
+.privacy-history-page {
+  background: #f7f9fc;
+  min-height: 100vh;
+  padding: 32px 16px;
+}
+.privacy-history {
+  display: flex;
+  justify-content: center;
+}
+.privacy-history .modal__panel {
+  width: min(960px, 100%);
+}
+.policy-panel__header {
+  margin-bottom: 20px;
+  padding: 0 0 12px;
+  border-bottom: 1px solid rgba(15, 23, 42, 0.08);
+}
+.policy-panel__header h1 {
+  font-size: clamp(28px, 4vw, 36px);
+  margin: 0;
+  font-weight: 800;
+  color: #0b1f6b;
+}
+.policy-panel__description {
+  margin: 8px 0 0;
+  font-size: 16px;
+  color: #475569;
+}
+
 body[data-modal-open="true"] {
   overflow: hidden;
 }
